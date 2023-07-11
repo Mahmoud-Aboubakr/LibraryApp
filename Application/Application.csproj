@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Handlers\" />
+    <Folder Include="CommandsAndQueries\" />
+    <Folder Include="Exceptions\" />
+    <Folder Include="DTOs\" />
+    <Folder Include="Mappers\" />
+    <Folder Include="Behaviors\" />
+    <Folder Include="Validators\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.19" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.19" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.19">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+
+</Project>
