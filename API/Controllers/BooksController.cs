@@ -29,7 +29,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<BookDto>>> GetAllBooks()
         {
-            var books = await _bookRepo.GetAllListWithIncludesAsync(new Expression<Func<Book, object>>[] { x => x.Author });
+            var books = await _bookRepo.GetAllListWithIncludesAsync(new Expression<Func<Book, object>>[] { x => x.Author , x => x.Publisher});
             return Ok( _mapper.Map<IReadOnlyList<Book>, IReadOnlyList<BookDto>>(books));
         }
     }
