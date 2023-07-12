@@ -20,6 +20,9 @@ namespace Persistence.Configurations
             builder
                 .Property(P => P.PublisherPhoneNumber)
                 .IsRequired();
+
+            builder
+                .Property(P => P.Id).HasColumnName("PublisherId");
         }
     }
 }

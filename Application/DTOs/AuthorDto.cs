@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Author : BaseEntity
+    public class AuthorDto
     {
+        public int Id { get; set; }
         public string AuthorName { get; set; }
         public string AuthorPhoneNumber { get; set; }
         public decimal? AuthorProfits { get; set; }

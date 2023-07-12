@@ -26,9 +26,9 @@ namespace Persistence.Configurations
                 .Property(b => b.AuthorId)
                 .IsRequired();
 
-            builder
-                .Property(b => b.PublisherId)
-                .IsRequired();
+            //builder
+            //    .Property(b => b.PublisherId)
+            //    .IsRequired();
 
             builder
                 .Property(b => b.Price)
@@ -41,19 +41,19 @@ namespace Persistence.Configurations
                 .HasForeignKey(b => b.AuthorId)
                 .OnDelete(deleteBehavior: DeleteBehavior.NoAction);
 
-            builder
-                .HasOne(b => b.Publisher)
-                .WithMany()
-                .HasForeignKey(b => b.PublisherId)
-                .OnDelete(deleteBehavior: DeleteBehavior.NoAction);
+            //builder
+            //    .HasOne(b => b.Publisher)
+            //    .WithMany()
+            //    .HasForeignKey(b => b.PublisherId)
+            //    .OnDelete(deleteBehavior: DeleteBehavior.NoAction);
 
-            builder
-                .HasMany(b => b.Orders)
-                .WithMany(b => b.Books)
-                .UsingEntity<OrderBooks>(
-                    x => x.HasOne(p => p.Orders).WithMany().HasForeignKey(p => p.OrderId),
-                    x => x.HasOne(p => p.Books).WithMany().HasForeignKey(p => p.BookId)
-                );
+            //builder
+            //    .HasMany(b => b.Orders)
+            //    .WithMany(b => b.Books)
+            //    .UsingEntity<OrderBooks>(
+            //        x => x.HasOne(p => p.Orders).WithMany().HasForeignKey(p => p.OrderId),
+            //        x => x.HasOne(p => p.Books).WithMany().HasForeignKey(p => p.BookId)
+            //    );
         }
     }
 }

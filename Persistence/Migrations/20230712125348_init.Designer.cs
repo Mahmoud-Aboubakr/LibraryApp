@@ -12,8 +12,8 @@ using Persistence.Context;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20230711135656_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230712125348_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,37 +32,38 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DayDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("DayDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2023, 7, 12, 15, 53, 48, 93, DateTimeKind.Local).AddTicks(2961));
 
                     b.Property<string>("DeviceName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("EmpArrivalTime")
-                        .HasColumnType("time(7)");
+                    b.Property<DateTime?>("EmpArrivalTime")
+                        .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan>("EmpLeavingTime")
-                        .HasColumnType("time(7)");
-
-                    b.Property<int>("EmployeeId")
+                    b.Property<int>("EmpId")
                         .HasColumnType("int");
 
-                    b.Property<byte>("Month")
+                    b.Property<DateTime?>("EmpLeavingTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte?>("Month")
                         .HasColumnType("tinyint");
 
-                    b.Property<int>("Permission")
+                    b.Property<int?>("Permission")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId")
-                        .IsUnique();
+                    b.HasIndex("EmpId");
 
                     b.ToTable("Attendence");
                 });
@@ -71,12 +72,10 @@ namespace Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("AuthorId");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
 
                     b.Property<string>("AuthorName")
                         .IsRequired()
@@ -86,16 +85,16 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("AuthorProfits")
+                    b.Property<decimal?>("AuthorProfits")
                         .HasColumnType("decimal(18,3)");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeviceName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -111,25 +110,31 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("BanDate")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("BanDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2023, 7, 12, 15, 53, 48, 94, DateTimeKind.Local).AddTicks(3689));
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Customer_Id")
+                    b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<string>("DeviceName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Emp_Id")
+                    b.Property<int>("EmpId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("EmpId");
 
                     b.ToTable("BannedCustomers");
                 });
@@ -150,7 +155,7 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeviceName")
@@ -165,7 +170,7 @@ namespace Persistence.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -188,10 +193,12 @@ namespace Persistence.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<int>("BorrowDate")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("BorrowDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2023, 7, 12, 15, 53, 48, 95, DateTimeKind.Local).AddTicks(2273));
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeviceName")
@@ -200,13 +207,19 @@ namespace Persistence.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ReturnDate")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("ReturnDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2023, 7, 15, 15, 53, 48, 95, DateTimeKind.Local).AddTicks(2921));
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Borrows");
                 });
@@ -215,18 +228,16 @@ namespace Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("CustomerId");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CustomerAddress")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
 
                     b.Property<string>("CustomerName")
                         .HasColumnType("nvarchar(max)");
@@ -237,7 +248,7 @@ namespace Persistence.Migrations
                     b.Property<string>("DeviceName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -249,11 +260,15 @@ namespace Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("EmpId");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<int?>("AttendenceId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeviceName")
@@ -269,11 +284,8 @@ namespace Persistence.Migrations
                     b.Property<decimal>("EmpBasicSalary")
                         .HasColumnType("decimal(18,3)");
 
-                    b.Property<TimeSpan>("EmpEndingShift")
-                        .HasColumnType("time");
-
-                    b.Property<int>("EmpId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("EmpEndingShift")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("EmpName")
                         .IsRequired()
@@ -283,8 +295,8 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("EmpStartingShift")
-                        .HasColumnType("time");
+                    b.Property<DateTime?>("EmpStartingShift")
+                        .HasColumnType("datetime2");
 
                     b.Property<byte>("EmpType")
                         .HasColumnType("tinyint");
@@ -292,13 +304,15 @@ namespace Persistence.Migrations
                     b.Property<int?>("PayrollId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("VacationId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AttendenceId");
 
                     b.HasIndex("PayrollId");
 
@@ -316,7 +330,10 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<int?>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("CustomerId")
@@ -326,7 +343,9 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2023, 7, 12, 15, 53, 48, 95, DateTimeKind.Local).AddTicks(7817));
 
                     b.Property<bool>("Ordertype")
                         .HasColumnType("bit");
@@ -334,10 +353,14 @@ namespace Persistence.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,3)");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Orders");
                 });
@@ -353,7 +376,7 @@ namespace Persistence.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeviceName")
@@ -365,7 +388,7 @@ namespace Persistence.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -386,16 +409,22 @@ namespace Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<float>("BasicSalary")
-                        .HasColumnType("real");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("real")
+                        .HasDefaultValue(0f);
 
                     b.Property<float>("Bonus")
-                        .HasColumnType("real");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("real")
+                        .HasDefaultValue(0f);
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<float>("Deduct")
-                        .HasColumnType("real");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("real")
+                        .HasDefaultValue(0f);
 
                     b.Property<string>("DeviceName")
                         .HasColumnType("nvarchar(max)");
@@ -403,16 +432,20 @@ namespace Persistence.Migrations
                     b.Property<int>("EmpId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SalaryDate")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("SalaryDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<float>("TotalSalary")
-                        .HasColumnType("real");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("real")
+                        .HasComputedColumnSql("[BasicSalary] + [Bonus] - [Deduct]");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmpId");
 
                     b.ToTable("Payrolls");
                 });
@@ -421,18 +454,16 @@ namespace Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("PublisherId");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeviceName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PublisherId")
-                        .HasColumnType("int");
 
                     b.Property<string>("PublisherName")
                         .IsRequired()
@@ -442,7 +473,7 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -458,14 +489,14 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<bool>("Absence")
+                    b.Property<bool?>("Absence")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DayDate")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("DayDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("DeviceName")
                         .HasColumnType("nvarchar(max)");
@@ -473,16 +504,18 @@ namespace Persistence.Migrations
                     b.Property<int>("EmpId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("NormalVacation")
+                    b.Property<bool?>("NormalVacation")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("UrgentVacation")
+                    b.Property<bool?>("UrgentVacation")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmpId");
 
                     b.ToTable("Vacations");
                 });
@@ -490,10 +523,29 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Attendence", b =>
                 {
                     b.HasOne("Domain.Entities.Employee", "Employee")
-                        .WithOne("Attendence")
-                        .HasForeignKey("Domain.Entities.Attendence", "EmployeeId")
+                        .WithMany()
+                        .HasForeignKey("EmpId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("Domain.Entities.BannedCustomer", b =>
+                {
+                    b.HasOne("Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Domain.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmpId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
 
                     b.Navigation("Employee");
                 });
@@ -509,7 +561,7 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Publisher", "Publisher")
                         .WithMany()
                         .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Author");
@@ -517,8 +569,31 @@ namespace Persistence.Migrations
                     b.Navigation("Publisher");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Borrow", b =>
+                {
+                    b.HasOne("Domain.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("Domain.Entities.Employee", b =>
                 {
+                    b.HasOne("Domain.Entities.Attendence", "Attendence")
+                        .WithMany()
+                        .HasForeignKey("AttendenceId");
+
                     b.HasOne("Domain.Entities.Payroll", "Payroll")
                         .WithMany()
                         .HasForeignKey("PayrollId");
@@ -527,9 +602,26 @@ namespace Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("VacationId");
 
+                    b.Navigation("Attendence");
+
                     b.Navigation("Payroll");
 
                     b.Navigation("Vacation");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Order", b =>
+                {
+                    b.HasOne("Domain.Entities.Book", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("BookId");
+
+                    b.HasOne("Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("Domain.Entities.OrderBooks", b =>
@@ -551,9 +643,31 @@ namespace Persistence.Migrations
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Employee", b =>
+            modelBuilder.Entity("Domain.Entities.Payroll", b =>
                 {
-                    b.Navigation("Attendence");
+                    b.HasOne("Domain.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmpId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Vacation", b =>
+                {
+                    b.HasOne("Domain.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmpId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Book", b =>
+                {
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

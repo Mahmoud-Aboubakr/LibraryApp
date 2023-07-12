@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Application.DTOs
 {
-    public class Publisher : BaseEntity
+    public class PublisherDto
     {
+        public int Id { get; set; }
         public string PublisherName { get; set; }
-        public string PublisherPhoneNumber { get; set;}
+        public string PublisherPhoneNumber { get; set; }
     }
 }
