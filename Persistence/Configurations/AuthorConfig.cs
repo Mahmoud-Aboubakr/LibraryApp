@@ -21,6 +21,9 @@ namespace Persistence.Configurations
 
             builder
                 .Property(A => A.AuthorProfits).HasColumnType("decimal(18,3)");
+
+            builder
+                .Property(A => A.Id).HasColumnName("AuthorId");
         }
     }
 }

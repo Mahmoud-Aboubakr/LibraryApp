@@ -18,10 +18,14 @@ namespace Persistence.Configurations
                 .Property(O => O.TotalPrice)
                 .HasColumnType("decimal(18,3)");
 
-            //builder
-            //    .HasMany(O => O.OrderBooks)
-            //    .WithOne()
-            //    .HasForeignKey(OB => OB.OrderId);
+            builder
+                 .HasOne(O => O.Customer)
+                 .WithMany()
+                 .HasForeignKey(O => O.CustomerId)
+                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder
+                .Property(O=>O.OrderDate).HasDefaultValue(DateTime.Now);
         }
     }
 }

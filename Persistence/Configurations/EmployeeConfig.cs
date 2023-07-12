@@ -29,6 +29,9 @@ namespace Persistence.Configurations
                .Property(E => E.EmpBasicSalary)
                .IsRequired()
                .HasColumnType("decimal(18,3)");
+
+            builder
+                .Property(E => E.Id).HasColumnName("EmpId");
         }
     }
 }
