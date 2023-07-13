@@ -24,9 +24,14 @@ namespace Application.Mappers
                .ForMember(dest => dest.CustomerName, option => option.MapFrom(src => src.Customer.CustomerName))
                .ForMember(dest => dest.EmpName, option => option.MapFrom(src => src.Employee.EmpName));
 
-            CreateMap<Book, BookDto>()
+            CreateMap<Book, ReadBookDto>()
                .ForMember(dest => dest.AuthorName, option => option.MapFrom(src => src.Author.AuthorName))
-               .ForMember(dest => dest.PublisherName, option => option.MapFrom(src => src.Publisher.PublisherName));
+               .ForMember(dest => dest.PublisherName, option => option.MapFrom(src => src.Publisher.PublisherName))
+               .ReverseMap();
+
+
+            CreateMap<CreateBookDto, Book>().ReverseMap();
+            CreateMap<UpdateBookDto, Book>().ReverseMap();
 
             CreateMap<Borrow, BorrowDto>().ReverseMap();
 

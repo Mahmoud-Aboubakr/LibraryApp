@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace Application.Interfaces
         Task<T> GetByIdAsync(int id);
         Task<T> GetByIdAsyncWithIncludes(int id , Expression<Func<T, object>>[] includes);
         Task<T> FindAsync(Expression<Func<T,bool>> match, Expression<Func<T, object>>[] includes);
+        Task<int> Complete();
         void DeleteAsync(T entity);
         void UpdateAsync(T entity);
         void InsertAsync(T entity);
