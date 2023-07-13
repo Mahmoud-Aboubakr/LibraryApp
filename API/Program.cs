@@ -1,9 +1,13 @@
 using Application.Interfaces;
 using Application.Mappers;
+using Application.Validators;
 using Domain.Entities;
+using Infrastructure.AppServicesContracts;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using Persistence.Repositories;
+using static System.Net.WebRequestMethods;
 
 namespace API
 {
@@ -24,6 +28,8 @@ namespace API
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
             builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+            builder.Services.AddScoped<ISearchBookDataWithDetailService, SearchBookDataWithDetailService>();
+            builder.Services.AddTransient<INumbersValidator, NumbersValidator>();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
           
 

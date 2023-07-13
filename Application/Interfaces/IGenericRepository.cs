@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,15 +23,16 @@ namespace Application.Interfaces
         Task<T> FindAsync(Expression<Func<T,bool>> match, Expression<Func<T, object>>[] includes);
 
         void DeleteByIdAsync(int id);
-        //Task DeleteByIdAsyncWithIncludes(int id , Expression<Func<T, bool>> predicate, Expression<Func<T, object>>[] includes);
 
         void DeleteAllAsync(T entity);
-        //public Task DeleteAllAsyncWithIncludes(/*T entity*/ Expression<Func<T, bool>> predicate, Expression<Func<T, object>>[] includes);
 
         void UpdateAsync(T entity);
-        //void UpdateAsyncWithIncludes (T entity, Expression<Func<T, object>>[] includes);
 
         void InsertAsync(T entity);
-        //void InsertAsyncWithIncludes(T entity, Expression<Func<T, object>>[] includes);
+        public Task<int> Complete();
+
+        public Task<IEnumerable<T>> Search(Expression<Func<T, bool>> container);
+
+        public Task<bool> Exists(int id);
     }
 }

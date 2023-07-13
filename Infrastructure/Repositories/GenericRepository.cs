@@ -28,30 +28,6 @@ namespace Persistence.Repositories
         public void DeleteAllAsync(T entity)
             => _context.Set<T>().Remove(entity);
 
-        //public async Task DeleteAllAsyncWithIncludes(/*T entity*/ Expression<Func<T, bool>> predicate, Expression<Func<T, object>>[] includes)
-        //{
-        //    //var query = _context.Set<T>().AsQueryable();
-        //    //if (includes != null)
-        //    //{
-        //    //    query = includes.Aggregate(query, (current, include) => current.Include(include));
-        //    //}
-        //    //_context.Remove(query);
-
-        //    var query = _context.Set<T>().AsQueryable().Where(predicate);
-       
-        //    foreach (var include in includes)
-        //    {
-        //        query = query.Include(include);
-        //    }
-
-        //    var entities = await query.ToListAsync();
-
-        //    if (entities != null && entities.Any())
-        //    {
-        //        _context.Set<T>().RemoveRange(entities);
-        //    }
-        //}
-
         public void DeleteByIdAsync(int id)
         {
             T existing = _entity.Find(id);
@@ -60,19 +36,6 @@ namespace Persistence.Repositories
                 _entity.Remove(existing);
 
         }
-
-        //public async Task DeleteByIdAsyncWithIncludes(int id, Expression<Func<T, bool>> predicate ,Expression<Func<T, object>>[] includes)
-        //{
-        //    var query = _context.Set<T>().AsQueryable();
-        //    if (includes != null)
-        //    {
-        //        query = includes.Aggregate(query, (current, include) => current.Include(include));
-        //    }
-        //    var entity = await query.FirstOrDefaultAsync(e => e.Id == id);
-
-        //    _context.Set<T>().Remove(entity);
-
-        //}
 
         public Task<T> FindAsync(Expression<Func<T, bool>> match, Expression<Func<T, object>>[] includes)
         {
@@ -130,17 +93,22 @@ namespace Persistence.Repositories
         public void InsertAsync(T entity)
             => _context.Set<T>().Add(entity);
 
-        //public void InsertAsyncWithIncludes(T entity, Expression<Func<T, object>>[] includes)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public void UpdateAsync(T entity)
             => _context.Set<T>().Update(entity);
 
-        //public void UpdateAsyncWithIncludes(T entity, Expression<Func<T, object>>[] includes)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public async Task<int> Complete()
+           => await _context.SaveChangesAsync();
+
+        public async Task<IEnumerable<T>> Search(Expression<Func<T, bool>> container)
+        {
+            return await _context.Set<T>().Where(container).ToListAsync();
+        }
+
+        public async Task<bool>Exists(int id)
+        {
+            return await _context.Set<T>().AnyAsync(a=>a.Id == id);
+        }
+
     }
 }
