@@ -24,6 +24,13 @@ namespace Persistence.Configurations
 
             builder
                 .Property(A => A.Id).HasColumnName("AuthorId");
+
+            //builder
+            //    .Property(A => A.AuthorPhoneNumber)
+            //    .HasColumnType("PhoneNumber")
+            //    .HasMaxLength(20)
+            //    .HasAnnotation("RegularExpression", @"^[0-9]*$")
+            //    .IsRequired();
         }
     }
 }
