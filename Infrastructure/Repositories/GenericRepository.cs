@@ -24,7 +24,7 @@ namespace Persistence.Repositories
             _context = context;
             _entity = _context.Set<T>();
         }
-
+        
         #region GET Methods
         public async Task<List<T>> GetAllAsync()
             => await _context.Set<T>().ToListAsync();
@@ -67,7 +67,6 @@ namespace Persistence.Repositories
         #region FIND Methods
         public Task<T> FindAsync(Expression<Func<T, bool>> match, Expression<Func<T, object>>[] includes)
         {
-
             var query = _context.Set<T>().AsQueryable();
             if (includes != null)
             {
@@ -92,14 +91,16 @@ namespace Persistence.Repositories
            => _context.Set<T>().Remove(entity);
         #endregion   
 
+        public async Task<int> Complete()
+           => await _context.SaveChangesAsync();
+
+        public async Task<bool>Exists(int id)
+        {
+            return await _context.Set<T>().AnyAsync(a=>a.Id == id);
+        }
         public async Task<int> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync();
-        }
-
-        public async Task<bool> Exists(int id)
-        {
-            return await _context.Set<T>().AnyAsync(a => a.Id == id);
         }
     }
 }
