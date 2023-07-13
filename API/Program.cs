@@ -1,6 +1,8 @@
 using Application.Interfaces;
 using Application.Mappers;
+using Application.Validators;
 using Domain.Entities;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using Persistence.Repositories;
@@ -24,6 +26,8 @@ namespace API
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
             builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+            builder.Services.AddTransient<IPhoneNumberValidator, PhoneNumberValidator>();
+            builder.Services.AddScoped<ISearchAuthorDataService, SearchAuthorDataService>();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
           
 

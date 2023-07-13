@@ -11,7 +11,6 @@
     <Folder Include="CommandsAndQueries\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Behaviors\" />
-    <Folder Include="Validators\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +21,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="NPoco" Version="5.7.1" />
   </ItemGroup>
 
   <ItemGroup>
