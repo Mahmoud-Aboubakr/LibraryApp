@@ -30,6 +30,8 @@ namespace API
             builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
             builder.Services.AddScoped<ISearchBookDataWithDetailService, SearchBookDataWithDetailService>();
             builder.Services.AddTransient<INumbersValidator, NumbersValidator>();
+            builder.Services.AddTransient<IPhoneNumberValidator, PhoneNumberValidator>();
+            builder.Services.AddScoped<ISearchAuthorDataService, SearchAuthorDataService>();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
           
 

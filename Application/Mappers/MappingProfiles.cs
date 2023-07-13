@@ -13,8 +13,9 @@ namespace Application.Mappers
     {
         public MappingProfiles()
         {
-            CreateMap<Author, AuthorDto>();//get data for user 
-            CreateMap<AuthorDto, Author>();//get data for database
+            CreateMap<Author, ReadAuthorDto>();
+
+            CreateMap<Author, CreateAuthorDto>();
 
             CreateMap<Attendence, AttendanceDto>()
                 .ForMember(dest => dest.EmpName, option => option.MapFrom(src => src.Employee.EmpName));
