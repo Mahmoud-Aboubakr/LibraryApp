@@ -74,6 +74,10 @@ namespace Persistence.Repositories
             }
             return query.FirstOrDefaultAsync(match);
         }
+        public async Task<bool> Exists(int id)
+        {
+            return await _context.Set<T>().AnyAsync(x => x.Id == id);
+        }
         #endregion
 
         #region INSERT Methods
@@ -89,18 +93,16 @@ namespace Persistence.Repositories
         #region DELETE Methods
         public void DeleteAsync(T entity)
            => _context.Set<T>().Remove(entity);
-        #endregion   
+        #endregion
 
+        #region Save Changes Method
         public async Task<int> Complete()
            => await _context.SaveChangesAsync();
-
-        public async Task<bool>Exists(int id)
-        {
-            return await _context.Set<T>().AnyAsync(a=>a.Id == id);
-        }
+       
         public async Task<int> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync();
         }
+        #endregion
     }
 }

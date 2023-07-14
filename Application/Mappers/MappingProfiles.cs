@@ -1,11 +1,6 @@
 ﻿using Application.DTOs;
 using AutoMapper;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Mappers
 {
@@ -32,6 +27,7 @@ namespace Application.Mappers
 
             CreateMap<CreateBookDto, Book>().ReverseMap();
             CreateMap<UpdateBookDto, Book>().ReverseMap();
+            CreateMap<ReadBookDto, Book>();
 
             CreateMap<Borrow, BorrowDto>().ReverseMap();
 

@@ -3,22 +3,15 @@ using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
-using Persistence.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.AppServices
 {
     public class SearchAuthorDataService : ISearchAuthorDataService
     {
         private readonly LibraryDbContext _context;
         private readonly IMapper _mapper;
 
-        public SearchAuthorDataService(LibraryDbContext context,IMapper mapper)
+        public SearchAuthorDataService(LibraryDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -41,7 +34,7 @@ namespace Infrastructure.Repositories
                 query = query.Where(t => t.AuthorPhoneNumber.Contains(phone));
             }
             var result = await query.ToListAsync();
-            return _mapper.Map<IReadOnlyList<Author>,IReadOnlyList<ReadAuthorDto>>(result);
+            return _mapper.Map<IReadOnlyList<Author>, IReadOnlyList<ReadAuthorDto>>(result);
         }
     }
 

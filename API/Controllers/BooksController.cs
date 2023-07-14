@@ -1,19 +1,10 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
-using Application.Validators;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.AppServicesContracts;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
-using Persistence.Context;
-using Persistence.Repositories;
 using System.Linq.Expressions;
-using System.Net;
-using System.Runtime.CompilerServices;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace API.Controllers
 {
@@ -25,20 +16,19 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly ISearchBookDataWithDetailService _searchBookDataWithDetailService;
         private readonly INumbersValidator _numbersValidator;
-        private readonly LibraryDbContext context;
+        private readonly ILogger<BooksController> _logger;
 
         public BooksController(IGenericRepository<Book> bookRepo,
                                IMapper mapper,
                                ISearchBookDataWithDetailService searchBookDataWithDetailService,
                                INumbersValidator numbersValidator,
-                               LibraryDbContext context
-                               )
+                               ILogger<BooksController> logger)
         {
             _bookRepo = bookRepo;
             _mapper = mapper;
             _searchBookDataWithDetailService = searchBookDataWithDetailService;
             _numbersValidator = numbersValidator;
-            this.context = context;
+            _logger = logger;
         }
 
         [HttpGet("GetAllBooksAsync")]
@@ -104,12 +94,12 @@ namespace API.Controllers
         }
 
         [HttpDelete]
-        public async Task DeleteBookAsync(int id)
+        public async Task DeleteBookAsync(ReadBookDto readBookDto)
         {
-            _bookRepo.DeleteByIdAsync(id);
-            await _bookRepo.Complete();
+            var book = _mapper.Map<ReadBookDto, Book>(readBookDto);
+            _bookRepo.DeleteAsync(book);
+            await _bookRepo.SaveChangesAsync();
         }
-
 
         [HttpPut("Update")]
         public async Task<ActionResult> UpdateBookAsync(UpdateBookDto updateBookDto)
@@ -121,14 +111,11 @@ namespace API.Controllers
             return Ok(_mapper.Map<Book, UpdateBookDto>(book));
         }
 
-
-
         [HttpGet("SearchByCriteria")]
         public async Task<ActionResult<IReadOnlyList<ReadBookDto>>> SearchByCriteria(string? bookTitle = null,string? authorName = null,string? publisherName = null)
         {
             var result = await _searchBookDataWithDetailService.SearchBookDataWithDetail(bookTitle,authorName,publisherName);
             return Ok(result);
         }
-
     }
 }
