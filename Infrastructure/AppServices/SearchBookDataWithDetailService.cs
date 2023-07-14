@@ -1,15 +1,9 @@
 ﻿using Application.DTOs;
-using Domain.Entities;
 using Infrastructure.AppServicesContracts;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.AppServices
 {
     public class SearchBookDataWithDetailService : ISearchBookDataWithDetailService
     {

@@ -1,13 +1,8 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
-using Application.Validators;
 using AutoMapper;
-using AutoMapper.Execution;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Persistence.Context;
-using System.Collections.Generic;
 
 namespace API.Controllers
 {
@@ -19,17 +14,19 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
         private readonly ISearchAuthorDataService _searchAuthorDataService;
-        
+        private readonly ILogger<AuthorsController> _logger;
 
         public AuthorsController(IGenericRepository<Author> authorRepo,
                                   IMapper mapper,
                                   IPhoneNumberValidator phoneNumberValidator,
-                                  ISearchAuthorDataService searchAuthorDataService)
+                                  ISearchAuthorDataService searchAuthorDataService,
+                                  ILogger<AuthorsController> logger)
         {
             _authorRepo = authorRepo;
             _mapper = mapper;
             _phoneNumberValidator = phoneNumberValidator;
             _searchAuthorDataService = searchAuthorDataService;
+            _logger = logger;
         }
 
 
