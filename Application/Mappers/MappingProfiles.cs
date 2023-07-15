@@ -9,8 +9,10 @@ namespace Application.Mappers
         public MappingProfiles()
         {
             CreateMap<Author, ReadAuthorDto>();
+            CreateMap<ReadAuthorDto, Author>();
 
             CreateMap<Author, CreateAuthorDto>();
+            CreateMap<CreateAuthorDto, Author>();
 
             CreateMap<Attendence, AttendanceDto>()
                 .ForMember(dest => dest.EmpName, option => option.MapFrom(src => src.Employee.EmpName));
