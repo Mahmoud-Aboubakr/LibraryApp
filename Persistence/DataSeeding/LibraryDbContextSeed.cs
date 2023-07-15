@@ -42,12 +42,12 @@ namespace Persistence.Data
             }
 
 
-            //if (!context.BannedCustomers.Any())
-            //{
-            //    var bannedCustomersData = File.ReadAllText("../Persistence/DataSeeding/BannedCustomers.json");
-            //    var bannedCustomers = JsonSerializer.Deserialize<List<BannedCustomer>>(bannedCustomersData);
-            //    context.BannedCustomers.AddRange(bannedCustomers);
-            //}
+            if (!context.BannedCustomers.Any())
+            {
+                var bannedCustomersData = File.ReadAllText("../Persistence/DataSeeding/BannedCustomers.json");
+                var bannedCustomers = JsonSerializer.Deserialize<List<BannedCustomer>>(bannedCustomersData);
+                context.BannedCustomers.AddRange(bannedCustomers);
+            }
 
 
             if (!context.Orders.Any())

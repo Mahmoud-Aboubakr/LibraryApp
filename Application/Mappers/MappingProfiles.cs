@@ -15,9 +15,13 @@ namespace Application.Mappers
             CreateMap<Attendence, AttendanceDto>()
                 .ForMember(dest => dest.EmpName, option => option.MapFrom(src => src.Employee.EmpName));
 
-            CreateMap<BannedCustomer, BannedCustomerDto>()
+            CreateMap<BannedCustomer, ReadBannedCustomerDto>()
                .ForMember(dest => dest.CustomerName, option => option.MapFrom(src => src.Customer.CustomerName))
                .ForMember(dest => dest.EmpName, option => option.MapFrom(src => src.Employee.EmpName));
+            CreateMap<ReadBannedCustomerDto, BannedCustomer>();
+
+            CreateMap<CreateBannedCustomerDto, BannedCustomer>().ReverseMap();
+
 
             CreateMap<Book, ReadBookDto>()
                .ForMember(dest => dest.AuthorName, option => option.MapFrom(src => src.Author.AuthorName))
@@ -31,7 +35,8 @@ namespace Application.Mappers
 
             CreateMap<Borrow, BorrowDto>().ReverseMap();
 
-            CreateMap<Customer, ReadCustomerDto>();
+            CreateMap<Customer, ReadCustomerDto>().ReverseMap();
+            CreateMap<CreateCustomerDto, Customer>().ReverseMap();
 
             CreateMap<Employee, EmployeeDto>();
 

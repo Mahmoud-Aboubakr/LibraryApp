@@ -36,6 +36,18 @@ namespace API.Controllers
             return Ok(_mapper.Map<IReadOnlyList<Customer>, IReadOnlyList<ReadCustomerDto>>(customers));
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetCustomerByIdAsync(int id)
+        {
+            if (await _customerRepo.Exists(id))
+            {
+                var author = await _customerRepo.GetByIdAsync(id);
+                return Ok(_mapper.Map<Customer, ReadCustomerDto>(author));
+            }
+
+            return BadRequest(new { Detail = $"This is invalid Id" });
+        }
+
         [HttpPost("Insert")]
         public async Task<ActionResult> InsertCustomerAsync(CreateCustomerDto createCustomerDto)
         {
@@ -55,13 +67,13 @@ namespace API.Controllers
 
 
         [HttpPut("Update")]
-        public async Task<ActionResult> UpdateCustomerAsync(CreateCustomerDto createCustomerDto)
+        public async Task<ActionResult> UpdateCustomerAsync(ReadCustomerDto readCustomerDto)
         {
-            var customer = _mapper.Map<CreateCustomerDto, Customer>(createCustomerDto);
+            var customer = _mapper.Map<ReadCustomerDto, Customer>(readCustomerDto);
             _customerRepo.UpdateAsync(customer);
             await _customerRepo.SaveChangesAsync();
 
-            return Ok(_mapper.Map<Customer, CreateCustomerDto>(customer));
+            return Ok(_mapper.Map<Customer, ReadCustomerDto>(customer));
         }
 
         [HttpGet("Search")]
