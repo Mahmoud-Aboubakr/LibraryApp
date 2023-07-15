@@ -67,7 +67,7 @@ namespace API.Controllers
         {        
             var exists = await _bookRepo.Exists(id);
 
-            if (!exists)
+            if (exists)
             {
                 var book = await _bookRepo.GetByIdAsyncWithIncludes(id, new Expression<Func<Book, object>>[] { x => x.Author, x => x.Publisher });
 
