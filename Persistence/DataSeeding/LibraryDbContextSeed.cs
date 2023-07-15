@@ -12,7 +12,8 @@ namespace Persistence.Data
     public class LibraryDbContextSeed
     {
         public static async Task SeedAsync(LibraryDbContext context)
-        {
+        {   
+            //test
             if(!context.Authors.Any())
             {
                 var authorsData = File.ReadAllText("../Persistence/DataSeeding/Authors.json");
