@@ -1,0 +1,92 @@
+[
+    {
+        "CustomerId": 0,
+        "CustomerName": "Sara Rafaat",
+        "CustomerPhoneNumber": "01523548524",
+        "CustomerAddress": "SidiGaber,Alexandria",
+        "DeviceName": "DESKTOP-PU165U4",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "CustomerId": 0,
+        "CustomerName": "Ahmed Khaled",
+        "CustomerPhoneNumber": "01236445187",
+        "CustomerAddress": "Sporting,Alexandria",
+        "DeviceName": "DESKTOP-PU165U4",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "CustomerId": 0,
+        "CustomerName": "Samir Ali",
+        "CustomerPhoneNumber": "01124598521",
+        "CustomerAddress": "RamlStation,Alexandria",
+        "DeviceName": "DESKTOP-PU165U4",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "CustomerId": 0,
+        "CustomerName": "Tasneem Mostafa",
+        "CustomerPhoneNumber": "01254623185",
+        "CustomerAddress": "Shatby,Alexandria",
+        "DeviceName": "DESKTOP-PU165U4",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "CustomerId": 0,
+        "CustomerName": "Noura Ahmed",
+        "CustomerPhoneNumber": "01252364571",
+        "CustomerAddress": "Shatby,Alexandria",
+        "DeviceName": "DESKTOP-PU165U4",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "CustomerId": 0,
+        "CustomerName": "Adham Salah",
+        "CustomerPhoneNumber": "01562348561",
+        "CustomerAddress": "Smouha,Alexandria",
+        "DeviceName": "DESKTOP-PU165U4",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "CustomerId": 0,
+        "CustomerName": "Ramy Tamer",
+        "CustomerPhoneNumber": "01125348126",
+        "CustomerAddress": "MoharamBek,Alexandria",
+        "DeviceName": "DESKTOP-PU165U4",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "CustomerId": 0,
+        "CustomerName": "Rania Hany",
+        "CustomerPhoneNumber": "01245684652",
+        "CustomerAddress": "Attarin,Alexandria",
+        "DeviceName": "DESKTOP-PU165U4",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "CustomerId": 0,
+        "CustomerName": "Reham Shawkt",
+        "CustomerPhoneNumber": "01545682491",
+        "CustomerAddress": "Gleem,Alexandria",
+        "DeviceName": "DESKTOP-PU165U4",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "CustomerId": 0,
+        "CustomerName": "Amira Gamal",
+        "CustomerPhoneNumber": "01236548253",
+        "CustomerAddress": "Sporting,Alexandria",
+        "DeviceName": "DESKTOP-PU165U4",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    }
+]
