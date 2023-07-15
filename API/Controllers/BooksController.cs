@@ -88,7 +88,7 @@ namespace API.Controllers
                 return BadRequest(new { Detail = $"This is invalid price {insertBookDto.Price}" });
             var book = _mapper.Map<CreateBookDto, Book>(insertBookDto);
             _bookRepo.InsertAsync(book);
-            await _bookRepo.Complete();
+            await _bookRepo.SaveChangesAsync();
 
             return Ok(_mapper.Map<Book, CreateBookDto>(book));
         }
@@ -106,7 +106,7 @@ namespace API.Controllers
         {
             var book = _mapper.Map<UpdateBookDto, Book>(updateBookDto);
             _bookRepo.UpdateAsync(book);
-            await _bookRepo.Complete();
+            await _bookRepo.SaveChangesAsync();
 
             return Ok(_mapper.Map<Book, UpdateBookDto>(book));
         }

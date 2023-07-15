@@ -1,0 +1,26 @@
+[
+    {
+        "CustomerId": 8,
+        "BanDate": "2023-07-14T15:35:12.141Z",
+        "EmpId": 1,
+        "DeviceName": "DESKTOP-PU165U4",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "CustomerId": 9,
+        "BanDate": "2023-07-15T10:20:05.141Z",
+        "EmpId": 1,
+        "DeviceName": "DESKTOP-PU165U4",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "CustomerId": 10,
+        "BanDate": "2023-07-14T11:20:05.141Z",
+        "EmpId": 1,
+        "DeviceName": "DESKTOP-PU165U4",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    }
+]

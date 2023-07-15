@@ -31,7 +31,7 @@ namespace Application.Mappers
 
             CreateMap<Borrow, BorrowDto>().ReverseMap();
 
-            CreateMap<Customer, CustomerDto>();
+            CreateMap<Customer, ReadCustomerDto>();
 
             CreateMap<Employee, EmployeeDto>();
 

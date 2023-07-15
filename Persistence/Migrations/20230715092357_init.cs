@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Persistence.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -63,6 +63,30 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    OrderId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 7, 15, 12, 23, 57, 405, DateTimeKind.Local).AddTicks(7694)),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,3)", nullable: false),
+                    Ordertype = table.Column<bool>(type: "bit", nullable: false),
+                    DeviceName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_Orders_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Books",
                 columns: table => new
                 {
@@ -94,33 +118,27 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "BookOrder",
                 columns: table => new
                 {
-                    OrderId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 7, 14, 10, 50, 4, 512, DateTimeKind.Local).AddTicks(342)),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,3)", nullable: false),
-                    Ordertype = table.Column<bool>(type: "bit", nullable: false),
-                    BookId = table.Column<int>(type: "int", nullable: true),
-                    DeviceName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    BooksId = table.Column<int>(type: "int", nullable: false),
+                    OrdersId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.PrimaryKey("PK_BookOrder", x => new { x.BooksId, x.OrdersId });
                     table.ForeignKey(
-                        name: "FK_Orders_Books_BookId",
-                        column: x => x.BookId,
+                        name: "FK_BookOrder_Books_BooksId",
+                        column: x => x.BooksId,
                         principalTable: "Books",
-                        principalColumn: "BookId");
+                        principalColumn: "BookId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Orders_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "CustomerId");
+                        name: "FK_BookOrder_Orders_OrdersId",
+                        column: x => x.OrdersId,
+                        principalTable: "Orders",
+                        principalColumn: "OrderId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -131,8 +149,8 @@ namespace Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
                     BookId = table.Column<int>(type: "int", nullable: false),
-                    BorrowDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 7, 14, 10, 50, 4, 511, DateTimeKind.Local).AddTicks(8396)),
-                    ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 7, 17, 10, 50, 4, 511, DateTimeKind.Local).AddTicks(8595)),
+                    BorrowDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 7, 15, 12, 23, 57, 405, DateTimeKind.Local).AddTicks(23)),
+                    ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 7, 18, 12, 23, 57, 405, DateTimeKind.Local).AddTicks(451)),
                     DeviceName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -193,7 +211,7 @@ namespace Persistence.Migrations
                     EmpArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EmpLeavingTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Permission = table.Column<int>(type: "int", nullable: true),
-                    DayDate = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValue: new DateTime(2023, 7, 14, 10, 50, 4, 511, DateTimeKind.Local).AddTicks(3060)),
+                    DayDate = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValue: new DateTime(2023, 7, 15, 12, 23, 57, 403, DateTimeKind.Local).AddTicks(5562)),
                     Month = table.Column<byte>(type: "tinyint", nullable: true),
                     DeviceName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -211,7 +229,7 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
-                    BanDate = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValue: new DateTime(2023, 7, 14, 10, 50, 4, 511, DateTimeKind.Local).AddTicks(6109)),
+                    BanDate = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValue: new DateTime(2023, 7, 15, 12, 23, 57, 404, DateTimeKind.Local).AddTicks(2348)),
                     EmpId = table.Column<int>(type: "int", nullable: false),
                     DeviceName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -326,6 +344,11 @@ namespace Persistence.Migrations
                 column: "EmpId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BookOrder_OrdersId",
+                table: "BookOrder",
+                column: "OrdersId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Books_AuthorId",
                 table: "Books",
                 column: "AuthorId");
@@ -359,11 +382,6 @@ namespace Persistence.Migrations
                 name: "IX_Employees_VacationId",
                 table: "Employees",
                 column: "VacationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_BookId",
-                table: "Orders",
-                column: "BookId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
@@ -437,25 +455,28 @@ namespace Persistence.Migrations
                 name: "BannedCustomers");
 
             migrationBuilder.DropTable(
+                name: "BookOrder");
+
+            migrationBuilder.DropTable(
                 name: "Borrows");
 
             migrationBuilder.DropTable(
                 name: "OrdersBooks");
 
             migrationBuilder.DropTable(
-                name: "Orders");
-
-            migrationBuilder.DropTable(
                 name: "Books");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Authors");
 
             migrationBuilder.DropTable(
                 name: "Publishers");
+
+            migrationBuilder.DropTable(
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Employees");
