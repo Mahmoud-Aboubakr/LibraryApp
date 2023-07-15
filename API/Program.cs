@@ -2,6 +2,7 @@ using Application.Interfaces;
 using Application.Validators;
 using Infrastructure.AppServices;
 using Infrastructure.AppServicesContracts;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using Persistence.Data;
@@ -17,11 +18,13 @@ builder.Services.AddDbContext<LibraryDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped(typeof(IGenericBaseRepository<>), typeof(GenericBaseRepository<>));
 builder.Services.AddScoped<ISearchBookDataWithDetailService, SearchBookDataWithDetailService>();
 builder.Services.AddTransient<INumbersValidator, NumbersValidator>();
 builder.Services.AddTransient<IPhoneNumberValidator, PhoneNumberValidator>();
 builder.Services.AddScoped<ISearchAuthorDataService, SearchAuthorDataService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();

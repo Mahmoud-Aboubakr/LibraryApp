@@ -26,8 +26,6 @@ namespace Persistence.Repositories
         }
         
         #region GET Methods
-        public async Task<List<T>> GetAllAsync()
-            => await _context.Set<T>().ToListAsync();
         public async Task<IReadOnlyList<T>> GetAllListAsync()
             => await _context.Set<T>().ToListAsync();
         public async Task<IReadOnlyList<T>> GetAllListWithIncludesAsync(Expression<Func<T, object>>[] includes)
@@ -47,10 +45,6 @@ namespace Persistence.Repositories
                 query = includes.Aggregate(query, (current, include) => current.Include(include));
             }
             return await query.ToListAsync();
-        }
-        public async Task<T> GetByIdAsync(int id)
-        {
-            return await _context.Set<T>().FindAsync(id);
         }
         public async Task<T> GetByIdAsyncWithIncludes(int id, Expression<Func<T, object>>[] includes)
         {
@@ -74,25 +68,6 @@ namespace Persistence.Repositories
             }
             return query.FirstOrDefaultAsync(match);
         }
-        public async Task<bool> Exists(int id)
-        {
-            return await _context.Set<T>().AnyAsync(x => x.Id == id);
-        }
-        #endregion
-
-        #region INSERT Methods
-        public void InsertAsync(T entity)
-           => _context.Set<T>().Add(entity);
-        #endregion
-
-        #region UPDATE Methods
-        public void UpdateAsync(T entity)
-           => _context.Set<T>().Update(entity);
-        #endregion
-
-        #region DELETE Methods
-        public void DeleteAsync(T entity)
-           => _context.Set<T>().Remove(entity);
         #endregion
 
         #region Save Changes Method
