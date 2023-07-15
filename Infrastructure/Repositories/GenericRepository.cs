@@ -24,73 +24,12 @@ namespace Persistence.Repositories
             _context = context;
             _entity = _context.Set<T>();
         }
-
-        public void DeleteAllAsync(T entity)
-            => _context.Set<T>().Remove(entity);
-
-        //public async Task DeleteAllAsyncWithIncludes(/*T entity*/ Expression<Func<T, bool>> predicate, Expression<Func<T, object>>[] includes)
-        //{
-        //    //var query = _context.Set<T>().AsQueryable();
-        //    //if (includes != null)
-        //    //{
-        //    //    query = includes.Aggregate(query, (current, include) => current.Include(include));
-        //    //}
-        //    //_context.Remove(query);
-
-        //    var query = _context.Set<T>().AsQueryable().Where(predicate);
-       
-        //    foreach (var include in includes)
-        //    {
-        //        query = query.Include(include);
-        //    }
-
-        //    var entities = await query.ToListAsync();
-
-        //    if (entities != null && entities.Any())
-        //    {
-        //        _context.Set<T>().RemoveRange(entities);
-        //    }
-        //}
-
-        public void DeleteByIdAsync(int id)
-        {
-            T existing = _entity.Find(id);
-
-            if (existing != null)
-                _entity.Remove(existing);
-
-        }
-
-        //public async Task DeleteByIdAsyncWithIncludes(int id, Expression<Func<T, bool>> predicate ,Expression<Func<T, object>>[] includes)
-        //{
-        //    var query = _context.Set<T>().AsQueryable();
-        //    if (includes != null)
-        //    {
-        //        query = includes.Aggregate(query, (current, include) => current.Include(include));
-        //    }
-        //    var entity = await query.FirstOrDefaultAsync(e => e.Id == id);
-
-        //    _context.Set<T>().Remove(entity);
-
-        //}
-
-        public Task<T> FindAsync(Expression<Func<T, bool>> match, Expression<Func<T, object>>[] includes)
-        {
-
-            var query = _context.Set<T>().AsQueryable();
-            if (includes != null)
-            {
-                query = includes.Aggregate(query, (current, include) => current.Include(include));
-            }
-            return query.FirstOrDefaultAsync(match);
-        }
-
+        
+        #region GET Methods
         public async Task<List<T>> GetAllAsync()
             => await _context.Set<T>().ToListAsync();
-
         public async Task<IReadOnlyList<T>> GetAllListAsync()
             => await _context.Set<T>().ToListAsync();
-
         public async Task<IReadOnlyList<T>> GetAllListWithIncludesAsync(Expression<Func<T, object>>[] includes)
         {
             var query = _context.Set<T>().AsQueryable();
@@ -100,7 +39,6 @@ namespace Persistence.Repositories
             }
             return await query.ToListAsync();
         }
-
         public async Task<List<T>> GetAllWithIncludesAsync(Expression<Func<T, object>>[] includes)
         {
             var query = _context.Set<T>().AsQueryable();
@@ -110,12 +48,10 @@ namespace Persistence.Repositories
             }
             return await query.ToListAsync();
         }
-
         public async Task<T> GetByIdAsync(int id)
         {
             return await _context.Set<T>().FindAsync(id);
         }
-
         public async Task<T> GetByIdAsyncWithIncludes(int id, Expression<Func<T, object>>[] includes)
         {
             var query = _context.Set<T>().AsQueryable();
@@ -126,21 +62,47 @@ namespace Persistence.Repositories
 
             return await query.FirstOrDefaultAsync(e => e.Id == id);
         }
+        #endregion
 
+        #region FIND Methods
+        public Task<T> FindAsync(Expression<Func<T, bool>> match, Expression<Func<T, object>>[] includes)
+        {
+            var query = _context.Set<T>().AsQueryable();
+            if (includes != null)
+            {
+                query = includes.Aggregate(query, (current, include) => current.Include(include));
+            }
+            return query.FirstOrDefaultAsync(match);
+        }
+        public async Task<bool> Exists(int id)
+        {
+            return await _context.Set<T>().AnyAsync(x => x.Id == id);
+        }
+        #endregion
+
+        #region INSERT Methods
         public void InsertAsync(T entity)
-            => _context.Set<T>().Add(entity);
+           => _context.Set<T>().Add(entity);
+        #endregion
 
-        //public void InsertAsyncWithIncludes(T entity, Expression<Func<T, object>>[] includes)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
+        #region UPDATE Methods
         public void UpdateAsync(T entity)
-            => _context.Set<T>().Update(entity);
+           => _context.Set<T>().Update(entity);
+        #endregion
 
-        //public void UpdateAsyncWithIncludes(T entity, Expression<Func<T, object>>[] includes)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        #region DELETE Methods
+        public void DeleteAsync(T entity)
+           => _context.Set<T>().Remove(entity);
+        #endregion
+
+        #region Save Changes Method
+        public async Task<int> Complete()
+           => await _context.SaveChangesAsync();
+       
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+        #endregion
     }
 }

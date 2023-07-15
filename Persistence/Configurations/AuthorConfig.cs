@@ -1,11 +1,7 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Persistence.Configurations
 {
@@ -24,6 +20,13 @@ namespace Persistence.Configurations
 
             builder
                 .Property(A => A.Id).HasColumnName("AuthorId");
+
+            //builder
+            //    .Property(A => A.AuthorPhoneNumber)
+            //    .HasColumnType("PhoneNumber")
+            //    .HasMaxLength(20)
+            //    .HasAnnotation("RegularExpression", @"^[0-9]*$")
+            //    .IsRequired();
         }
     }
 }

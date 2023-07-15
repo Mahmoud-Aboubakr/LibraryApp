@@ -1,0 +1,83 @@
+[
+  {
+    "AuthorId": 0,
+    "AuthorName": "Mahmoud Alsaeid",
+    "AuthorPhoneNumber": "01006209613",
+    "AuthorProfits": 200,
+    "DeviceName": "DESKTOP-9RLKC8L",
+    "CreatedDate": null,
+    "UpdatedDate": null
+  },
+  {
+    "AuthorId": 0,
+    "AuthorName": "Rawan Aldamanhory",
+    "AuthorPhoneNumber": "01006449613",
+    "AuthorProfits": null,
+    "DeviceName": "DESKTOP-9RLKC8L",
+    "CreatedDate": null,
+    "UpdatedDate": null
+  },
+  {
+    "AuthorId": 0,
+    "AuthorName": "Rita Rawhy",
+    "AuthorPhoneNumber": "01006209782",
+    "AuthorProfits": 100,
+    "DeviceName": "DESKTOP-9RLKC8L",
+    "CreatedDate": null,
+    "UpdatedDate": null
+  },
+  {
+    "AuthorId": 0,
+    "AuthorName": "Ali Kamal",
+    "AuthorPhoneNumber": "01001286313",
+    "AuthorProfits": 120,
+    "DeviceName": "DESKTOP-9RLKC8L",
+    "CreatedDate": null,
+    "UpdatedDate": null
+  },
+  {
+    "AuthorId": 0,
+    "AuthorName": "Emad Ahmed",
+    "AuthorPhoneNumber": "01006209111",
+    "AuthorProfits": 560,
+    "DeviceName": "DESKTOP-9RLKC8L",
+    "CreatedDate": null,
+    "UpdatedDate": null
+  },
+  {
+    "AuthorId": 0,
+    "AuthorName": "Yousof Ahmed",
+    "AuthorPhoneNumber": "01006449111",
+    "AuthorProfits": null,
+    "DeviceName": "DESKTOP-9RLKC8L",
+    "CreatedDate": null,
+    "UpdatedDate": null
+  },
+  {
+    "AuthorId": 0,
+    "AuthorName": "Yasmin Eltokhy",
+    "AuthorPhoneNumber": "01006209111",
+    "AuthorProfits": 240,
+    "DeviceName": "DESKTOP-9RLKC8L",
+    "CreatedDate": null,
+    "UpdatedDate": null
+  },
+  {
+    "AuthorId": 0,
+    "AuthorName": "Mohamed Ashraf",
+    "AuthorPhoneNumber": "01116209111",
+    "AuthorProfits": null,
+    "DeviceName": "DESKTOP-9RLKC8L",
+    "CreatedDate": null,
+    "UpdatedDate": null
+  },
+  {
+    "AuthorId": 0,
+    "AuthorName": "Nadin Fouad",
+    "AuthorPhoneNumber": "01047209111",
+    "AuthorProfits": 222,
+    "DeviceName": "DESKTOP-9RLKC8L",
+    "CreatedDate": null,
+    "UpdatedDate": null
+  }
+]

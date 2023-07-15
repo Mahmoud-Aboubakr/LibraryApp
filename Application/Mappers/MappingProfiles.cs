@@ -1,11 +1,6 @@
 ﻿using Application.DTOs;
 using AutoMapper;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Mappers
 {
@@ -13,8 +8,9 @@ namespace Application.Mappers
     {
         public MappingProfiles()
         {
-            CreateMap<Author, AuthorDto>();//get data for user 
-            CreateMap<AuthorDto, Author>();//get data for database
+            CreateMap<Author, ReadAuthorDto>();
+
+            CreateMap<Author, CreateAuthorDto>();
 
             CreateMap<Attendence, AttendanceDto>()
                 .ForMember(dest => dest.EmpName, option => option.MapFrom(src => src.Employee.EmpName));
@@ -23,9 +19,15 @@ namespace Application.Mappers
                .ForMember(dest => dest.CustomerName, option => option.MapFrom(src => src.Customer.CustomerName))
                .ForMember(dest => dest.EmpName, option => option.MapFrom(src => src.Employee.EmpName));
 
-            CreateMap<Book, BookDto>()
-               .ForMember(dest => dest.AuthorName, option => option.MapFrom(src => src.Author.AuthorName));
-               //.ForMember(dest => dest.PublisherName, option => option.MapFrom(src => src.Publisher.PublisherName));
+            CreateMap<Book, ReadBookDto>()
+               .ForMember(dest => dest.AuthorName, option => option.MapFrom(src => src.Author.AuthorName))
+               .ForMember(dest => dest.PublisherName, option => option.MapFrom(src => src.Publisher.PublisherName))
+               .ReverseMap();
+
+
+            CreateMap<CreateBookDto, Book>().ReverseMap();
+            CreateMap<UpdateBookDto, Book>().ReverseMap();
+            CreateMap<ReadBookDto, Book>();
 
             CreateMap<Borrow, BorrowDto>().ReverseMap();
 
