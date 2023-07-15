@@ -1,0 +1,87 @@
+[
+    {
+        "Id": 0,
+        "EmpId": 1,
+        "SalaryDate": "2023-07-01T00:00:00.000Z",
+        "BasicSalary": 6000,
+        "Bonus": 100,
+        "Deduct": 0,
+        "TotalSalary": 6100,
+        "DeviceName": "REWAN-LAPTOP",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    { 
+        "Id": 0,
+        "EmpId": 2,
+        "SalaryDate": "2023-07-01T00:00:00.000Z",
+        "BasicSalary": 6000,
+        "Bonus": 0,
+        "Deduct": 0,
+        "TotalSalary": 6000,
+        "DeviceName": "REWAN-LAPTOP",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "Id": 0,
+        "EmpId": 3,
+        "SalaryDate": "2023-07-01T00:00:00.000Z",
+        "BasicSalary": 8000,
+        "Bonus": 0,
+        "Deduct": 0,
+        "TotalSalary": 8000,
+        "DeviceName": "REWAN-LAPTOP",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "Id": 0,
+        "EmpId": 4,
+        "SalaryDate": "2023-07-01T00:00:00.000Z",
+        "BasicSalary": 3000,
+        "Bonus": 0,
+        "Deduct": 100,
+        "TotalSalary": 2900,
+        "DeviceName": "REWAN-LAPTOP",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "Id": 0,
+        "EmpId": 5,
+        "SalaryDate": "2023-07-01T00:00:00.000Z",
+        "BasicSalary": 3000,
+        "Bonus": 0,
+        "Deduct": 0,
+        "TotalSalary": 3000,
+        "DeviceName": "REWAN-LAPTOP",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "Id": 0,
+        "EmpId": 6,
+        "SalaryDate": "2023-07-01T00:00:00.000Z",
+        "BasicSalary": 4000,
+        "Bonus": 100,
+        "Deduct": 0,
+        "TotalSalary": 4100,
+        "DeviceName": "REWAN-LAPTOP",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "Id": 0,
+        "EmpId": 7,
+        "SalaryDate": "2023-07-01T00:00:00.000Z",
+        "BasicSalary": 4000,
+        "Bonus": 0,
+        "Deduct": 0,
+        "TotalSalary": 4000,
+        "DeviceName": "REWAN-LAPTOP",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    }
+
+]
