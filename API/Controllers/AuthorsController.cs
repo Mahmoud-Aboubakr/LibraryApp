@@ -11,19 +11,17 @@ namespace API.Controllers
 
     public class AuthorsController : ControllerBase
     {
-        //public readonly IAuthorService _authorService;
-        //private readonly IGenericBaseRepository<Author> _authorRepo;
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
         private readonly ISearchAuthorDataService _searchAuthorDataService;
-        private readonly ILogger<AuthorsController> logger;
+        private readonly ILogger<AuthorsController> _logger;
 
         public AuthorsController(IUnitOfWork uof,
             IMapper mapper,
             IPhoneNumberValidator phoneNumberValidator,
             ISearchAuthorDataService searchAuthorDataService,
-            ILogger<AuthorsController> _logger)
+            ILogger<AuthorsController> logger)
         {
             _uof = uof;
             _mapper = mapper;
@@ -32,27 +30,24 @@ namespace API.Controllers
             _logger = logger;
         }
 
-
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadAuthorDto>>> GetAllAuthorsAsync()
         {
-            var authors = await _uof.Authors.GetAllAsync();
+            var authors = await _uof.GetRepository<Author>().GetAllAsync();
             return Ok(_mapper.Map<IReadOnlyList<Author>, IReadOnlyList<ReadAuthorDto>>(authors));
         }
-
 
         [HttpGet("{id}")]
         public async Task<ActionResult> GetAuthorByIdAsync(int id)
         {
-            if (await _uof.Authors.Exists(id))
+            if (await _uof.GetRepository<Author>().Exists(id))
             {
-                var author = await _uof.Authors.GetByIdAsync(id);
+                var author = await _uof.GetRepository<Author>().GetByIdAsync(id);
                 return Ok(_mapper.Map<Author, ReadAuthorDto>(author));
             }
 
             return BadRequest(new { Detail = $"This is invalid Id" });
         }
-
 
         [HttpPost]
         public async Task<ActionResult> InsertAuthorAsync(CreateAuthorDto authorDto)
@@ -60,8 +55,8 @@ namespace API.Controllers
             if (_phoneNumberValidator.IsValidPhoneNumber(authorDto.AuthorPhoneNumber))
             {
                 var author = _mapper.Map<CreateAuthorDto, Author>(authorDto);
-                _uof.Authors.InsertAsync(author);
-                await _uof.SaveChangesAsync();
+                _uof.GetRepository<Author>().InsertAsync(author);
+                await _uof.Commit();
 
                 return Ok(_mapper.Map<Author, CreateAuthorDto>(author));
             }
@@ -71,121 +66,36 @@ namespace API.Controllers
             }
         }
 
-
         [HttpPut]
         public async Task<ActionResult> UpdateAuthorAsync(ReadAuthorDto authorDto)
         {
             var author = _mapper.Map<ReadAuthorDto, Author>(authorDto);
-            _uof.Authors.UpdateAsync(author);
-            await _uof.SaveChangesAsync();
+            _uof.GetRepository<Author>().UpdateAsync(author);
+            await _uof.Commit();
 
             return Ok(_mapper.Map<Author, ReadAuthorDto>(author));
         }
 
-
         [HttpDelete]
-        public async Task DeleteAuthorAsync(ReadAuthorDto authorDto)
+        public async Task<ActionResult> DeleteAuthorAsync(ReadAuthorDto authorDto)
         {
-            var author = _mapper.Map<ReadAuthorDto, Author>(authorDto);
-            _uof.Authors.DeleteAsync(author);
-            await _uof.SaveChangesAsync();
+            var result = _uof.GetRepository<Book>().FindAsync(b => b.AuthorId == authorDto.Id);
+            if (result != null)
+                return BadRequest("Can't delete this author because used in other tables");
+            else
+            {
+                var author = _mapper.Map<ReadAuthorDto, Author>(authorDto);
+                _uof.GetRepository<Author>().DeleteAsync(author);
+                await _uof.Commit();
+                return Ok();
+            }
         }
 
         [HttpGet("SearchWithCriteria")]
-        public async Task<ActionResult<IReadOnlyList<ReadAuthorDto>>> SearchWithCriteria(string? name = null, string? phone = null)
+        public async Task<ActionResult<IReadOnlyList<ReadAuthorDto>>> SearchWithCriteria(string name = null, string phone = null)
         {
             var result = await _searchAuthorDataService.SearchWithCriteria(name, phone);
             return Ok(result);
         }
-
     }
-    //[Route("api/[controller]")]
-    //[ApiController]
-    //public class AuthorsController : ControllerBase
-    //{
-    //    private readonly IGenericRepository<Author> _authorRepo;
-    //    private readonly IMapper _mapper;
-    //    private readonly IPhoneNumberValidator _phoneNumberValidator;
-    //    private readonly ISearchAuthorDataService _searchAuthorDataService;
-    //    private readonly ILogger<AuthorsController> _logger;
-
-    //    public AuthorsController(IGenericRepository<Author> authorRepo,
-    //                              IMapper mapper,
-    //                              IPhoneNumberValidator phoneNumberValidator,
-    //                              ISearchAuthorDataService searchAuthorDataService,
-    //                              ILogger<AuthorsController> logger)
-    //    {
-    //        _authorRepo = authorRepo;
-    //        _mapper = mapper;
-    //        _phoneNumberValidator = phoneNumberValidator;
-    //        _searchAuthorDataService = searchAuthorDataService;
-    //        _logger = logger;
-    //    }
-
-
-    //    [HttpGet]
-    //    public async Task<ActionResult<IReadOnlyList<ReadAuthorDto>>> GetAllAuthorsAsync()
-    //    {
-    //        var authors = await _authorRepo.GetAllListAsync();
-    //        return Ok(_mapper.Map<IReadOnlyList<Author>, IReadOnlyList<ReadAuthorDto>>(authors));
-    //    }
-
-
-    //    [HttpGet("{id}")]
-    //    public async Task<ActionResult> GetAuthorByIdAsync(int id)
-    //    {
-    //        if(await _authorRepo.Exists(id))
-    //        {
-    //            var author = await _authorRepo.GetByIdAsync(id);
-    //            return Ok(_mapper.Map<Author, ReadAuthorDto>(author));
-    //        }
-
-    //        return BadRequest(new { Detail = $"This is invalid Id" });
-    //    }
-
-
-    //    [HttpPost]
-    //    public async Task<ActionResult> InsertAuthorAsync(CreateAuthorDto authorDto)
-    //    {
-    //        if (_phoneNumberValidator.IsValidPhoneNumber(authorDto.AuthorPhoneNumber))
-    //        {
-    //            var author = _mapper.Map<CreateAuthorDto, Author>(authorDto);
-    //            _authorRepo.InsertAsync(author);
-    //            await _authorRepo.SaveChangesAsync();
-
-    //            return Ok(_mapper.Map<Author, CreateAuthorDto>(author));
-    //        }
-    //        else
-    //        {
-    //            return BadRequest(new { Detail = $"This is invalid phone number {authorDto.AuthorPhoneNumber}" });
-    //        }
-    //    }
-
-
-    //    [HttpPut]
-    //    public async Task<ActionResult> UpdateAuthorAsync(ReadAuthorDto authorDto)
-    //    {
-    //        var author = _mapper.Map<ReadAuthorDto, Author>(authorDto);
-    //        _authorRepo.UpdateAsync(author);
-    //        await _authorRepo.SaveChangesAsync();
-
-    //        return Ok(_mapper.Map<Author, ReadAuthorDto>(author));
-    //    }
-
-
-    //    [HttpDelete]
-    //    public async Task DeleteAuthorAsync(ReadAuthorDto authorDto)
-    //    {
-    //        var author = _mapper.Map<ReadAuthorDto, Author>(authorDto);
-    //        _authorRepo.DeleteAsync(author);
-    //        await _authorRepo.SaveChangesAsync();
-    //    }
-
-    //    [HttpGet("SearchWithCriteria")]
-    //    public async Task<ActionResult<IReadOnlyList<ReadAuthorDto>>> SearchWithCriteria(string? name = null, string? phone = null)
-    //    {
-    //        var result = await _searchAuthorDataService.SearchWithCriteria(name, phone);
-    //        return Ok(result);
-    //    }
-    //}
 }

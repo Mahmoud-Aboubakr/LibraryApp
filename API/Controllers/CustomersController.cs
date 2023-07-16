@@ -11,18 +11,19 @@ namespace API.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private readonly IGenericRepository<Customer> _customerRepo;
+        
+        private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
         private readonly ISearchCustomerService _searchCustomerService;
 
-        public CustomersController(IGenericRepository<Customer> customerRepo,
+        public CustomersController(IUnitOfWork uof,
                                   IMapper mapper,
                                   IPhoneNumberValidator phoneNumberValidator,
                                   ISearchCustomerService searchCustomerService
                                    )
         {
-            _customerRepo = customerRepo;
+            _uof = uof;
             _mapper = mapper;
             _phoneNumberValidator = phoneNumberValidator;
             _searchCustomerService = searchCustomerService;
@@ -32,16 +33,16 @@ namespace API.Controllers
         [HttpGet("GetAll")]
         public async Task<ActionResult<IReadOnlyList<ReadCustomerDto>>> GetAllCustomerAsync()
         {
-            var customers = await _customerRepo.GetAllListAsync();
+            var customers = await _uof.GetRepository<Customer>().GetAllListAsync();
             return Ok(_mapper.Map<IReadOnlyList<Customer>, IReadOnlyList<ReadCustomerDto>>(customers));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult> GetCustomerByIdAsync(int id)
         {
-            if (await _customerRepo.Exists(id))
+            if (await _uof.GetRepository<Customer>().Exists(id))
             {
-                var author = await _customerRepo.GetByIdAsync(id);
+                var author = await _uof.GetRepository<Customer>().GetByIdAsync(id);
                 return Ok(_mapper.Map<Customer, ReadCustomerDto>(author));
             }
 
@@ -54,8 +55,8 @@ namespace API.Controllers
             if (_phoneNumberValidator.IsValidPhoneNumber(createCustomerDto.CustomerPhoneNumber))
             {
                 var customer = _mapper.Map<CreateCustomerDto, Customer>(createCustomerDto);
-                _customerRepo.InsertAsync(customer);
-                await _customerRepo.SaveChangesAsync();
+                _uof.GetRepository<Customer>().InsertAsync(customer);
+                await _uof.Commit();
 
                 return Ok(_mapper.Map<Customer, CreateCustomerDto>(customer));
             }
@@ -70,8 +71,8 @@ namespace API.Controllers
         public async Task<ActionResult> UpdateCustomerAsync(ReadCustomerDto readCustomerDto)
         {
             var customer = _mapper.Map<ReadCustomerDto, Customer>(readCustomerDto);
-            _customerRepo.UpdateAsync(customer);
-            await _customerRepo.SaveChangesAsync();
+            _uof.GetRepository<Customer>().UpdateAsync(customer);
+            await _uof.Commit();
 
             return Ok(_mapper.Map<Customer, ReadCustomerDto>(customer));
         }
@@ -82,5 +83,6 @@ namespace API.Controllers
             var result = await _searchCustomerService.SearchWithCriteria(Name, PhoneNumber);
             return Ok(result);
         }
+        
     }
 }

@@ -7,32 +7,35 @@ namespace Persistence.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly LibraryDbContext _context;
-        public IGenericBaseRepository<Author> Authors {get;}
+        private readonly LibraryDbContext _dbContext;
+        private readonly Dictionary<Type, object> _repositories;
 
-        public UnitOfWork(LibraryDbContext context, IGenericBaseRepository<Author> authorRepo)
+        public UnitOfWork(LibraryDbContext dbContext)
         {
-            _context = context;
-            Authors = authorRepo;
+            _dbContext = dbContext;
+            _repositories = new Dictionary<Type, object>();
         }
 
-        public async Task<int> SaveChangesAsync()
+        public IGenericRepository<T> GetRepository<T>() where T : BaseEntity
         {
-            return await _context.SaveChangesAsync();
+            if (_repositories.TryGetValue(typeof(T), out var repository))
+            {
+                return (IGenericRepository<T>)repository;
+            }
+
+            var newRepository = new GenericRepository<T>(_dbContext);
+            _repositories.Add(typeof(T), newRepository);
+            return newRepository;
+        }
+
+        public async Task<int> Commit()
+        {
+            return await _dbContext.SaveChangesAsync();
         }
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _context.Dispose();
-            }
+            _dbContext.Dispose();
         }
     }
 }

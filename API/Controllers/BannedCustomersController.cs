@@ -13,6 +13,7 @@ namespace API.Controllers
     [ApiController]
     public class BannedCustomersController : ControllerBase
     {
+        /*
         private readonly IGenericRepository<BannedCustomer> _bannedCustomerRepo;
         private readonly IMapper _mapper;
         private readonly ISearchBannedCustomerService _searchForBannedCustomerService;
@@ -100,6 +101,6 @@ namespace API.Controllers
             var result = await _searchForBannedCustomerService.SearchForBannedCustomer(EmpName , CustomerName);
             return Ok(result);
         }
-
+        */
     }
 }

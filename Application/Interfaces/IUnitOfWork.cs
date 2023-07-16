@@ -4,9 +4,9 @@ using Domain.Entities;
 
 namespace Application.Interfaces
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable 
     {
-        IGenericBaseRepository<Author> Authors { get; }
-        Task<int> SaveChangesAsync();
+        IGenericRepository<T> GetRepository<T>() where T : BaseEntity;
+        Task<int> Commit();
     }
 }
