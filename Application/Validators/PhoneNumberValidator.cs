@@ -9,7 +9,7 @@ namespace Application.Validators
         {
             int number;
             if (phoneNumber.Length != 11 || !phoneNumber.StartsWith("0") ||
-                int.TryParse(phoneNumber, out number))
+                !int.TryParse(phoneNumber, out number))
                 return false;
             else
                 return true;

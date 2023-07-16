@@ -22,6 +22,21 @@ namespace Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("BookOrder", b =>
+                {
+                    b.Property<int>("BooksId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrdersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BooksId", "OrdersId");
+
+                    b.HasIndex("OrdersId");
+
+                    b.ToTable("BookOrder");
+                });
+
             modelBuilder.Entity("Domain.Entities.Attendence", b =>
                 {
                     b.Property<int>("Id")
@@ -36,7 +51,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("DayDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 14, 10, 50, 4, 511, DateTimeKind.Local).AddTicks(3060));
+                        .HasDefaultValue(new DateTime(2023, 7, 15, 12, 23, 57, 403, DateTimeKind.Local).AddTicks(5562));
 
                     b.Property<string>("DeviceName")
                         .HasColumnType("nvarchar(max)");
@@ -111,7 +126,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("BanDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 14, 10, 50, 4, 511, DateTimeKind.Local).AddTicks(6109));
+                        .HasDefaultValue(new DateTime(2023, 7, 15, 12, 23, 57, 404, DateTimeKind.Local).AddTicks(2348));
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -194,7 +209,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("BorrowDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 14, 10, 50, 4, 511, DateTimeKind.Local).AddTicks(8396));
+                        .HasDefaultValue(new DateTime(2023, 7, 15, 12, 23, 57, 405, DateTimeKind.Local).AddTicks(23));
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -208,7 +223,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("ReturnDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 17, 10, 50, 4, 511, DateTimeKind.Local).AddTicks(8595));
+                        .HasDefaultValue(new DateTime(2023, 7, 18, 12, 23, 57, 405, DateTimeKind.Local).AddTicks(451));
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -328,9 +343,6 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("BookId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -343,7 +355,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 14, 10, 50, 4, 512, DateTimeKind.Local).AddTicks(342));
+                        .HasDefaultValue(new DateTime(2023, 7, 15, 12, 23, 57, 405, DateTimeKind.Local).AddTicks(7694));
 
                     b.Property<bool>("Ordertype")
                         .HasColumnType("bit");
@@ -355,8 +367,6 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BookId");
 
                     b.HasIndex("CustomerId");
 
@@ -518,6 +528,21 @@ namespace Persistence.Migrations
                     b.ToTable("Vacations");
                 });
 
+            modelBuilder.Entity("BookOrder", b =>
+                {
+                    b.HasOne("Domain.Entities.Book", null)
+                        .WithMany()
+                        .HasForeignKey("BooksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Order", null)
+                        .WithMany()
+                        .HasForeignKey("OrdersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Domain.Entities.Attendence", b =>
                 {
                     b.HasOne("Domain.Entities.Employee", "Employee")
@@ -609,10 +634,6 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Order", b =>
                 {
-                    b.HasOne("Domain.Entities.Book", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("BookId");
-
                     b.HasOne("Domain.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
@@ -661,11 +682,6 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Book", b =>
-                {
-                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

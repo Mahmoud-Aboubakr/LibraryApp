@@ -1,0 +1,3 @@
+(01)DBCC CHECKIDENT ('Orders', RESEED, 0);
+(02)delete from Orders
+(03)date format in json to convert datetime2(7) in sql server : "2023-07-29T13:43:03.153Z"
