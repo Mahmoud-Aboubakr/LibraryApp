@@ -27,6 +27,6 @@ namespace Persistence.Context
         public DbSet<BannedCustomer> BannedCustomers { get; set;}
         public DbSet<Borrow> Borrows { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderBooks> OrdersBooks { get; set; }
+        public DbSet<BookOrderDetails> BookOrderDetails { get; set; }
     }
 }

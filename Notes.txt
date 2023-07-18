@@ -1,3 +1,10 @@
-(01)DBCC CHECKIDENT ('Orders', RESEED, 0);
-(02)delete from�Orders
+﻿(01)DBCC CHECKIDENT ('Orders', RESEED, 0);
+(02)delete from Orders
 (03)date format in json to convert datetime2(7) in sql server : "2023-07-29T13:43:03.153Z"
+(04)تفعيل سياسه الارتجاع(*later*)
+
+
+librarian 0
+dayguard 1
+nightguard 2
+manager 3
