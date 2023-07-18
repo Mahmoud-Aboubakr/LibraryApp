@@ -26,6 +26,14 @@ builder.Services.AddScoped<IPhoneNumberValidator, PhoneNumberValidator>();
 builder.Services.AddTransient<ISearchAuthorDataService, SearchAuthorDataService>();
 builder.Services.AddTransient<ISearchCustomerService, SearchCustomerService>();
 builder.Services.AddTransient<ISearchBannedCustomerService, SearchBannedCustomerservice>();
+builder.Services.AddTransient<ISearchEmployeeDataService, SearchEmployeeDataService>();
+builder.Services.AddScoped<IEmployeeTypeValidator, EmployeeTypeValidator>();
+builder.Services.AddScoped<IEmployeeAgeValidator, EmployeeAgeValidator>();
+builder.Services.AddScoped<IAttendencePermissionValidator, AttendencePermissionValidator>();
+builder.Services.AddScoped<IAttendenceMonthValidator, AttendenceMonthValidator>();
+builder.Services.AddTransient<ISearchAttendenceDataWithDetailService, SearchAttendenceDataWithDetailService>();
+builder.Services.AddTransient<ISearchPayrollDataWithDetailService, SearchPayrollDataWithDetailService>();
+builder.Services.AddTransient<IVacationServices, VacationServices>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();

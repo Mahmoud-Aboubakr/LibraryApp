@@ -1,16 +1,19 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Application.DTOs
 {
-    public class Payroll : BaseEntity
+    public class CreatePayrollDto
     {
-        public int EmpId { get; set; }
         public DateTime? SalaryDate { get; set; } = null;
         public decimal BasicSalary { get; set; }
         public decimal Bonus { get; set; }
         public decimal Deduct { get; set; }
         public decimal TotalSalary { get; set; }
 
-        public virtual Employee Employee { get; set; }
+        public int EmpId { get; set; }
     }
 }

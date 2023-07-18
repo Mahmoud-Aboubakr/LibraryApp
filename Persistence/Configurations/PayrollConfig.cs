@@ -17,14 +17,24 @@ namespace Persistence.Configurations
                 .OnDelete(deleteBehavior: DeleteBehavior.NoAction);
 
             builder
-                .Property(P => P.BasicSalary).HasDefaultValue(0);
-            builder
-               .Property(P => P.Bonus).HasDefaultValue(0);
-            builder
-               .Property(P => P.Deduct).HasDefaultValue(0);
+                .Property(P => P.BasicSalary)
+                .HasDefaultValue(0)
+                .HasColumnType("decimal(18,3)");
 
             builder
-                .Property(P => P.TotalSalary).HasComputedColumnSql("[BasicSalary] + [Bonus] - [Deduct]");
+               .Property(P => P.Bonus)
+               .HasDefaultValue(0)
+               .HasColumnType("decimal(18,3)");
+
+            builder
+               .Property(P => P.Deduct)
+               .HasDefaultValue(0)
+               .HasColumnType("decimal(18,3)");
+
+            builder
+                .Property(P => P.TotalSalary)
+                .HasColumnType("decimal(18,3)")
+                .HasComputedColumnSql("[BasicSalary] + [Bonus] - [Deduct]");
           
         }
     }
