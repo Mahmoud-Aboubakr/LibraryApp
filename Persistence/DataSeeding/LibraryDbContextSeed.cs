@@ -13,7 +13,8 @@ namespace Persistence.Data
     { 
         public static async Task SeedAsync(LibraryDbContext context)
         {
-            if(!context.Authors.Any())
+            #region Phase 1 to run
+            if (!context.Authors.Any())
             {
                 var authorsData = File.ReadAllText("../Persistence/DataSeeding/Authors.json");
                 var authors = JsonSerializer.Deserialize<List<Author>>(authorsData);
@@ -24,14 +25,14 @@ namespace Persistence.Data
             {
                 var publishersData = File.ReadAllText("../Persistence/DataSeeding/Publishers.json");
                 var publishers = JsonSerializer.Deserialize<List<Publisher>>(publishersData);
-                await context.Publishers.AddRangeAsync(publishers);
+                context.Publishers.AddRange(publishers);
             }
 
             if (!context.Customers.Any())
             {
                 var customersData = File.ReadAllText("../Persistence/DataSeeding/Customers.json");
                 var customers = JsonSerializer.Deserialize<List<Customer>>(customersData);
-                await context.Customers.AddRangeAsync(customers);
+                context.Customers.AddRange(customers);
             }
 
             if (!context.Employees.Any())
@@ -40,12 +41,13 @@ namespace Persistence.Data
                 var employees = JsonSerializer.Deserialize<List<Employee>>(EmployeesData);
                 context.Employees.AddRange(employees);
             }
-
+            #endregion
+            #region Phase 2 to run
             if (!context.Books.Any())
             {
                 var booksData = File.ReadAllText("../Persistence/DataSeeding/Books.json");
                 var books = JsonSerializer.Deserialize<List<Book>>(booksData);
-                await context.Books.AddRangeAsync(books);
+                context.Books.AddRange(books);
             }
 
             if (!context.Attendence.Any())
@@ -76,19 +78,11 @@ namespace Persistence.Data
                 context.BannedCustomers.AddRange(bannedCustomers);
             }
 
-
             if (!context.Orders.Any())
             {
                 var ordersData = File.ReadAllText("../Persistence/DataSeeding/Orders.json");
                 var orders = JsonSerializer.Deserialize<List<Order>>(ordersData);
                 context.Orders.AddRange(orders);
-            }
-
-            if (!context.BookOrderDetails.Any())
-            {
-                var bookOrderData = File.ReadAllText("../Persistence/DataSeeding/BookOrderDetails.json");
-                var bookOrder = JsonSerializer.Deserialize<List<BookOrderDetails>>(bookOrderData);
-                context.BookOrderDetails.AddRange(bookOrder);
             }
 
             if (!context.Borrows.Any())
@@ -97,6 +91,15 @@ namespace Persistence.Data
                 var borrows = JsonSerializer.Deserialize<List<Borrow>>(borrowsData);
                 context.Borrows.AddRange(borrows);
             }
+            #endregion
+            #region Phase 3 to run
+            if (!context.BookOrderDetails.Any())
+            {
+                var bookOrderData = File.ReadAllText("../Persistence/DataSeeding/BookOrderDetails.json");
+                var bookOrder = JsonSerializer.Deserialize<List<BookOrderDetails>>(bookOrderData);
+                context.BookOrderDetails.AddRange(bookOrder);
+            }
+            #endregion
 
             if (context.ChangeTracker.HasChanges())
                 await context.SaveChangesAsync();
