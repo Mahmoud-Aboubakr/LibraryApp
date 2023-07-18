@@ -17,5 +17,8 @@ namespace Application.Interfaces
         Task<T> GetByIdAsyncWithIncludes(int id, Expression<Func<T, object>>[] includes);
         Task<IReadOnlyList<T>> GetAllListAsync();
         Task<T> FindAsync(Expression<Func<T, bool>> match, Expression<Func<T, object>>[] includes);
+        Task<bool> FindUsingWhereAsync(Expression<Func<T, bool>> match);
+        void DeleteRangeAsync(List<T> entities);
+        Task<List<T>> GetAllWithWhere(Expression<Func<T, bool>> predicate);
     }
 }

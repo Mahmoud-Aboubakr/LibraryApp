@@ -29,6 +29,10 @@ builder.Services.AddTransient<ISearchBannedCustomerService, SearchBannedCustomer
 builder.Services.AddTransient<ISearchPublisherDataService, SearchPublisherDataService>();
 builder.Services.AddTransient<IBorrowServices, BorrowServices>();
 builder.Services.AddTransient<IOrderServices, OrderServices>();
+builder.Services.AddScoped<IEmployeeServices, EmployeeServices>();
+builder.Services.AddScoped<IAttendenceServices, AttendenceServices>();
+builder.Services.AddTransient<ISearchPayrollDataWithDetailService, SearchPayrollDataWithDetailService>();
+builder.Services.AddTransient<IVacationServices, VacationServices>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
