@@ -13,7 +13,5 @@ namespace Domain.Entities
 
         public virtual Publisher Publisher { get; set; }
         public int PublisherId { get; set; }
-
-       public virtual ICollection<Order> Orders { get; set; }
     }
 }

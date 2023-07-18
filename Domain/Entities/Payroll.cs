@@ -6,10 +6,10 @@ namespace Domain.Entities
     {
         public int EmpId { get; set; }
         public DateTime? SalaryDate { get; set; } = null;
-        public float BasicSalary { get; set; }
-        public float Bonus { get; set; }
-        public float Deduct { get; set; }
-        public float TotalSalary { get; set; }
+        public decimal BasicSalary { get; set; }
+        public decimal Bonus { get; set; }
+        public decimal Deduct { get; set; }
+        public decimal TotalSalary { get; set; }
 
         public virtual Employee Employee { get; set; }
     }

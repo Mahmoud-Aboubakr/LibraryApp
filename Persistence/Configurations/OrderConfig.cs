@@ -10,6 +10,7 @@ namespace Persistence.Configurations
         public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder.Property(x => x.Id).HasColumnName("OrderId");
+
             builder
                 .Property(O => O.TotalPrice)
                 .HasColumnType("decimal(18,3)");

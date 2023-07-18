@@ -22,21 +22,6 @@ namespace Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("BookOrder", b =>
-                {
-                    b.Property<int>("BooksId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrdersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("BooksId", "OrdersId");
-
-                    b.HasIndex("OrdersId");
-
-                    b.ToTable("BookOrder");
-                });
-
             modelBuilder.Entity("Domain.Entities.Attendence", b =>
                 {
                     b.Property<int>("Id")
@@ -51,7 +36,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("DayDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 15, 12, 23, 57, 403, DateTimeKind.Local).AddTicks(5562));
+                        .HasDefaultValue(new DateTime(2023, 7, 18, 17, 27, 24, 171, DateTimeKind.Local).AddTicks(8063));
 
                     b.Property<string>("DeviceName")
                         .HasColumnType("nvarchar(max)");
@@ -126,7 +111,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("BanDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 15, 12, 23, 57, 404, DateTimeKind.Local).AddTicks(2348));
+                        .HasDefaultValue(new DateTime(2023, 7, 18, 17, 27, 24, 172, DateTimeKind.Local).AddTicks(934));
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -195,7 +180,7 @@ namespace Persistence.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Borrow", b =>
+            modelBuilder.Entity("Domain.Entities.BookOrderDetails", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -206,11 +191,6 @@ namespace Persistence.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("BorrowDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 15, 12, 23, 57, 405, DateTimeKind.Local).AddTicks(23));
-
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -220,10 +200,11 @@ namespace Persistence.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ReturnDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 18, 12, 23, 57, 405, DateTimeKind.Local).AddTicks(451));
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -233,6 +214,49 @@ namespace Persistence.Migrations
                     b.HasIndex("BookId");
 
                     b.HasIndex("OrderId");
+
+                    b.ToTable("BookOrderDetails");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Borrow", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("BorrowId");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("BorrowDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2023, 7, 18, 17, 27, 24, 172, DateTimeKind.Local).AddTicks(4019));
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DeviceName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ReturnDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2023, 7, 21, 17, 27, 24, 172, DateTimeKind.Local).AddTicks(4231));
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Borrows");
                 });
@@ -355,10 +379,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 15, 12, 23, 57, 405, DateTimeKind.Local).AddTicks(7694));
-
-                    b.Property<bool>("Ordertype")
-                        .HasColumnType("bit");
+                        .HasDefaultValue(new DateTime(2023, 7, 18, 17, 27, 24, 172, DateTimeKind.Local).AddTicks(6038));
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,3)");
@@ -373,41 +394,6 @@ namespace Persistence.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Domain.Entities.OrderBooks", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeviceName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrdersBooks");
-                });
-
             modelBuilder.Entity("Domain.Entities.Payroll", b =>
                 {
                     b.Property<int>("Id")
@@ -416,23 +402,23 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<float>("BasicSalary")
+                    b.Property<decimal>("BasicSalary")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("real")
-                        .HasDefaultValue(0f);
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
 
-                    b.Property<float>("Bonus")
+                    b.Property<decimal>("Bonus")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("real")
-                        .HasDefaultValue(0f);
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("Deduct")
+                    b.Property<decimal>("Deduct")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("real")
-                        .HasDefaultValue(0f);
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
 
                     b.Property<string>("DeviceName")
                         .HasColumnType("nvarchar(max)");
@@ -443,9 +429,9 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("SalaryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("TotalSalary")
+                    b.Property<decimal>("TotalSalary")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("real")
+                        .HasColumnType("decimal(18,2)")
                         .HasComputedColumnSql("[BasicSalary] + [Bonus] - [Deduct]");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -528,21 +514,6 @@ namespace Persistence.Migrations
                     b.ToTable("Vacations");
                 });
 
-            modelBuilder.Entity("BookOrder", b =>
-                {
-                    b.HasOne("Domain.Entities.Book", null)
-                        .WithMany()
-                        .HasForeignKey("BooksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Order", null)
-                        .WithMany()
-                        .HasForeignKey("OrdersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Domain.Entities.Attendence", b =>
                 {
                     b.HasOne("Domain.Entities.Employee", "Employee")
@@ -592,7 +563,7 @@ namespace Persistence.Migrations
                     b.Navigation("Publisher");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Borrow", b =>
+            modelBuilder.Entity("Domain.Entities.BookOrderDetails", b =>
                 {
                     b.HasOne("Domain.Entities.Book", "Book")
                         .WithMany()
@@ -603,12 +574,31 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Order", "Order")
                         .WithMany()
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Book");
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Borrow", b =>
+                {
+                    b.HasOne("Domain.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("Domain.Entities.Employee", b =>
@@ -641,25 +631,6 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("Domain.Entities.OrderBooks", b =>
-                {
-                    b.HasOne("Domain.Entities.Book", "Books")
-                        .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Order", "Orders")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Books");
-
-                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("Domain.Entities.Payroll", b =>

@@ -9,17 +9,26 @@ namespace Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Borrow> builder)
         {
+            builder.Property(x => x.Id).HasColumnName("BorrowId");
+
             builder
-                .HasOne(B => B.Order)
+                .HasOne(B => B.Customer)
                 .WithMany()
-                .HasForeignKey(B => B.OrderId)
+                .HasForeignKey(B => B.CustomerId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder
+              .HasOne(B => B.Book)
+              .WithMany()
+              .HasForeignKey(B => B.BookId)
+              .OnDelete(DeleteBehavior.NoAction);
 
             builder
                 .Property(B => B.BorrowDate).HasDefaultValue(DateTime.Now);
 
             builder
-                .Property(B => B.ReturnDate).HasDefaultValue((DateTime.Now).AddDays(3));
+                .Property(B => B.ReturnDate).HasDefaultValue(DateTime.Now.AddDays(3));
+
         }
     }
 }

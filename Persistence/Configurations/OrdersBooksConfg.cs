@@ -5,10 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.Configurations
 {
-    public class OrdersBooksConfg : IEntityTypeConfiguration<OrderBooks>
+    public class OrdersBooksConfg : IEntityTypeConfiguration<BookOrderDetails>
     {
-        public void Configure(EntityTypeBuilder<OrderBooks> builder)
+        public void Configure(EntityTypeBuilder<BookOrderDetails> builder)
         {
+
         }
     }
 }

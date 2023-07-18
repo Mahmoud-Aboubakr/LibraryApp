@@ -4,7 +4,6 @@
         "CustomerId": 1,
         "OrderDate": "2023-07-10T13:43:03.153Z",
         "TotalPrice": 533,
-        "Ordertype": true,
         "DeviceName": "DESKTOP-PU165U4",
         "CreatedDate": null,
         "UpdatedDate": null
@@ -14,7 +13,6 @@
         "CustomerId": 2,
         "OrderDate": "2023-07-11T17:30:00.142Z",
         "TotalPrice": 444,
-        "Ordertype": true,
         "DeviceName": "DESKTOP-PU165U4",
         "CreatedDate": null,
         "UpdatedDate": null
@@ -24,7 +22,6 @@
         "CustomerId": 4,
         "OrderDate": "2023-07-11T13:00:09.153Z",
         "TotalPrice": 400,
-        "Ordertype": true,
         "DeviceName": "DESKTOP-PU165U4",
         "CreatedDate": null,
         "UpdatedDate": null
@@ -34,7 +31,6 @@
         "CustomerId": 5,
         "OrderDate": "2023-07-12T11:12:45.121Z",
         "TotalPrice": 455,
-        "Ordertype": true,
         "DeviceName": "DESKTOP-PU165U4",
         "CreatedDate": null,
         "UpdatedDate": null
@@ -44,7 +40,6 @@
         "CustomerId": 6,
         "OrderDate": "2023-07-13T13:43:03.153Z",
         "TotalPrice": 240,
-        "Ordertype": true,
         "DeviceName": "DESKTOP-PU165U4",
         "CreatedDate": null,
         "UpdatedDate": null
@@ -53,8 +48,7 @@
         "OrderId": 0,
         "CustomerId": 1,
         "OrderDate": "2023-07-10T15:00:03.153Z",
-        "TotalPrice": 30,
-        "Ordertype": false,
+        "TotalPrice": 240,
         "DeviceName": "DESKTOP-PU165U4",
         "CreatedDate": null,
         "UpdatedDate": null
@@ -63,8 +57,7 @@
         "OrderId": 0,
         "CustomerId": 7,
         "OrderDate": "2023-07-11T15:40:16.153Z",
-        "TotalPrice": 10,
-        "Ordertype": false,
+        "TotalPrice": 200,
         "DeviceName": "DESKTOP-PU165U4",
         "CreatedDate": null,
         "UpdatedDate": null
@@ -73,8 +66,7 @@
         "OrderId": 0,
         "CustomerId": 2,
         "OrderDate": "2023-07-11T13:35:00.105Z",
-        "TotalPrice": 20,
-        "Ordertype": false,
+        "TotalPrice": 840,
         "DeviceName": "DESKTOP-PU165U4",
         "CreatedDate": null,
         "UpdatedDate": null
@@ -83,8 +75,7 @@
         "OrderId": 0,
         "CustomerId": 3,
         "OrderDate": "2023-07-12T12:50:03.150Z",
-        "TotalPrice": 10,
-        "Ordertype": false,
+        "TotalPrice": 120,
         "DeviceName": "DESKTOP-PU165U4",
         "CreatedDate": null,
         "UpdatedDate": null
@@ -93,8 +84,7 @@
         "OrderId": 0,
         "CustomerId": 6,
         "OrderDate": "2023-07-13T14:24:05.141Z",
-        "TotalPrice": 20,
-        "Ordertype": false,
+        "TotalPrice": 100,
         "DeviceName": "DESKTOP-PU165U4",
         "CreatedDate": null,
         "UpdatedDate": null
