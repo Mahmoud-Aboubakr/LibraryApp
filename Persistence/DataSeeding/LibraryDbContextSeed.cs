@@ -1,16 +1,11 @@
 ﻿using Domain.Entities;
 using Persistence.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Persistence.Data
 {
     public class LibraryDbContextSeed
-    { 
+    {
         public static async Task SeedAsync(LibraryDbContext context)
         {
             #region Phase 1 to run

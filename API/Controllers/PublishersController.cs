@@ -2,8 +2,6 @@
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
-using Infrastructure.AppServices;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers

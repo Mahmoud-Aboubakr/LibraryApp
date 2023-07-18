@@ -2,8 +2,9 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
+using System;
 using System.Linq.Expressions;
-
+using System.Reflection.Metadata.Ecma335;
 
 namespace Persistence.Repositories
 {
@@ -55,6 +56,12 @@ namespace Persistence.Repositories
 
             return await query.FirstOrDefaultAsync(e => e.Id == id);
         }
+
+        public async Task<List<T>> GetAllWithWhere(Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>().Where(predicate).ToListAsync();
+        }
+
         #endregion
 
         #region FIND Methods
@@ -71,6 +78,13 @@ namespace Persistence.Repositories
         {
             var query = _context.Set<T>().AsQueryable();
             return query.FirstOrDefaultAsync(match);
+        }
+        public async Task<bool> FindUsingWhereAsync(Expression<Func<T, bool>> match)
+        {
+            var query = _context.Set<T>();
+            var result = await query.AnyAsync(match);
+
+            return result;
         }
         public async Task<bool> Exists(int id)
         {
@@ -91,6 +105,12 @@ namespace Persistence.Repositories
         #region DELETE Methods
         public void DeleteAsync(T entity)
            => _context.Set<T>().Remove(entity);
+
+        public void DeleteRangeAsync(List<T> entities)
+        {
+            _context.Set<T>().RemoveRange(entities);
+        }
+
         #endregion
     }
 }
