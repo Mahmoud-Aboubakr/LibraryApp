@@ -36,6 +36,9 @@ namespace Persistence.Data
                 var employees = JsonSerializer.Deserialize<List<Employee>>(EmployeesData);
                 context.Employees.AddRange(employees);
             }
+
+            if (context.ChangeTracker.HasChanges())
+                await context.SaveChangesAsync();
             #endregion
             #region Phase 2 to run
             if (!context.Books.Any())
@@ -86,6 +89,9 @@ namespace Persistence.Data
                 var borrows = JsonSerializer.Deserialize<List<Borrow>>(borrowsData);
                 context.Borrows.AddRange(borrows);
             }
+
+            if (context.ChangeTracker.HasChanges())
+                await context.SaveChangesAsync();
             #endregion
             #region Phase 3 to run
             if (!context.BookOrderDetails.Any())
@@ -94,10 +100,10 @@ namespace Persistence.Data
                 var bookOrder = JsonSerializer.Deserialize<List<BookOrderDetails>>(bookOrderData);
                 context.BookOrderDetails.AddRange(bookOrder);
             }
-            #endregion
 
             if (context.ChangeTracker.HasChanges())
                 await context.SaveChangesAsync();
+            #endregion
         }
     }
 }
