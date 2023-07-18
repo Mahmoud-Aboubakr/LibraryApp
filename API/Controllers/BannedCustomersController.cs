@@ -13,43 +13,45 @@ namespace API.Controllers
     [ApiController]
     public class BannedCustomersController : ControllerBase
     {
-        /*
-        private readonly IGenericRepository<BannedCustomer> _bannedCustomerRepo;
+        private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly ISearchBannedCustomerService _searchForBannedCustomerService;
+        private readonly ILogger<BannedCustomersController> _logger;
 
-        public BannedCustomersController(IGenericRepository<BannedCustomer> bannedCustomerRepo,
+        public BannedCustomersController(IUnitOfWork uof,
                                   IMapper mapper,
-                                  ISearchBannedCustomerService searchForBannedCustomerService
+                                  ISearchBannedCustomerService searchForBannedCustomerService,
+                                  ILogger<BannedCustomersController> logger
                                    )
         {
-            _bannedCustomerRepo = bannedCustomerRepo;
+            _uof = uof;
             _mapper = mapper;
             _searchForBannedCustomerService = searchForBannedCustomerService;
+            _logger = logger;
         }
 
         [HttpGet("GetAll")]
         public async Task<ActionResult<IReadOnlyList<ReadBannedCustomerDto>>> GetAllBannedCustomerAsync()
         {
-            var customers = await _bannedCustomerRepo.GetAllListAsync();
+            var customers = await _uof.GetRepository<BannedCustomer>().GetAllListAsync();
             return Ok(_mapper.Map<IReadOnlyList<BannedCustomer>, IReadOnlyList<ReadBannedCustomerDto>>(customers));
         }
 
         [HttpGet("GetBannedCustomersWithDetails")]
         public async Task<ActionResult<IReadOnlyList<ReadBannedCustomerDto>>> GetBannedCustomersWithDetails()
         {
-            var bannedCustomers = await _bannedCustomerRepo.GetAllListWithIncludesAsync(new Expression<Func<BannedCustomer, object>>[] { x => x.Employee, x => x.Customer });
+            var bannedCustomers = await _uof.GetRepository<BannedCustomer>().GetAllListWithIncludesAsync(new Expression<Func<BannedCustomer, object>>[] { x => x.Employee, x => x.Customer });
             return Ok(_mapper.Map<IReadOnlyList<BannedCustomer>, IReadOnlyList<ReadBannedCustomerDto>>(bannedCustomers));
         }
 
         [HttpGet("GetById")]
         public async Task<ActionResult<ReadBannedCustomerDto>> GetById(int id)
         {
-            var exists = await _bannedCustomerRepo.Exists(id);
+            var exists = await _uof.GetRepository<BannedCustomer>().Exists(id);
 
             if (exists)
             {
-                var bannedCustomers = await _bannedCustomerRepo.GetByIdAsync(id);
+                var bannedCustomers = await _uof.GetRepository<BannedCustomer>().GetByIdAsync(id);
 
                 if (bannedCustomers == null)
                     return NotFound();
@@ -62,11 +64,11 @@ namespace API.Controllers
         [HttpGet("GetByIdWithIncludesAsync")]
         public async Task<ActionResult<ReadBannedCustomerDto>> GetByIdWithIncludesAsync(int id)
         {
-            var exists = await _bannedCustomerRepo.Exists(id);
+            var exists = await _uof.GetRepository<BannedCustomer>().Exists(id);
 
             if (exists)
             {
-                var bannedCustomers = await _bannedCustomerRepo.GetByIdAsyncWithIncludes(id, new Expression<Func<BannedCustomer, object>>[] { x => x.Employee, x => x.Customer });
+                var bannedCustomers = await _uof.GetRepository<BannedCustomer>().GetByIdAsyncWithIncludes(id, new Expression<Func<BannedCustomer, object>>[] { x => x.Employee, x => x.Customer });
 
                 if (bannedCustomers == null)
                     return NotFound();
@@ -80,8 +82,8 @@ namespace API.Controllers
         public async Task<ActionResult> InsertannedCustomerAsync(CreateBannedCustomerDto createBannedCustomerDto)
         {
             var bannedCustomer = _mapper.Map<CreateBannedCustomerDto, BannedCustomer>(createBannedCustomerDto);
-            _bannedCustomerRepo.InsertAsync(bannedCustomer);
-            await _bannedCustomerRepo.SaveChangesAsync();
+            _uof.GetRepository<BannedCustomer>().InsertAsync(bannedCustomer);
+            await _uof.Commit();
 
             return Ok(_mapper.Map<BannedCustomer, CreateBannedCustomerDto>(bannedCustomer));
         }
@@ -90,8 +92,8 @@ namespace API.Controllers
         public async Task DeleteBannedCustomerAsync(ReadBannedCustomerDto readBannedCustomerDto)
         {
             var bannedCustomer = _mapper.Map<ReadBannedCustomerDto, BannedCustomer>(readBannedCustomerDto);
-            _bannedCustomerRepo.DeleteAsync(bannedCustomer);
-            await _bannedCustomerRepo.SaveChangesAsync();
+            _uof.GetRepository<BannedCustomer>().DeleteAsync(bannedCustomer);
+            await _uof.Commit();
         }
 
 
@@ -101,6 +103,6 @@ namespace API.Controllers
             var result = await _searchForBannedCustomerService.SearchForBannedCustomer(EmpName , CustomerName);
             return Ok(result);
         }
-        */
+        
     }
 }

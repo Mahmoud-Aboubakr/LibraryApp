@@ -26,6 +26,9 @@ builder.Services.AddScoped<IPhoneNumberValidator, PhoneNumberValidator>();
 builder.Services.AddTransient<ISearchAuthorDataService, SearchAuthorDataService>();
 builder.Services.AddTransient<ISearchCustomerService, SearchCustomerService>();
 builder.Services.AddTransient<ISearchBannedCustomerService, SearchBannedCustomerservice>();
+builder.Services.AddTransient<ISearchPublisherDataService, SearchPublisherDataService>();
+builder.Services.AddTransient<IBorrowServices, BorrowServices>();
+builder.Services.AddTransient<IOrderServices, OrderServices>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();

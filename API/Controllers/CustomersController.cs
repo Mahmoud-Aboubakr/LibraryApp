@@ -16,17 +16,20 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
         private readonly ISearchCustomerService _searchCustomerService;
+        private readonly ILogger<CustomersController> _logger;
 
         public CustomersController(IUnitOfWork uof,
                                   IMapper mapper,
                                   IPhoneNumberValidator phoneNumberValidator,
-                                  ISearchCustomerService searchCustomerService
+                                  ISearchCustomerService searchCustomerService,
+                                  ILogger<CustomersController> logger
                                    )
         {
             _uof = uof;
             _mapper = mapper;
             _phoneNumberValidator = phoneNumberValidator;
             _searchCustomerService = searchCustomerService;
+            _logger = logger;
         }
 
 
@@ -70,11 +73,26 @@ namespace API.Controllers
         [HttpPut("Update")]
         public async Task<ActionResult> UpdateCustomerAsync(ReadCustomerDto readCustomerDto)
         {
-            var customer = _mapper.Map<ReadCustomerDto, Customer>(readCustomerDto);
-            _uof.GetRepository<Customer>().UpdateAsync(customer);
-            await _uof.Commit();
+            if (_phoneNumberValidator.IsValidPhoneNumber(readCustomerDto.CustomerPhoneNumber))
+            {
+                var customer = _mapper.Map<ReadCustomerDto, Customer>(readCustomerDto);
+                _uof.GetRepository<Customer>().UpdateAsync(customer);
+                await _uof.Commit();
 
-            return Ok(_mapper.Map<Customer, ReadCustomerDto>(customer));
+                return Ok(_mapper.Map<Customer, ReadCustomerDto>(customer));
+            }
+            else
+            {
+                return BadRequest(new { Detail = $"Invalid Phone Number : {readCustomerDto.CustomerPhoneNumber}" });
+            }
+        }
+
+        [HttpDelete]
+        public async Task DeleteBannedCustomerAsync(ReadCustomerDto readCustomerDto)
+        {
+            var Customer = _mapper.Map<ReadCustomerDto, Customer>(readCustomerDto);
+            _uof.GetRepository<Customer>().DeleteAsync(Customer);
+            await _uof.Commit();
         }
 
         [HttpGet("Search")]
