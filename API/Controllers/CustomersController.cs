@@ -32,7 +32,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
-
+        #region GET
         [HttpGet("GetAll")]
         public async Task<ActionResult<IReadOnlyList<ReadCustomerDto>>> GetAllCustomerAsync()
         {
@@ -49,9 +49,19 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Customer, ReadCustomerDto>(author));
             }
 
-            return BadRequest(new { Detail = $"This is invalid Id" });
+            return NotFound(new { Detail = $"This is invalid Id" });
         }
 
+
+        [HttpGet("Search")]
+        public async Task<ActionResult<IReadOnlyList<ReadCustomerDto>>> SearchWithCriteria(string? Name = null, string? PhoneNumber = null)
+        {
+            var result = await _searchCustomerService.SearchWithCriteria(Name, PhoneNumber);
+            return Ok(result);
+        }
+        #endregion
+
+        #region POST
         [HttpPost("Insert")]
         public async Task<ActionResult> InsertCustomerAsync(CreateCustomerDto createCustomerDto)
         {
@@ -61,15 +71,16 @@ namespace API.Controllers
                 _uof.GetRepository<Customer>().InsertAsync(customer);
                 await _uof.Commit();
 
-                return Ok(_mapper.Map<Customer, CreateCustomerDto>(customer));
+                return StatusCode(201, "Customer Inserted Successfully");
             }
             else
             {
                 return BadRequest(new { Detail = $"Invalid Phone Number : {createCustomerDto.CustomerPhoneNumber}" });
             }
         }
+        #endregion
 
-
+        #region PUT
         [HttpPut("Update")]
         public async Task<ActionResult> UpdateCustomerAsync(ReadCustomerDto readCustomerDto)
         {
@@ -79,14 +90,16 @@ namespace API.Controllers
                 _uof.GetRepository<Customer>().UpdateAsync(customer);
                 await _uof.Commit();
 
-                return Ok(_mapper.Map<Customer, ReadCustomerDto>(customer));
+                return Ok("Updated Successfully");
             }
             else
             {
                 return BadRequest(new { Detail = $"Invalid Phone Number : {readCustomerDto.CustomerPhoneNumber}" });
             }
         }
+        #endregion
 
+        #region DELETE
         [HttpDelete]
         public async Task DeleteBannedCustomerAsync(ReadCustomerDto readCustomerDto)
         {
@@ -94,13 +107,7 @@ namespace API.Controllers
             _uof.GetRepository<Customer>().DeleteAsync(Customer);
             await _uof.Commit();
         }
+        #endregion
 
-        [HttpGet("Search")]
-        public async Task<ActionResult<IReadOnlyList<ReadCustomerDto>>> SearchWithCriteria(string? Name = null, string? PhoneNumber = null)
-        {
-            var result = await _searchCustomerService.SearchWithCriteria(Name, PhoneNumber);
-            return Ok(result);
-        }
-        
     }
 }

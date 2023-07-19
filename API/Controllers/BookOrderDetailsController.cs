@@ -33,6 +33,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
+        #region GET
         [HttpGet("GetAll")]
         public async Task<ActionResult<IReadOnlyList<ReadBookOrderDetailsDto>>> GetAllOrderBooksAsync()
         {
@@ -54,7 +55,7 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadBookOrderDetailsDto>(orderBooks));
             }
-            return BadRequest(new { Detail = $"Id : {id} is not vaild !!" });
+            return NotFound(new { Detail = $"Id : {id} is not vaild !!" });
         }
 
         [HttpGet("GetAllWithDetails")]
@@ -78,7 +79,7 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadBookOrderDetailsDto>(orderBooks));
             }
-            return BadRequest(new { Detail = $"Id : {id} is not vaild !!" });
+            return NotFound(new { Detail = $"Id : {id} is not vaild !!" });
         }
 
         [HttpGet("GetBookOrderDetailsByOrderId")]
@@ -89,15 +90,39 @@ namespace API.Controllers
         }
 
 
+
         [HttpGet("SearchInBookOrderDetails")]
         public async Task<ActionResult<IReadOnlyList<ReadBookOrderDetailsDto>>> SearchBookOrderDetails(int? orderId = null, string customerName = null, string bookTitle = null)
         {
             var result = await _orderServices.SearchBookOrderDetails(orderId, customerName, bookTitle);
             return Ok(result);
         }
+        #endregion
 
-        
+        #region POST
+        [HttpPost("Insert")]
+        public async Task<ActionResult> InsertOrderBookAsync(CreateBookOrderDetailsDto createOrderBooks)
+        {
+            if (!_numbersValidator.IsValidInt(createOrderBooks.OrderId))
+                return BadRequest(new { Detail = $"This is invalid OrderId {createOrderBooks.OrderId}" });
+            if (!_numbersValidator.IsValidInt(createOrderBooks.BookId))
+                return BadRequest(new { Detail = $"This is invalid BookId {createOrderBooks.BookId}" });
+            if (!_numbersValidator.IsValidInt(createOrderBooks.Quantity))
+                return BadRequest(new { Detail = $"This is invalid Quantity {createOrderBooks.Quantity}" });
 
+            var orderBook = _mapper.Map<CreateBookOrderDetailsDto, BookOrderDetails>(createOrderBooks);
+            _uof.GetRepository<BookOrderDetails>().InsertAsync(orderBook);
+            await _uof.Commit();
+
+            return StatusCode(201, "BookOrderDetails Inserted Successfully");
+        }
+        #endregion
+
+        #region PUT
+
+        #endregion
+
+        #region DELETE
         [HttpDelete]
         public async Task DeleteOrderBookAsync(ReadBookOrderDetailsDto readOrderBooksDto)
         {
@@ -105,8 +130,8 @@ namespace API.Controllers
             _uof.GetRepository<BookOrderDetails>().DeleteAsync(orderBook);
             await _uof.Commit();
         }
+        #endregion
 
-     
     }
 
 }

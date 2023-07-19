@@ -34,6 +34,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
+        #region GET
         [HttpGet("GetAll")]
         public async Task<ActionResult<IReadOnlyList<ReadBorrowDto>>> GetAllBorrowsAsync()
         {
@@ -55,7 +56,7 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadBorrowDto>(borrow));
             }
-            return BadRequest(new { Detail = $"Id : {id} is not vaild !!" });
+            return NotFound(new { Detail = $"Id : {id} is not vaild !!" });
         }
 
         [HttpGet("GetAllWithDetails")]
@@ -79,9 +80,19 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadBorrowDto>(readBorrow));
             }
-            return BadRequest(new { Detail = $"Id : {id} is not vaild !!" });
+            return NotFound(new { Detail = $"Id : {id} is not vaild !!" });
         }
 
+
+        [HttpGet("SearchByCriteria")]
+        public async Task<ActionResult<IReadOnlyList<ReadBorrowDto>>> SearchByCriteria(string customerName = null, string bookTitle = null, DateTime? date = null)
+        {
+            var result = await _borrowServices.SearchWithCriteria(customerName, bookTitle, date);
+            return Ok(result);
+        }
+        #endregion
+
+        #region POST
         [HttpPost("Insert")]
         public async Task<ActionResult> InsertBorrowAsync(CreateBorrowDto borrowDto)
         {
@@ -104,15 +115,21 @@ namespace API.Controllers
                     _uof.GetRepository<Borrow>().InsertAsync(borrow);
                     await _uof.Commit();
 
-                    return Ok(_mapper.Map<Borrow, ReadBorrowDto>(borrow));
+                    return StatusCode(201, "Borrow Inserted Succesfully");
                 }
                 else
                 {
                     return BadRequest(new { Detail = $"This Customer Borrowed 3 Books Today " });
                 }
-            }                
+            }
         }
+        #endregion
 
+        #region PUT
+
+        #endregion
+
+        #region DELETE
         [HttpDelete]
         public async Task DeleteOrderBookAsync(ReadBorrowDto readBorrowDto)
         {
@@ -120,12 +137,7 @@ namespace API.Controllers
             _uof.GetRepository<Borrow>().DeleteAsync(borrow);
             await _uof.Commit();
         }
+        #endregion
 
-        [HttpGet("SearchByCriteria")]
-        public async Task<ActionResult<IReadOnlyList<ReadBorrowDto>>> SearchByCriteria(string customerName = null, string bookTitle = null, DateTime? date = null)
-        {
-            var result = await _borrowServices.SearchWithCriteria(customerName, bookTitle, date);
-            return Ok(result);
-        }
     }
 }

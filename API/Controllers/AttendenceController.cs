@@ -28,6 +28,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
+        #region GET
         [HttpGet("GetAllAttendenceAsync")]
         public async Task<ActionResult<IReadOnlyList<ReadAttendanceDto>>> GetAllAttendenceAsync()
         {
@@ -52,7 +53,7 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Attendence, ReadAttendanceDto>(attendences));
             }
 
-            return BadRequest(new { Detail = $"This is invalid Id" });
+            return NotFound(new { Detail = $"This is invalid Id" });
         }
 
         [HttpGet("GetAttendenceByIdWithDetailAsync")]
@@ -64,55 +65,7 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Attendence, ReadAttendenceDetailsDto>(attendences));
             }
 
-            return BadRequest(new { Detail = $"This is invalid Id" });
-        }
-
-        [HttpPost("InsertAttendence")]
-        public async Task<ActionResult> InsertAttendenceAsync(CreateAttendenceDto attendenceDto)
-        {
-            if (!_attendenceServices.IsValidAttendencePermission(attendenceDto.Permission))
-                return BadRequest(new { Detail = $"This is invalid input (Permission) {attendenceDto.Permission}" });
-            if (!_attendenceServices.IsValidMonth(attendenceDto.Month))
-                return BadRequest(new { Detail = $"This is invalid month value {attendenceDto.Month}" });
-            var result = await _uof.GetRepository<Employee>().Exists(attendenceDto.EmpId);
-            if (!result)
-                    return BadRequest(new { Detail = $"This is no employee to add attendence {attendenceDto.EmpId}" });
-            var attendences = _mapper.Map<CreateAttendenceDto, Attendence>(attendenceDto);
-            _uof.GetRepository<Attendence>().InsertAsync(attendences);
-            await _uof.Commit();
-
-            return Ok(_mapper.Map<Attendence, CreateAttendenceDto>(attendences));
-        }
-
-    
-        [HttpPut("UpdateAttendence")]
-        public async Task<ActionResult> UpdateAttendenceAsync(ReadAttendanceDto attendenceDto)
-        {
-            if (!_attendenceServices.IsValidAttendencePermission(attendenceDto.Permission))
-                return BadRequest(new { Detail = $"This is invalid input (Permission) {attendenceDto.Permission}" });
-            if (!_attendenceServices.IsValidMonth(attendenceDto.Month))
-                return BadRequest(new { Detail = $"This is invalid month value {attendenceDto.Month}" });
-            var result = await _uof.GetRepository<Attendence>().Exists(attendenceDto.Id);
-            if (!result)
-                return BadRequest(new { Detail = $"This is no attendence record to update it {attendenceDto.Id}" });
-            var attendences = _mapper.Map<ReadAttendanceDto, Attendence>(attendenceDto);
-            _uof.GetRepository<Attendence>().UpdateAsync(attendences);
-            await _uof.Commit();
-
-            return Ok(_mapper.Map<Attendence, ReadAttendanceDto>(attendences));
-        }
-
-
-        [HttpDelete("DeleteAttendence")]
-        public async Task<ActionResult> DeleteAttendenceAsync(ReadAttendanceDto attendenceDto)
-        {
-            var result = await _uof.GetRepository<Attendence>().Exists(attendenceDto.Id);
-            if (!result)
-                return BadRequest(new { Detail = $"This is no attendence record to delete it {attendenceDto.Id}" });
-            var attendences = _mapper.Map<ReadAttendanceDto, Attendence>(attendenceDto);
-            _uof.GetRepository<Attendence>().DeleteAsync(attendences);
-            await _uof.Commit();
-            return Ok();
+            return NotFound(new { Detail = $"This is invalid Id" });
         }
 
 
@@ -123,5 +76,60 @@ namespace API.Controllers
             var result = await _attendenceServices.SearchAttendenceDataWithDetail(empName);
             return Ok(result);
         }
+
+        #endregion
+
+        #region POST
+        [HttpPost("InsertAttendence")]
+        public async Task<ActionResult> InsertAttendenceAsync(CreateAttendenceDto attendenceDto)
+        {
+            if (!_attendenceServices.IsValidAttendencePermission(attendenceDto.Permission))
+                return BadRequest(new { Detail = $"This is invalid input (Permission) {attendenceDto.Permission}" });
+            if (!_attendenceServices.IsValidMonth(attendenceDto.Month))
+                return BadRequest(new { Detail = $"This is invalid month value {attendenceDto.Month}" });
+            var result = await _uof.GetRepository<Employee>().Exists(attendenceDto.EmpId);
+            if (!result)
+                return BadRequest(new { Detail = $"This is no employee to add attendence {attendenceDto.EmpId}" });
+            var attendences = _mapper.Map<CreateAttendenceDto, Attendence>(attendenceDto);
+            _uof.GetRepository<Attendence>().InsertAsync(attendences);
+            await _uof.Commit();
+
+            return StatusCode(201, "Attendence Record Inserted Successfully");
+        }
+        #endregion
+
+        #region PUT
+        [HttpPut("UpdateAttendence")]
+        public async Task<ActionResult> UpdateAttendenceAsync(ReadAttendanceDto attendenceDto)
+        {
+            if (!_attendenceServices.IsValidAttendencePermission(attendenceDto.Permission))
+                return BadRequest(new { Detail = $"This is invalid input (Permission) {attendenceDto.Permission}" });
+            if (!_attendenceServices.IsValidMonth(attendenceDto.Month))
+                return BadRequest(new { Detail = $"This is invalid month value {attendenceDto.Month}" });
+            var result = await _uof.GetRepository<Attendence>().Exists(attendenceDto.Id);
+            if (!result)
+                return NotFound(new { Detail = $"This is no attendence record to update it {attendenceDto.Id}" });
+            var attendences = _mapper.Map<ReadAttendanceDto, Attendence>(attendenceDto);
+            _uof.GetRepository<Attendence>().UpdateAsync(attendences);
+            await _uof.Commit();
+
+            return Ok("Updated Successfully");
+        }
+        #endregion
+
+        #region DELETE
+        [HttpDelete("DeleteAttendence")]
+        public async Task<ActionResult> DeleteAttendenceAsync(ReadAttendanceDto attendenceDto)
+        {
+            var result = await _uof.GetRepository<Attendence>().Exists(attendenceDto.Id);
+            if (!result)
+                return NotFound(new { Detail = $"This is no attendence record to delete it {attendenceDto.Id}" });
+            var attendences = _mapper.Map<ReadAttendanceDto, Attendence>(attendenceDto);
+            _uof.GetRepository<Attendence>().DeleteAsync(attendences);
+            await _uof.Commit();
+            return Ok("Deleted Successfully");
+        }
+        #endregion
+
     }
 }

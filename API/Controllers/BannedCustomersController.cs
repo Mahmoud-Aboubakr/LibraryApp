@@ -30,6 +30,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
+        #region GET
         [HttpGet("GetAll")]
         public async Task<ActionResult<IReadOnlyList<ReadBannedCustomerDto>>> GetAllBannedCustomerAsync()
         {
@@ -58,7 +59,7 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadBannedCustomerDto>(bannedCustomers));
             }
-            return BadRequest(new { Detail = $"Id : {id} is not vaild !!" });
+            return NotFound(new { Detail = $"Id : {id} is not vaild !!" });
         }
 
         [HttpGet("GetByIdWithIncludesAsync")]
@@ -75,9 +76,19 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadBannedCustomerDto>(bannedCustomers));
             }
-            return BadRequest(new { Detail = $"Id : {id} is not vaild !!" });
+            return NotFound(new { Detail = $"Id : {id} is not vaild !!" });
         }
 
+
+        [HttpGet("SearchByCriteria")]
+        public async Task<ActionResult<IReadOnlyList<ReadBannedCustomerDto>>> SearchByCriteria(string? EmpName = null, string? CustomerName = null)
+        {
+            var result = await _searchForBannedCustomerService.SearchForBannedCustomer(EmpName, CustomerName);
+            return Ok(result);
+        }
+        #endregion
+
+        #region POST
         [HttpPost("Insert")]
         public async Task<ActionResult> InsertannedCustomerAsync(CreateBannedCustomerDto createBannedCustomerDto)
         {
@@ -85,9 +96,15 @@ namespace API.Controllers
             _uof.GetRepository<BannedCustomer>().InsertAsync(bannedCustomer);
             await _uof.Commit();
 
-            return Ok(_mapper.Map<BannedCustomer, CreateBannedCustomerDto>(bannedCustomer));
+            return StatusCode(201, "Customer Inserted Successfully");
         }
+        #endregion
 
+        #region PUT
+
+        #endregion
+
+        #region DELETE
         [HttpDelete]
         public async Task DeleteBannedCustomerAsync(ReadBannedCustomerDto readBannedCustomerDto)
         {
@@ -95,14 +112,7 @@ namespace API.Controllers
             _uof.GetRepository<BannedCustomer>().DeleteAsync(bannedCustomer);
             await _uof.Commit();
         }
+        #endregion
 
-
-        [HttpGet("SearchByCriteria")]
-        public async Task<ActionResult<IReadOnlyList<ReadBannedCustomerDto>>> SearchByCriteria(string? EmpName = null, string? CustomerName = null)
-        {
-            var result = await _searchForBannedCustomerService.SearchForBannedCustomer(EmpName , CustomerName);
-            return Ok(result);
-        }
-        
     }
 }
