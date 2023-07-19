@@ -52,6 +52,9 @@ namespace Application.Mappers
                 .ForMember(dest => dest.CustomerName, option => option.MapFrom(src => src.Customer.CustomerName));
             CreateMap<ReadOrderDto, Order>();
 
+            CreateMap<CreateOrderDto, Order>().ReverseMap();
+
+
             CreateMap<BookOrderDetails, ReadBookOrderDetailsDto>()
               .ForMember(dest => dest.BookTitle, option => option.MapFrom(src => src.Book.BookTitle))
               .ForMember(dest => dest.Price, option => option.MapFrom(src => src.Book.Price))
