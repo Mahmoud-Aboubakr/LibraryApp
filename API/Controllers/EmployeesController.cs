@@ -34,6 +34,8 @@ namespace API.Controllers
             _logger = logger;
         }
 
+
+        #region GET
         [HttpGet("GetAllEmployees")]
         public async Task<ActionResult<IReadOnlyList<ReadEmployeeDto>>> GetAllEmployeesAsync()
         {
@@ -51,10 +53,19 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Employee, ReadEmployeeDto>(employee));
             }
 
-            return BadRequest(new { Detail = $"This is invalid Id" });
+            return NotFound(new { Detail = $"This is invalid Id" });
         }
 
 
+        [HttpGet("SearchEmployeeWithCriteria")]
+        public async Task<ActionResult<IReadOnlyList<ReadEmployeeDto>>> SearchWithCriteria(string name = null, byte? type = null, string phone = null, decimal? salary = null)
+        {
+            var result = await _employeeServices.SearchEmployeeDataWithDetail(name, type, phone, salary);
+            return Ok(result);
+        }
+        #endregion
+
+        #region POST
         [HttpPost("InsertEmployee")]
         public async Task<ActionResult> InsertEmployeeAsync(CreateEmployeeDto employeeDto)
         {
@@ -62,22 +73,23 @@ namespace API.Controllers
                 return BadRequest(new { Detail = $"This is invalid Employee Type {employeeDto.EmpType}" });
             if (!_employeeServices.IsValidEmployeeAge(employeeDto.EmpAge))
                 return BadRequest(new { Detail = $"This is invalid Employee Age {employeeDto.EmpAge}" });
-            if(!_phoneNumberValidator.IsValidPhoneNumber(employeeDto.EmpPhoneNumber))
+            if (!_phoneNumberValidator.IsValidPhoneNumber(employeeDto.EmpPhoneNumber))
                 return BadRequest(new { Detail = $"This is invalid phone number {employeeDto.EmpPhoneNumber}" });
             var employee = _mapper.Map<CreateEmployeeDto, Employee>(employeeDto);
             _uof.GetRepository<Employee>().InsertAsync(employee);
             await _uof.Commit();
 
-            return Ok(_mapper.Map<Employee, CreateEmployeeDto>(employee));
+            return StatusCode(201, "Employee Inserted Successfully"); 
         }
+        #endregion
 
-
+        #region PUT
         [HttpPut("UpdateEmployee")]
         public async Task<ActionResult> UpdateEmployeeAsync(ReadEmployeeDto employeeDto)
         {
             var result = await _uof.GetRepository<Employee>().Exists(employeeDto.Id);
             if (!result)
-                return BadRequest(new { Detail = $"Can't update employee not exists before {employeeDto.Id}" });
+                return NotFound(new { Detail = $"Can't update employee not exists before {employeeDto.Id}" });
             if (!_employeeServices.IsValidEmployeeType(employeeDto.EmpType))
                 return BadRequest(new { Detail = $"This is invalid Employee Type {employeeDto.EmpType}" });
             if (!_employeeServices.IsValidEmployeeAge(employeeDto.EmpAge))
@@ -88,10 +100,11 @@ namespace API.Controllers
             _uof.GetRepository<Employee>().UpdateAsync(employee);
             await _uof.Commit();
 
-            return Ok(_mapper.Map<Employee, ReadEmployeeDto>(employee));
+            return Ok("Updated Successfully");
         }
+        #endregion
 
-
+        #region DELETE
         [HttpDelete("DeleteEmployee")]
         public async Task<ActionResult> DeleteEmployeeAsync(ReadEmployeeDto employeeDto)
         {
@@ -102,11 +115,11 @@ namespace API.Controllers
             var result = await _uof.GetRepository<Employee>().Exists(employeeDto.Id);
             if (!result)
             {
-                return BadRequest(new { Detail = $"Can't delete employee not exists before {employeeDto.Id}" });
+                return NotFound(new { Detail = $"Can't delete employee not exists before {employeeDto.Id}" });
             }
             else
             {
-                if(UsedInAttendance || UsedInPayroll || UsedInVacation)
+                if (UsedInAttendance || UsedInPayroll || UsedInVacation)
                 {
                     return BadRequest(new { Detail = $"Can't delete this employee because it exixts in onther tables {employeeDto.Id}" });
                 }
@@ -115,18 +128,11 @@ namespace API.Controllers
                     var employee = _mapper.Map<ReadEmployeeDto, Employee>(employeeDto);
                     _uof.GetRepository<Employee>().DeleteAsync(employee);
                     await _uof.Commit();
-                    return Ok();
+                    return Ok("Deleted Successfully");
                 }
             }
         }
 
-
-        [HttpGet("SearchEmployeeWithCriteria")]
-        public async Task<ActionResult<IReadOnlyList<ReadEmployeeDto>>> SearchWithCriteria(string name = null, byte? type = null, string phone = null, decimal? salary = null)
-        {
-            var result = await _employeeServices.SearchEmployeeDataWithDetail(name, type, phone, salary);
-            return Ok(result);
-        }
 
 
         [HttpDelete("FireEmployee")]
@@ -135,25 +141,27 @@ namespace API.Controllers
             var result = await _uof.GetRepository<Employee>().Exists(id);
             if (!result)
             {
-                return BadRequest(new { Detail = $"Not Found!" });
+                return NotFound(new { Detail = $"Not Found!" });
             }
             var employee = await _uof.GetRepository<Employee>().GetByIdAsync(id);
             _uof.GetRepository<Employee>().DeleteAsync(employee);
 
             var AttendanceRecords = await _uof.GetRepository<Attendence>().GetAllWithWhere(A => A.EmpId == employee.Id);
-            if(AttendanceRecords != null)
-            _uof.GetRepository<Attendence>().DeleteRangeAsync(AttendanceRecords);
+            if (AttendanceRecords != null)
+                _uof.GetRepository<Attendence>().DeleteRangeAsync(AttendanceRecords);
 
             var PayrollRecords = await _uof.GetRepository<Payroll>().GetAllWithWhere(P => P.EmpId == employee.Id);
-            if(PayrollRecords != null)
-            _uof.GetRepository<Payroll>().DeleteRangeAsync(PayrollRecords);
+            if (PayrollRecords != null)
+                _uof.GetRepository<Payroll>().DeleteRangeAsync(PayrollRecords);
 
             var VacationRecords = await _uof.GetRepository<Vacation>().GetAllWithWhere(v => v.EmpId == employee.Id);
             if (VacationRecords != null)
-            _uof.GetRepository<Vacation>().DeleteRangeAsync(VacationRecords);
+                _uof.GetRepository<Vacation>().DeleteRangeAsync(VacationRecords);
 
             await _uof.Commit();
-            return Ok();
+            return Ok("Fired Successfully");
         }
+        #endregion
+
     }
 }
