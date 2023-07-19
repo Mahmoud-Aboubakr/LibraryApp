@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Validators;
 using AutoMapper;
+using Domain.Constants;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
@@ -53,7 +54,7 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Attendence, ReadAttendanceDto>(attendences));
             }
 
-            return NotFound(new { Detail = $"This is invalid Id" });
+            return NotFound(new { Detail = AppMessages.INVALID_ID });
         }
 
         [HttpGet("GetAttendenceByIdWithDetailAsync")]
@@ -65,7 +66,7 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Attendence, ReadAttendenceDetailsDto>(attendences));
             }
 
-            return NotFound(new { Detail = $"This is invalid Id" });
+            return NotFound(new { Detail = AppMessages.INVALID_ID });
         }
 
 
@@ -84,17 +85,17 @@ namespace API.Controllers
         public async Task<ActionResult> InsertAttendenceAsync(CreateAttendenceDto attendenceDto)
         {
             if (!_attendenceServices.IsValidAttendencePermission(attendenceDto.Permission))
-                return BadRequest(new { Detail = $"This is invalid input (Permission) {attendenceDto.Permission}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_PERMISSION} {attendenceDto.Permission}" });
             if (!_attendenceServices.IsValidMonth(attendenceDto.Month))
-                return BadRequest(new { Detail = $"This is invalid month value {attendenceDto.Month}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_MONTH} {attendenceDto.Month}" });
             var result = await _uof.GetRepository<Employee>().Exists(attendenceDto.EmpId);
             if (!result)
-                return BadRequest(new { Detail = $"This is no employee to add attendence {attendenceDto.EmpId}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_ID} {attendenceDto.EmpId}" });
             var attendences = _mapper.Map<CreateAttendenceDto, Attendence>(attendenceDto);
             _uof.GetRepository<Attendence>().InsertAsync(attendences);
             await _uof.Commit();
 
-            return StatusCode(201, "Attendence Record Inserted Successfully");
+            return StatusCode(201, AppMessages.INSERTED);
         }
         #endregion
 
@@ -103,17 +104,17 @@ namespace API.Controllers
         public async Task<ActionResult> UpdateAttendenceAsync(ReadAttendanceDto attendenceDto)
         {
             if (!_attendenceServices.IsValidAttendencePermission(attendenceDto.Permission))
-                return BadRequest(new { Detail = $"This is invalid input (Permission) {attendenceDto.Permission}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_PERMISSION} {attendenceDto.Permission}" });
             if (!_attendenceServices.IsValidMonth(attendenceDto.Month))
-                return BadRequest(new { Detail = $"This is invalid month value {attendenceDto.Month}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_MONTH} {attendenceDto.Month}" });
             var result = await _uof.GetRepository<Attendence>().Exists(attendenceDto.Id);
             if (!result)
-                return NotFound(new { Detail = $"This is no attendence record to update it {attendenceDto.Id}" });
+                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {attendenceDto.Id}" });
             var attendences = _mapper.Map<ReadAttendanceDto, Attendence>(attendenceDto);
             _uof.GetRepository<Attendence>().UpdateAsync(attendences);
             await _uof.Commit();
 
-            return Ok("Updated Successfully");
+            return Ok(AppMessages.UPDATED);
         }
         #endregion
 
@@ -123,11 +124,11 @@ namespace API.Controllers
         {
             var result = await _uof.GetRepository<Attendence>().Exists(attendenceDto.Id);
             if (!result)
-                return NotFound(new { Detail = $"This is no attendence record to delete it {attendenceDto.Id}" });
+                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {attendenceDto.Id}" });
             var attendences = _mapper.Map<ReadAttendanceDto, Attendence>(attendenceDto);
             _uof.GetRepository<Attendence>().DeleteAsync(attendences);
             await _uof.Commit();
-            return Ok("Deleted Successfully");
+            return Ok(AppMessages.DELETED);
         }
         #endregion
 
