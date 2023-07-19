@@ -8,8 +8,8 @@ namespace Application.DTOs
 {
     public class CreateOrderDto
     {
-        public int CustomerId { get; set; }
-        public string CustomerName { get; set; }
-        public decimal TotalPrice { get; set; }
+        public string CustomerId { get; set; }
+      
+        public string TotalPrice { get; set; }
     }
 }

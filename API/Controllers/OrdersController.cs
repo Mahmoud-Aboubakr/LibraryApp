@@ -84,6 +84,56 @@ namespace API.Controllers
 
         //insert
 
+        [HttpPost("InsertOrder")]
+        public async Task<ActionResult> InsertOrderAsync(CreateOrderDto createOrder)
+        {
+            if (!_numbersValidator.IsValidInt(createOrder.CustomerId))
+                return BadRequest(new { Detail = $"This is invalid OrderId {createOrder.CustomerId}" });
+            if (!_numbersValidator.IsValidDecimal(createOrder.TotalPrice))
+                return BadRequest(new { Detail = $"This is invalid Quantity {createOrder.TotalPrice}" });
+
+            var orderBook = _mapper.Map<CreateOrderDto, Order>(createOrder);
+            _uof.GetRepository<Order>().InsertAsync(orderBook);
+            await _uof.Commit();
+
+            return Ok(_mapper.Map<Order, ReadOrderDto>(orderBook));
+        }
+
+        [HttpPost("InsertBookOrder")]
+        public async Task<ActionResult> InsertOrderBookAsync(CreateBookOrderDetailsDto createOrderBooks)
+        {
+            if (!_numbersValidator.IsValidInt(createOrderBooks.OrderId))
+                return BadRequest(new { Detail = $"This is invalid OrderId {createOrderBooks.OrderId}" });
+            if (!_numbersValidator.IsValidInt(createOrderBooks.BookId))
+                return BadRequest(new { Detail = $"This is invalid BookId {createOrderBooks.BookId}" });
+            if (!_numbersValidator.IsValidDecimal(createOrderBooks.Price))
+                return BadRequest(new { Detail = $"This is invalid Price {createOrderBooks.Price}" });
+            if (!_numbersValidator.IsValidInt(createOrderBooks.Quantity))
+                return BadRequest(new { Detail = $"This is invalid Quantity {createOrderBooks.Quantity}" });
+
+            var validOrderId = await _orderServices.IsValidOrderId(createOrderBooks.OrderId);
+           
+            if (validOrderId)
+            {
+                var validBook = await _orderServices.IsAvailableBook(createOrderBooks.BookId, createOrderBooks.Quantity);
+                if (validBook)
+                {
+                    var orderBook = _mapper.Map<CreateBookOrderDetailsDto, BookOrderDetails>(createOrderBooks);
+                    _uof.GetRepository<BookOrderDetails>().InsertAsync(orderBook);
+                    await _uof.Commit();
+                    _orderServices.DecreaseQuantity(createOrderBooks.BookId, createOrderBooks.Quantity);
+                    return Ok(_mapper.Map<BookOrderDetails, CreateBookOrderDetailsDto>(orderBook));
+                }
+                else
+                {
+                    return BadRequest(new { Detail = $"Book Is Not Available" });
+                }
+            }
+            else
+            {
+                return BadRequest(new { Detail = $"OrderId Is Not Valid" });
+            }
+        }
 
         [HttpDelete("DeleteOrderAsync")]
         public void  DeletOrderAsync(int orderId)

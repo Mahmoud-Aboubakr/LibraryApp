@@ -96,22 +96,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("Insert")]
-        public async Task<ActionResult> InsertOrderBookAsync(CreateBookOrderDetailsDto createOrderBooks)
-        {
-            if (!_numbersValidator.IsValidInt(createOrderBooks.OrderId))
-                return BadRequest(new { Detail = $"This is invalid OrderId {createOrderBooks.OrderId}" });
-            if (!_numbersValidator.IsValidInt(createOrderBooks.BookId))
-                return BadRequest(new { Detail = $"This is invalid BookId {createOrderBooks.BookId}" });
-            if (!_numbersValidator.IsValidInt(createOrderBooks.Quantity))
-                return BadRequest(new { Detail = $"This is invalid Quantity {createOrderBooks.Quantity}" });
-
-            var orderBook = _mapper.Map<CreateBookOrderDetailsDto, BookOrderDetails>(createOrderBooks);
-            _uof.GetRepository<BookOrderDetails>().InsertAsync(orderBook);
-            await _uof.Commit();
-
-            return Ok(_mapper.Map<BookOrderDetails, CreateBookOrderDetailsDto>(orderBook));
-        }
+        
 
         [HttpDelete]
         public async Task DeleteOrderBookAsync(ReadBookOrderDetailsDto readOrderBooksDto)
