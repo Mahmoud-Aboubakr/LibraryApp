@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using AutoMapper;
+using Domain.Constants;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,7 +48,7 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Author, ReadAuthorDto>(author));
             }
 
-            return NotFound(new { Detail = $"This is invalid Id" });
+            return NotFound(new { Detail = AppMessages.INVALID_ID });
         }
 
 
@@ -69,11 +70,11 @@ namespace API.Controllers
                 _uof.GetRepository<Author>().InsertAsync(author);
                 await _uof.Commit();
 
-                return StatusCode(201, "Author Inserted Successfully");
+                return StatusCode(201, AppMessages.INSERTED);
             }
             else
             {
-                return BadRequest(new { Detail = $"This is invalid phone number {authorDto.AuthorPhoneNumber}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {authorDto.AuthorPhoneNumber}" });
             }
         }
         #endregion
@@ -84,14 +85,14 @@ namespace API.Controllers
         {
             var result = await _uof.GetRepository<Author>().Exists(authorDto.Id);
             if (!result)
-                return NotFound(new { Detail = $"Can't update Author not exists before {authorDto.Id}" });
+                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {authorDto.Id}" });
             if (!_phoneNumberValidator.IsValidPhoneNumber(authorDto.AuthorPhoneNumber))
-                return BadRequest(new { Detail = $"This is invalid phone number {authorDto.AuthorPhoneNumber}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {authorDto.AuthorPhoneNumber}" });
             var author = _mapper.Map<ReadAuthorDto, Author>(authorDto);
             _uof.GetRepository<Author>().UpdateAsync(author);
             await _uof.Commit();
 
-            return Ok("Updated Successfully");
+            return Ok(AppMessages.UPDATED);
         }
         #endregion
 
@@ -101,13 +102,13 @@ namespace API.Controllers
         {
             var result = _uof.GetRepository<Book>().FindUsingWhereAsync(b => b.AuthorId == authorDto.Id);
             if (result == null)
-                return BadRequest("Can't delete this author because used in other tables");
+                return BadRequest(AppMessages.FAILED_DELETE);
             else
             {
                 var author = _mapper.Map<ReadAuthorDto, Author>(authorDto);
                 _uof.GetRepository<Author>().DeleteAsync(author);
                 await _uof.Commit();
-                return Ok("Deleted Successfully");
+                return Ok(AppMessages.DELETED);
             }
         }
         #endregion

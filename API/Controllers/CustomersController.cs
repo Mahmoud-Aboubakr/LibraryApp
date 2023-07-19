@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using AutoMapper;
+using Domain.Constants;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +50,7 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Customer, ReadCustomerDto>(author));
             }
 
-            return NotFound(new { Detail = $"This is invalid Id" });
+            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
 
@@ -71,11 +72,11 @@ namespace API.Controllers
                 _uof.GetRepository<Customer>().InsertAsync(customer);
                 await _uof.Commit();
 
-                return StatusCode(201, "Customer Inserted Successfully");
+                return StatusCode(201, AppMessages.INSERTED);
             }
             else
             {
-                return BadRequest(new { Detail = $"Invalid Phone Number : {createCustomerDto.CustomerPhoneNumber}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {createCustomerDto.CustomerPhoneNumber}" });
             }
         }
         #endregion
@@ -90,22 +91,23 @@ namespace API.Controllers
                 _uof.GetRepository<Customer>().UpdateAsync(customer);
                 await _uof.Commit();
 
-                return Ok("Updated Successfully");
+                return Ok(AppMessages.UPDATED);
             }
             else
             {
-                return BadRequest(new { Detail = $"Invalid Phone Number : {readCustomerDto.CustomerPhoneNumber}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {readCustomerDto.CustomerPhoneNumber}" });
             }
         }
         #endregion
 
         #region DELETE
         [HttpDelete]
-        public async Task DeleteBannedCustomerAsync(ReadCustomerDto readCustomerDto)
+        public async Task<ActionResult> DeleteBannedCustomerAsync(ReadCustomerDto readCustomerDto)
         {
             var Customer = _mapper.Map<ReadCustomerDto, Customer>(readCustomerDto);
             _uof.GetRepository<Customer>().DeleteAsync(Customer);
             await _uof.Commit();
+            return Ok(AppMessages.DELETED);
         }
         #endregion
 

@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using AutoMapper;
+using Domain.Constants;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
@@ -27,7 +28,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
-
+        #region Get
         [HttpGet("GetAllPayrollsAsync")]
         public async Task<ActionResult<IReadOnlyList<ReadPayrollDto>>> GetAllPayrollsAsync()
         {
@@ -51,7 +52,7 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Payroll, ReadPayrollDto>(payrolls));
             }
 
-            return BadRequest(new { Detail = $"This is invalid Id" });
+            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
         [HttpGet("GetPayrollByIdWithDetailAsync")]
@@ -63,15 +64,24 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Payroll, ReadPayrollDetailsDto>(payrolls));
             }
 
-            return BadRequest(new { Detail = $"This is invalid Id" });
+            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
+        [HttpGet("SearchPayrollWithCriteria")]
+        public async Task<ActionResult<IReadOnlyList<ReadPayrollDetailsDto>>> SearchPayrollWithCriteria(string? empName = null)
+        {
+            var result = await _searchPayrollDataWithDetailService.SearchPayrollDataWithDetail(empName);
+            return Ok(result);
+        }
+        #endregion
+
+        #region Post
         [HttpPost("InsertPayroll")]
         public async Task<ActionResult> InsertPayrollAsync(CreatePayrollDto payrollDto)
         {
             var result = await _uof.GetRepository<Employee>().Exists(payrollDto.EmpId);
             if (!result)
-                return BadRequest(new { Detail = $"This is no employee to add payroll {payrollDto.EmpId}" });
+                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {payrollDto.EmpId}" });
             //To get BasicSalary from Employee
             var employee = await _uof.GetRepository<Employee>().GetByIdAsync(payrollDto.EmpId);
             var payrolls = _mapper.Map<CreatePayrollDto, Payroll>(payrollDto);
@@ -79,15 +89,17 @@ namespace API.Controllers
             _uof.GetRepository<Payroll>().InsertAsync(payrolls);
             await _uof.Commit();
 
-            return Ok(_mapper.Map<Payroll, CreatePayrollDto>(payrolls));
+            return StatusCode(201, AppMessages.INSERTED);
         }
+        #endregion
 
+        #region Put
         [HttpPut("UpdatePayroll")]
         public async Task<ActionResult> UpdatePayrollAsync(UpdatePayrollDto payrollDto)
         {
             var result = await _uof.GetRepository<Payroll>().Exists(payrollDto.Id);
             if (!result)
-                return BadRequest(new { Detail = $"This is no payroll record to update it {payrollDto.Id}" });
+                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {payrollDto.Id}" });
             //To get BasicSalary from Employee
             var employee = await _uof.GetRepository<Employee>().GetByIdAsync(payrollDto.EmpId);
             var payrolls = _mapper.Map<UpdatePayrollDto, Payroll>(payrollDto);
@@ -95,27 +107,23 @@ namespace API.Controllers
             _uof.GetRepository<Payroll>().UpdateAsync(payrolls);
             await _uof.Commit();
 
-            return Ok(_mapper.Map<Payroll, ReadPayrollDto>(payrolls));
+            return Ok(AppMessages.UPDATED);
         }
+        #endregion
 
+        #region Delete
         [HttpDelete("DeletePayroll")]
         public async Task<ActionResult> DeletePayrollAsync(ReadPayrollDto payrollDto)
         {
             var result = await _uof.GetRepository<Payroll>().Exists(payrollDto.Id);
             if (!result)
-                return BadRequest(new { Detail = $"This is no payroll record to delete it {payrollDto.Id}" });
+                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {payrollDto.Id}" });
             var payrolls = _mapper.Map<ReadPayrollDto, Payroll>(payrollDto);
             _uof.GetRepository<Payroll>().DeleteAsync(payrolls);
             await _uof.Commit();
-            return Ok();
+            return Ok(AppMessages.DELETED);
         }
+        #endregion
 
-        [HttpGet("SearchPayrollWithCriteria")]
-
-        public async Task<ActionResult<IReadOnlyList<ReadPayrollDetailsDto>>> SearchPayrollWithCriteria(string? empName = null)
-        {
-            var result = await _searchPayrollDataWithDetailService.SearchPayrollDataWithDetail(empName);
-            return Ok(result);
-        }
     }
 }

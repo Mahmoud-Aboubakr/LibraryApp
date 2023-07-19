@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using AutoMapper;
+using Domain.Constants;
 using Domain.Entities;
 using Infrastructure.AppServicesContracts;
 using Microsoft.AspNetCore.Mvc;
@@ -60,7 +61,7 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadBookDto>(book));
             }
-            return NotFound(new { Detail = $"this id : {id} is not vaild !!" });
+            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
         [HttpGet("GetBookByIdWithDetailAsync")]
@@ -77,7 +78,7 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadBookDto>(book));
             }
-            return NotFound("Invalid Id");
+            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
 
@@ -95,14 +96,14 @@ namespace API.Controllers
         public async Task<ActionResult> InsertBookAsync(CreateBookDto insertBookDto)
         {
             if (!_numbersValidator.IsValidInt(insertBookDto.Quantity))
-                return BadRequest(new { Detail = $"This is invalid quantity {insertBookDto.Quantity}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_QUANTITY} {insertBookDto.Quantity}" });
             if (!_numbersValidator.IsValidDecimal(insertBookDto.Price))
-                return BadRequest(new { Detail = $"This is invalid price {insertBookDto.Price}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_PRICE} {insertBookDto.Price}" });
             var book = _mapper.Map<CreateBookDto, Book>(insertBookDto);
             _uof.GetRepository<Book>().InsertAsync(book);
             await _uof.Commit();
 
-            return StatusCode(201, "Book Inserted Successfully");
+            return StatusCode(201, AppMessages.INSERTED);
         }
         #endregion
 
@@ -111,25 +112,26 @@ namespace API.Controllers
         public async Task<ActionResult> UpdateBookAsync(UpdateBookDto updateBookDto)
         {
             if (!_numbersValidator.IsValidInt(updateBookDto.Quantity))
-                return BadRequest(new { Detail = $"This is invalid quantity {updateBookDto.Quantity}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_QUANTITY} {updateBookDto.Quantity}" });
             if (!_numbersValidator.IsValidDecimal(updateBookDto.Price))
-                return BadRequest(new { Detail = $"This is invalid price {updateBookDto.Price}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_PRICE} {updateBookDto.Price}" });
 
             var book = _mapper.Map<UpdateBookDto, Book>(updateBookDto);
             _uof.GetRepository<Book>().UpdateAsync(book);
             await _uof.Commit();
 
-            return Ok("Updated Successfully");
+            return Ok(AppMessages.UPDATED);
         }
         #endregion
 
         #region DELETE
         [HttpDelete]
-        public async Task DeleteBookAsync(ReadBookDto readBookDto)
+        public async Task<ActionResult> DeleteBookAsync(ReadBookDto readBookDto)
         {
             var book = _mapper.Map<ReadBookDto, Book>(readBookDto);
             _uof.GetRepository<Book>().DeleteAsync(book);
             await _uof.Commit();
+            return Ok(AppMessages.DELETED);
         }
         #endregion
 

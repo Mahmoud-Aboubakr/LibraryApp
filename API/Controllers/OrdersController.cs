@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using AutoMapper;
+using Domain.Constants;
 using Domain.Entities;
 using Infrastructure.AppServices;
 using Microsoft.AspNetCore.Http;
@@ -32,6 +33,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
+        #region Get
         [HttpGet("GetAllOrders")]
         public async Task<ActionResult<IReadOnlyList<ReadOrderDto>>> GetAllOrdersWithDetails()
         {
@@ -53,7 +55,7 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadOrderDto>(order));
             }
-            return BadRequest(new { Detail = $"Id : {id} is not vaild !!" });
+            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
         [HttpGet("GetOrderById")]
@@ -70,7 +72,7 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadOrderDto>(order));
             }
-            return BadRequest(new { Detail = $"Id : {id} is not vaild !!" });
+            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
 
@@ -78,41 +80,41 @@ namespace API.Controllers
         [HttpGet("SearchOrderWithCriteria")]
         public async Task<ActionResult<IReadOnlyList<ReadOrderDto>>> SearchOrderByCriteria(int? orderId = null, int? customerId = null, string customerName = null, decimal? totalPrice = null, DateTime? date = null)
         {
-            var result = await _orderServices.SearchOrders(orderId, customerId, customerName , totalPrice , date);
+            var result = await _orderServices.SearchOrders(orderId, customerId, customerName, totalPrice, date);
             return Ok(result);
         }
+        #endregion
 
-        //insert
-
+        #region Post
         [HttpPost("InsertOrder")]
         public async Task<ActionResult> InsertOrderAsync(CreateOrderDto createOrder)
         {
             if (!_numbersValidator.IsValidInt(createOrder.CustomerId))
-                return BadRequest(new { Detail = $"This is invalid OrderId {createOrder.CustomerId}" });
+                return NotFound(new { Detail = $"{AppMessages.INVALID_CUSTOMER} {createOrder.CustomerId}" });
             if (!_numbersValidator.IsValidDecimal(createOrder.TotalPrice))
-                return BadRequest(new { Detail = $"This is invalid Quantity {createOrder.TotalPrice}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_QUANTITY} {createOrder.TotalPrice}" });
 
             var orderBook = _mapper.Map<CreateOrderDto, Order>(createOrder);
             _uof.GetRepository<Order>().InsertAsync(orderBook);
             await _uof.Commit();
 
-            return Ok(_mapper.Map<Order, ReadOrderDto>(orderBook));
+            return StatusCode(201, AppMessages.INSERTED);
         }
 
         [HttpPost("InsertBookOrder")]
         public async Task<ActionResult> InsertOrderBookAsync(CreateBookOrderDetailsDto createOrderBooks)
         {
             if (!_numbersValidator.IsValidInt(createOrderBooks.OrderId))
-                return BadRequest(new { Detail = $"This is invalid OrderId {createOrderBooks.OrderId}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_ORDER} {createOrderBooks.OrderId}" });
             if (!_numbersValidator.IsValidInt(createOrderBooks.BookId))
-                return BadRequest(new { Detail = $"This is invalid BookId {createOrderBooks.BookId}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_BOOK} {createOrderBooks.BookId}" });
             if (!_numbersValidator.IsValidDecimal(createOrderBooks.Price))
-                return BadRequest(new { Detail = $"This is invalid Price {createOrderBooks.Price}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_PRICE} {createOrderBooks.Price}" });
             if (!_numbersValidator.IsValidInt(createOrderBooks.Quantity))
-                return BadRequest(new { Detail = $"This is invalid Quantity {createOrderBooks.Quantity}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_QUANTITY} {createOrderBooks.Quantity}" });
 
             var validOrderId = await _orderServices.IsValidOrderId(createOrderBooks.OrderId);
-           
+
             if (validOrderId)
             {
                 var validBook = await _orderServices.IsAvailableBook(createOrderBooks.BookId, createOrderBooks.Quantity);
@@ -122,26 +124,29 @@ namespace API.Controllers
                     _uof.GetRepository<BookOrderDetails>().InsertAsync(orderBook);
                     await _uof.Commit();
                     _orderServices.DecreaseQuantity(createOrderBooks.BookId, createOrderBooks.Quantity);
-                    return Ok(_mapper.Map<BookOrderDetails, CreateBookOrderDetailsDto>(orderBook));
+                    return StatusCode(201, AppMessages.INSERTED);
                 }
                 else
                 {
-                    return BadRequest(new { Detail = $"Book Is Not Available" });
+                    return NotFound(new { Detail = AppMessages.UNAVAILABLE_BOOK });
                 }
             }
             else
             {
-                return BadRequest(new { Detail = $"OrderId Is Not Valid" });
+                return NotFound(new { Detail = AppMessages.INVALID_ORDER });
             }
         }
+        #endregion
 
+        #region Delete
         [HttpDelete("DeleteOrderAsync")]
-        public void  DeletOrderAsync(int orderId)
+        public void DeletOrderAsync(int orderId)
         {
-             _orderServices.DeletOrderAsync(orderId);           
+            _orderServices.DeletOrderAsync(orderId);
         }
+        #endregion
 
-
+       
 
     }
 }

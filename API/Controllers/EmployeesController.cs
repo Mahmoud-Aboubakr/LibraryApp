@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Validators;
 using AutoMapper;
+using Domain.Constants;
 using Domain.Entities;
 using Infrastructure.AppServices;
 using Infrastructure.AppServicesContracts;
@@ -53,7 +54,7 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Employee, ReadEmployeeDto>(employee));
             }
 
-            return NotFound(new { Detail = $"This is invalid Id" });
+            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
 
@@ -70,16 +71,16 @@ namespace API.Controllers
         public async Task<ActionResult> InsertEmployeeAsync(CreateEmployeeDto employeeDto)
         {
             if (!_employeeServices.IsValidEmployeeType(employeeDto.EmpType))
-                return BadRequest(new { Detail = $"This is invalid Employee Type {employeeDto.EmpType}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_EMPTYPE} {employeeDto.EmpType}" });
             if (!_employeeServices.IsValidEmployeeAge(employeeDto.EmpAge))
-                return BadRequest(new { Detail = $"This is invalid Employee Age {employeeDto.EmpAge}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_AGE} {employeeDto.EmpAge}" });
             if (!_phoneNumberValidator.IsValidPhoneNumber(employeeDto.EmpPhoneNumber))
-                return BadRequest(new { Detail = $"This is invalid phone number {employeeDto.EmpPhoneNumber}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {employeeDto.EmpPhoneNumber}" });
             var employee = _mapper.Map<CreateEmployeeDto, Employee>(employeeDto);
             _uof.GetRepository<Employee>().InsertAsync(employee);
             await _uof.Commit();
 
-            return StatusCode(201, "Employee Inserted Successfully"); 
+            return StatusCode(201, AppMessages.INSERTED); 
         }
         #endregion
 
@@ -89,18 +90,18 @@ namespace API.Controllers
         {
             var result = await _uof.GetRepository<Employee>().Exists(employeeDto.Id);
             if (!result)
-                return NotFound(new { Detail = $"Can't update employee not exists before {employeeDto.Id}" });
+                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {employeeDto.Id}" });
             if (!_employeeServices.IsValidEmployeeType(employeeDto.EmpType))
-                return BadRequest(new { Detail = $"This is invalid Employee Type {employeeDto.EmpType}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_EMPTYPE} {employeeDto.EmpType}" });
             if (!_employeeServices.IsValidEmployeeAge(employeeDto.EmpAge))
-                return BadRequest(new { Detail = $"This is invalid Employee Age {employeeDto.EmpAge}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_AGE} {employeeDto.EmpAge}" });
             if (!_phoneNumberValidator.IsValidPhoneNumber(employeeDto.EmpPhoneNumber))
-                return BadRequest(new { Detail = $"This is invalid phone number {employeeDto.EmpPhoneNumber}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {employeeDto.EmpPhoneNumber}" });
             var employee = _mapper.Map<ReadEmployeeDto, Employee>(employeeDto);
             _uof.GetRepository<Employee>().UpdateAsync(employee);
             await _uof.Commit();
 
-            return Ok("Updated Successfully");
+            return Ok(AppMessages.UPDATED);
         }
         #endregion
 
@@ -115,20 +116,20 @@ namespace API.Controllers
             var result = await _uof.GetRepository<Employee>().Exists(employeeDto.Id);
             if (!result)
             {
-                return NotFound(new { Detail = $"Can't delete employee not exists before {employeeDto.Id}" });
+                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {employeeDto.Id}" });
             }
             else
             {
                 if (UsedInAttendance || UsedInPayroll || UsedInVacation)
                 {
-                    return BadRequest(new { Detail = $"Can't delete this employee because it exixts in onther tables {employeeDto.Id}" });
+                    return BadRequest(new { Detail = $"{AppMessages.FAILED_DELETE} {employeeDto.Id}" });
                 }
                 else
                 {
                     var employee = _mapper.Map<ReadEmployeeDto, Employee>(employeeDto);
                     _uof.GetRepository<Employee>().DeleteAsync(employee);
                     await _uof.Commit();
-                    return Ok("Deleted Successfully");
+                    return Ok(AppMessages.DELETED);
                 }
             }
         }
@@ -141,7 +142,7 @@ namespace API.Controllers
             var result = await _uof.GetRepository<Employee>().Exists(id);
             if (!result)
             {
-                return NotFound(new { Detail = $"Not Found!" });
+                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
             }
             var employee = await _uof.GetRepository<Employee>().GetByIdAsync(id);
             _uof.GetRepository<Employee>().DeleteAsync(employee);
@@ -159,7 +160,7 @@ namespace API.Controllers
                 _uof.GetRepository<Vacation>().DeleteRangeAsync(VacationRecords);
 
             await _uof.Commit();
-            return Ok("Fired Successfully");
+            return Ok(AppMessages.FIRED);
         }
         #endregion
 
