@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Validators;
 using AutoMapper;
+using Domain.Constants;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -59,7 +60,7 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadBannedCustomerDto>(bannedCustomers));
             }
-            return NotFound(new { Detail = $"Id : {id} is not vaild !!" });
+            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
         [HttpGet("GetByIdWithIncludesAsync")]
@@ -76,7 +77,7 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadBannedCustomerDto>(bannedCustomers));
             }
-            return NotFound(new { Detail = $"Id : {id} is not vaild !!" });
+            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
 
@@ -96,21 +97,18 @@ namespace API.Controllers
             _uof.GetRepository<BannedCustomer>().InsertAsync(bannedCustomer);
             await _uof.Commit();
 
-            return StatusCode(201, "Customer Inserted Successfully");
+            return StatusCode(201, AppMessages.INSERTED);
         }
-        #endregion
-
-        #region PUT
-
         #endregion
 
         #region DELETE
         [HttpDelete]
-        public async Task DeleteBannedCustomerAsync(ReadBannedCustomerDto readBannedCustomerDto)
+        public async Task<ActionResult> DeleteBannedCustomerAsync(ReadBannedCustomerDto readBannedCustomerDto)
         {
             var bannedCustomer = _mapper.Map<ReadBannedCustomerDto, BannedCustomer>(readBannedCustomerDto);
             _uof.GetRepository<BannedCustomer>().DeleteAsync(bannedCustomer);
             await _uof.Commit();
+            return Ok(AppMessages.DELETED);
         }
         #endregion
 

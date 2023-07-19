@@ -1,3 +1,4 @@
+using API.Extensions;
 using Application.Interfaces;
 using Application.Validators;
 using Infrastructure.AppServices;
@@ -10,34 +11,12 @@ using Persistence.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<LibraryDbContext>(opt =>
-{
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddTransient<ISearchBookDataWithDetailService, SearchBookDataWithDetailService>();
-builder.Services.AddScoped<INumbersValidator, NumbersValidator>();
-builder.Services.AddScoped<IPhoneNumberValidator, PhoneNumberValidator>();
-builder.Services.AddTransient<ISearchAuthorDataService, SearchAuthorDataService>();
-builder.Services.AddTransient<ISearchCustomerService, SearchCustomerService>();
-builder.Services.AddTransient<ISearchBannedCustomerService, SearchBannedCustomerservice>();
-builder.Services.AddTransient<ISearchPublisherDataService, SearchPublisherDataService>();
-builder.Services.AddTransient<IBorrowServices, BorrowServices>();
-builder.Services.AddTransient<IOrderServices, OrderServices>();
-builder.Services.AddScoped<IEmployeeServices, EmployeeServices>();
-builder.Services.AddScoped<IAttendenceServices, AttendenceServices>();
-builder.Services.AddTransient<ISearchPayrollDataWithDetailService, SearchPayrollDataWithDetailService>();
-builder.Services.AddTransient<IVacationServices, VacationServices>();
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AppServices(builder.Configuration);
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

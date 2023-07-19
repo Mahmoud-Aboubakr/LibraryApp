@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Validators;
 using AutoMapper;
+using Domain.Constants;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -56,7 +57,7 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadBorrowDto>(borrow));
             }
-            return NotFound(new { Detail = $"Id : {id} is not vaild !!" });
+            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
         [HttpGet("GetAllWithDetails")]
@@ -80,7 +81,7 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadBorrowDto>(readBorrow));
             }
-            return NotFound(new { Detail = $"Id : {id} is not vaild !!" });
+            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
 
@@ -99,7 +100,7 @@ namespace API.Controllers
             var banned = await _borrowServices.IsBannedCustomer(borrowDto.CustomerId);
             if (banned)
             {
-                return BadRequest(new { Detail = $"This Customer Is Banned " });
+                return BadRequest(new { Detail = AppMessages.BANNED_CUSTOMER });
 
             }
             else
@@ -107,19 +108,19 @@ namespace API.Controllers
                 if (_borrowServices.CreateBorrowValidator(borrowDto.CustomerId))
                 {
                     if (!_numbersValidator.IsValidInt(borrowDto.CustomerId))
-                        return BadRequest(new { Detail = $"This is invalid CustomerId {borrowDto.CustomerId}" });
+                        return BadRequest(new { Detail = $"{AppMessages.INVALID_CUSTOMER} {borrowDto.CustomerId}" });
                     if (!_numbersValidator.IsValidInt(borrowDto.BookId))
-                        return BadRequest(new { Detail = $"This is invalid BookId {borrowDto.BookId}" });
+                        return BadRequest(new { Detail = $"{AppMessages.INVALID_BOOK} {borrowDto.BookId}" });
 
                     var borrow = _mapper.Map<CreateBorrowDto, Borrow>(borrowDto);
                     _uof.GetRepository<Borrow>().InsertAsync(borrow);
                     await _uof.Commit();
 
-                    return StatusCode(201, "Borrow Inserted Succesfully");
+                    return StatusCode(201, AppMessages.INSERTED);
                 }
                 else
                 {
-                    return BadRequest(new { Detail = $"This Customer Borrowed 3 Books Today " });
+                    return BadRequest(new { Detail = AppMessages.MAX_BORROWING });
                 }
             }
         }
@@ -131,11 +132,12 @@ namespace API.Controllers
 
         #region DELETE
         [HttpDelete]
-        public async Task DeleteOrderBookAsync(ReadBorrowDto readBorrowDto)
+        public async Task<ActionResult> DeleteOrderBookAsync(ReadBorrowDto readBorrowDto)
         {
             var borrow = _mapper.Map<ReadBorrowDto, Borrow>(readBorrowDto);
             _uof.GetRepository<Borrow>().DeleteAsync(borrow);
             await _uof.Commit();
+            return Ok(AppMessages.DELETED);
         }
         #endregion
 

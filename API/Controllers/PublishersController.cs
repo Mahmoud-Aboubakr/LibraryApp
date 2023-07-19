@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using AutoMapper;
+using Domain.Constants;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +30,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
+        #region Get
         [HttpGet("GetAll")]
         public async Task<ActionResult<IReadOnlyList<ReadPublisherDto>>> GetAllPublishersAsync()
         {
@@ -45,9 +47,18 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Publisher, ReadPublisherDto>(publisher));
             }
 
-            return BadRequest(new { Detail = $"Invalid Id {id}" });
+            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
+        [HttpGet("SearchWithCriteria")]
+        public async Task<ActionResult<IReadOnlyList<ReadPublisherDto>>> SearchWithCriteria(string name = null, string phone = null)
+        {
+            var result = await _searchPublisherDataService.SearchWithCriteria(name, phone);
+            return Ok(result);
+        }
+        #endregion
+
+        #region Post
         [HttpPost("Insert")]
         public async Task<ActionResult> InsertPublisherAsync(CreatePublisherDto createPublisherDto)
         {
@@ -57,14 +68,16 @@ namespace API.Controllers
                 _uof.GetRepository<Publisher>().InsertAsync(publisher);
                 await _uof.Commit();
 
-                return Ok(_mapper.Map<Publisher, ReadPublisherDto>(publisher));
+                return StatusCode(201, AppMessages.INSERTED);
             }
             else
             {
-                return BadRequest(new { Detail = $"Invalid phone number {createPublisherDto.PublisherPhoneNumber}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {createPublisherDto.PublisherPhoneNumber}" });
             }
         }
+        #endregion
 
+        #region Put
         [HttpPut]
         public async Task<ActionResult> UpdatePublisherAsync(ReadPublisherDto publisherDto)
         {
@@ -74,35 +87,31 @@ namespace API.Controllers
                 _uof.GetRepository<Publisher>().UpdateAsync(publisher);
                 await _uof.Commit();
 
-                return Ok(_mapper.Map<Publisher, ReadPublisherDto>(publisher));
+                return Ok(AppMessages.UPDATED);
             }
             else
             {
-                return BadRequest(new { Detail = $"Invalid phone number {publisherDto.PublisherPhoneNumber}" });
+                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {publisherDto.PublisherPhoneNumber}" });
             }
-
         }
+        #endregion
 
+        #region Delete
         [HttpDelete]
         public async Task<ActionResult> DeletePublisherAsync(ReadPublisherDto publisherDto)
         {
-            var result =await _uof.GetRepository<Book>().FindAsync(b => b.PublisherId == publisherDto.Id);
+            var result = await _uof.GetRepository<Book>().FindAsync(b => b.PublisherId == publisherDto.Id);
             if (result != null)
-                return BadRequest("Can't delete this publisher because used in other tables");
+                return BadRequest(AppMessages.FAILED_DELETE);
             else
             {
                 var publisher = _mapper.Map<ReadPublisherDto, Publisher>(publisherDto);
                 _uof.GetRepository<Publisher>().DeleteAsync(publisher);
                 await _uof.Commit();
-                return Ok();
+                return Ok(AppMessages.DELETED);
             }
         }
+        #endregion
 
-        [HttpGet("SearchWithCriteria")]
-        public async Task<ActionResult<IReadOnlyList<ReadPublisherDto>>> SearchWithCriteria(string name = null, string phone = null)
-        {
-            var result = await _searchPublisherDataService.SearchWithCriteria(name, phone);
-            return Ok(result);
-        }
     }
 }
