@@ -10,6 +10,7 @@ namespace Application.DTOs
     {
         public string OrderId { get; set; }
         public string BookId { get; set; }
+        public string Price { get; set; }
         public string Quantity { get; set; }
     }
 }

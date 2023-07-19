@@ -7,6 +7,8 @@ using Persistence.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,6 +25,28 @@ namespace Infrastructure.AppServices
             _mapper = mapper;
         }
 
+        public async Task<bool> IsValidOrderId(string orderId)
+        {
+            int id = int.Parse(orderId);
+            return await _context.Set<Order>().AnyAsync(x => x.Id == id);
+        }
+
+        public async Task<bool> IsAvailableBook(string bookId , string bookQuantity)
+        {
+            int id = int.Parse(bookId);
+            int quantity = int.Parse(bookQuantity);
+            return await _context.Set<Book>().AnyAsync(x => x.Id == id && x.Quantity >= quantity);
+        }
+
+        public void DecreaseQuantity(string BookId , string Quantity)
+        {
+            int id = int.Parse(BookId);
+            int quantity = int.Parse(Quantity);
+            var book = _context.Books.FirstOrDefault(x => x.Id == id);
+            book.Quantity -= quantity;
+            _context.SaveChanges();
+        }
+   
         public void DeletOrderAsync(int orderId)
         {
             Order order = _context.Orders.Find(orderId);
