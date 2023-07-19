@@ -31,6 +31,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
+        #region GET
         [HttpGet("GetAllBooksAsync")]
         public async Task<ActionResult<IReadOnlyList<ReadBookDto>>> GetAllBooksAsync()
         {
@@ -59,7 +60,7 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadBookDto>(book));
             }
-            return BadRequest(new { Detail = $"this id : {id} is not vaild !!" });
+            return NotFound(new { Detail = $"this id : {id} is not vaild !!" });
         }
 
         [HttpGet("GetBookByIdWithDetailAsync")]
@@ -76,9 +77,20 @@ namespace API.Controllers
 
                 return Ok(_mapper.Map<ReadBookDto>(book));
             }
-            return BadRequest("Invalid Id");
+            return NotFound("Invalid Id");
         }
 
+
+        [HttpGet("SearchByCriteria")]
+        public async Task<ActionResult<IReadOnlyList<ReadBookDto>>> SearchByCriteria(string? bookTitle = null, string? authorName = null, string? publisherName = null)
+        {
+            var result = await _searchBookDataWithDetailService.SearchBookDataWithDetail(bookTitle, authorName, publisherName);
+            return Ok(result);
+        }
+
+        #endregion
+
+        #region POST
         [HttpPost("Insert")]
         public async Task<ActionResult> InsertBookAsync(CreateBookDto insertBookDto)
         {
@@ -90,17 +102,11 @@ namespace API.Controllers
             _uof.GetRepository<Book>().InsertAsync(book);
             await _uof.Commit();
 
-            return Ok(_mapper.Map<Book, CreateBookDto>(book));
+            return StatusCode(201, "Book Inserted Successfully");
         }
+        #endregion
 
-        [HttpDelete]
-        public async Task DeleteBookAsync(ReadBookDto readBookDto)
-        {
-            var book = _mapper.Map<ReadBookDto, Book>(readBookDto);
-            _uof.GetRepository<Book>().DeleteAsync(book);
-            await _uof.Commit();
-        }
-
+        #region PUT
         [HttpPut("Update")]
         public async Task<ActionResult> UpdateBookAsync(UpdateBookDto updateBookDto)
         {
@@ -113,15 +119,20 @@ namespace API.Controllers
             _uof.GetRepository<Book>().UpdateAsync(book);
             await _uof.Commit();
 
-            return Ok(_mapper.Map<Book, UpdateBookDto>(book));
+            return Ok("Updated Successfully");
         }
+        #endregion
 
-        [HttpGet("SearchByCriteria")]
-        public async Task<ActionResult<IReadOnlyList<ReadBookDto>>> SearchByCriteria(string? bookTitle = null, string? authorName = null, string? publisherName = null)
+        #region DELETE
+        [HttpDelete]
+        public async Task DeleteBookAsync(ReadBookDto readBookDto)
         {
-            var result = await _searchBookDataWithDetailService.SearchBookDataWithDetail(bookTitle, authorName, publisherName);
-            return Ok(result);
+            var book = _mapper.Map<ReadBookDto, Book>(readBookDto);
+            _uof.GetRepository<Book>().DeleteAsync(book);
+            await _uof.Commit();
         }
+        #endregion
+
     }
 }
 

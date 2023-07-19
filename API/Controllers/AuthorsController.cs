@@ -30,6 +30,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
+        #region GET
         [HttpGet("GetAllAuthors")]
         public async Task<ActionResult<IReadOnlyList<ReadAuthorDto>>> GetAllAuthorsAsync()
         {
@@ -46,9 +47,19 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Author, ReadAuthorDto>(author));
             }
 
-            return BadRequest(new { Detail = $"This is invalid Id" });
+            return NotFound(new { Detail = $"This is invalid Id" });
         }
 
+
+        [HttpGet("SearchAuthorWithCriteria")]
+        public async Task<ActionResult<IReadOnlyList<ReadAuthorDto>>> SearchWithCriteria(string name = null, string phone = null)
+        {
+            var result = await _searchAuthorDataService.SearchWithCriteria(name, phone);
+            return Ok(result);
+        }
+        #endregion
+
+        #region POST
         [HttpPost("InsertAuthor")]
         public async Task<ActionResult> InsertAuthorAsync(CreateAuthorDto authorDto)
         {
@@ -58,29 +69,33 @@ namespace API.Controllers
                 _uof.GetRepository<Author>().InsertAsync(author);
                 await _uof.Commit();
 
-                return Ok(_mapper.Map<Author, CreateAuthorDto>(author));
+                return StatusCode(201, "Author Inserted Successfully");
             }
             else
             {
                 return BadRequest(new { Detail = $"This is invalid phone number {authorDto.AuthorPhoneNumber}" });
             }
         }
+        #endregion
 
+        #region PUT
         [HttpPut("UpdateAuthor")]
         public async Task<ActionResult> UpdateAuthorAsync(ReadAuthorDto authorDto)
         {
             var result = await _uof.GetRepository<Author>().Exists(authorDto.Id);
             if (!result)
-                return BadRequest(new { Detail = $"Can't update Author not exists before {authorDto.Id}" });
+                return NotFound(new { Detail = $"Can't update Author not exists before {authorDto.Id}" });
             if (!_phoneNumberValidator.IsValidPhoneNumber(authorDto.AuthorPhoneNumber))
                 return BadRequest(new { Detail = $"This is invalid phone number {authorDto.AuthorPhoneNumber}" });
             var author = _mapper.Map<ReadAuthorDto, Author>(authorDto);
             _uof.GetRepository<Author>().UpdateAsync(author);
             await _uof.Commit();
 
-            return Ok(_mapper.Map<Author, ReadAuthorDto>(author));
+            return Ok("Updated Successfully");
         }
+        #endregion
 
+        #region DELETE
         [HttpDelete("DeleteAuthor")]
         public async Task<ActionResult> DeleteAuthorAsync(ReadAuthorDto authorDto)
         {
@@ -92,15 +107,10 @@ namespace API.Controllers
                 var author = _mapper.Map<ReadAuthorDto, Author>(authorDto);
                 _uof.GetRepository<Author>().DeleteAsync(author);
                 await _uof.Commit();
-                return Ok();
+                return Ok("Deleted Successfully");
             }
         }
+        #endregion
 
-        [HttpGet("SearchAuthorWithCriteria")]
-        public async Task<ActionResult<IReadOnlyList<ReadAuthorDto>>> SearchWithCriteria(string name = null, string phone = null)
-        {
-            var result = await _searchAuthorDataService.SearchWithCriteria(name, phone);
-            return Ok(result);
-        }
     }
 }
