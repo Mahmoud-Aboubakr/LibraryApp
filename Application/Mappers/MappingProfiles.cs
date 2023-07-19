@@ -73,6 +73,7 @@ namespace Application.Mappers
             CreateMap<Employee, CreateEmployeeDto>();
             #endregion
 
+
             #region Attendence
             CreateMap<Attendence, ReadAttendenceDetailsDto>()
                 .ForMember(dest => dest.EmpName, option => option.MapFrom(src => src.Employee.EmpName));
