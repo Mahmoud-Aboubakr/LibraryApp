@@ -28,5 +28,7 @@ namespace Persistence.Context
         public DbSet<Borrow> Borrows { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<BookOrderDetails> BookOrderDetails { get; set; }
+        public DbSet<ReturnedOrder> ReturnedOrders { get; set; }
+        public DbSet<ReturnOrderDetails> ReturnOrderDetails { get; set; }
     }
 }

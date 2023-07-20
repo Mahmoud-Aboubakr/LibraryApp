@@ -73,7 +73,6 @@ namespace Application.Mappers
             CreateMap<Employee, CreateEmployeeDto>();
             #endregion
 
-
             #region Attendence
             CreateMap<Attendence, ReadAttendenceDetailsDto>()
                 .ForMember(dest => dest.EmpName, option => option.MapFrom(src => src.Employee.EmpName));
@@ -105,6 +104,26 @@ namespace Application.Mappers
             CreateMap<CreateVacationDto, Vacation>();
             #endregion
 
+            #region ReturnedOrder
+            CreateMap<ReturnedOrder, ReadReturnedOrderWithDetailsDto>()
+                .ForMember(dest => dest.CustomerName, option => option.MapFrom(src => src.Customer.CustomerName));
+            CreateMap<ReadReturnedOrderWithDetailsDto, ReturnedOrder>();
+            CreateMap<ReadReturnedOrderDto, ReturnedOrder>();
+            CreateMap<ReturnedOrder, ReadReturnedOrderDto>();
+            CreateMap<CreateReturnedOrderDto, ReturnedOrder>();
+            CreateMap<ReturnedOrder, CreateReturnedOrderDto>();
+            #endregion
+
+            #region ReturnOrderDetails
+            CreateMap<ReturnOrderDetails, ReadReturnOrderDetailsWithDetailsDto>()
+              .ForMember(dest => dest.BookTitle, option => option.MapFrom(src => src.Book.BookTitle))
+              .ForMember(dest => dest.Price, option => option.MapFrom(src => src.Book.Price))
+              .ForMember(dest => dest.CustomerName, option => option.MapFrom(src => src.Order.Customer.CustomerName));
+            CreateMap<ReadReturnOrderDetailsWithDetailsDto, ReturnOrderDetails>();
+            CreateMap<ReadReturnOrderDetailsDto, ReturnOrderDetails>();
+            CreateMap<ReturnOrderDetails, ReadReturnOrderDetailsDto>();
+            CreateMap<ReturnOrderDetails, CreateReturnOrderDetailsDto>().ReverseMap();
+            #endregion
         }
     }
 }
