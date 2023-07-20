@@ -1,9 +1,9 @@
 ﻿using Domain.Entities;
 
 
-namespace Application.Interfaces
+namespace Application.Interfaces.IAppServices
 {
-    public interface ISearchAuthorDataService
+    public interface IAuthorServices
     {
         Task<IReadOnlyList<ReadAuthorDto>> SearchWithCriteria(string name = null, string phone = null);
     }

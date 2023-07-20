@@ -1,7 +1,8 @@
 ﻿using Application.Interfaces;
+using Application.Interfaces.IAppServices;
+using Application.Interfaces.IValidators;
 using Application.Validators;
 using Infrastructure.AppServices;
-using Infrastructure.AppServicesContracts;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using Persistence.Repositories;
@@ -23,19 +24,20 @@ namespace API.Extensions
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddTransient<ISearchBookDataWithDetailService, SearchBookDataWithDetailService>();
+            services.AddTransient<IBookServices, BookServices>();
             services.AddScoped<INumbersValidator, NumbersValidator>();
             services.AddScoped<IPhoneNumberValidator, PhoneNumberValidator>();
-            services.AddTransient<ISearchAuthorDataService, SearchAuthorDataService>();
-            services.AddTransient<ISearchCustomerService, SearchCustomerService>();
-            services.AddTransient<ISearchBannedCustomerService, SearchBannedCustomerservice>();
-            services.AddTransient<ISearchPublisherDataService, SearchPublisherDataService>();
+            services.AddTransient<IAuthorServices, AuthorServices>();
+            services.AddTransient<ICustomerServices, CustomerServices>();
+            services.AddTransient<IBannedCustomerServices, BannedCustomerservices>();
+            services.AddTransient<IPublisherServices, PublisherServices>();
             services.AddTransient<IBorrowServices, BorrowServices>();
             services.AddTransient<IOrderServices, OrderServices>();
             services.AddScoped<IEmployeeServices, EmployeeServices>();
             services.AddScoped<IAttendenceServices, AttendenceServices>();
-            services.AddTransient<ISearchPayrollDataWithDetailService, SearchPayrollDataWithDetailService>();
+            services.AddTransient<IPayrollServices, PayrollServices>();
             services.AddTransient<IVacationServices, VacationServices>();
+            services.AddTransient<IReturnedOrderServices,  ReturnedOrderServices>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             return services;

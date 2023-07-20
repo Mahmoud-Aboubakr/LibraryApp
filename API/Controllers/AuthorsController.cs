@@ -1,5 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
+using Application.Interfaces.IAppServices;
+using Application.Interfaces.IValidators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
@@ -15,13 +17,13 @@ namespace API.Controllers
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
-        private readonly ISearchAuthorDataService _searchAuthorDataService;
+        private readonly IAuthorServices _searchAuthorDataService;
         private readonly ILogger<AuthorsController> _logger;
 
         public AuthorsController(IUnitOfWork uof,
             IMapper mapper,
             IPhoneNumberValidator phoneNumberValidator,
-            ISearchAuthorDataService searchAuthorDataService,
+            IAuthorServices searchAuthorDataService,
             ILogger<AuthorsController> logger)
         {
             _uof = uof;

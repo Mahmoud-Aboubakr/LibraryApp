@@ -1,9 +1,10 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
+using Application.Interfaces.IAppServices;
+using Application.Interfaces.IValidators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
-using Infrastructure.AppServicesContracts;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 
@@ -15,13 +16,13 @@ namespace API.Controllers
     {
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
-        private readonly ISearchBookDataWithDetailService _searchBookDataWithDetailService;
+        private readonly IBookServices _searchBookDataWithDetailService;
         private readonly INumbersValidator _numbersValidator;
         private readonly ILogger<BooksController> _logger;
 
         public BooksController(IUnitOfWork uof,
                                IMapper mapper,
-                               ISearchBookDataWithDetailService searchBookDataWithDetailService,
+                               IBookServices searchBookDataWithDetailService,
                                INumbersValidator numbersValidator,
                                ILogger<BooksController> logger)
         {

@@ -1,5 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
+using Application.Interfaces.IAppServices;
+using Application.Interfaces.IValidators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
@@ -16,13 +18,13 @@ namespace API.Controllers
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
-        private readonly ISearchCustomerService _searchCustomerService;
+        private readonly ICustomerServices _searchCustomerService;
         private readonly ILogger<CustomersController> _logger;
 
         public CustomersController(IUnitOfWork uof,
                                   IMapper mapper,
                                   IPhoneNumberValidator phoneNumberValidator,
-                                  ISearchCustomerService searchCustomerService,
+                                  ICustomerServices searchCustomerService,
                                   ILogger<CustomersController> logger
                                    )
         {

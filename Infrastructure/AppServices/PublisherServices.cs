@@ -1,5 +1,5 @@
 ﻿using Application.DTOs;
-using Application.Interfaces;
+using Application.Interfaces.IAppServices;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.AppServices
 {
-    public class SearchPublisherDataService : ISearchPublisherDataService
+    public class PublisherServices : IPublisherServices
     {
         private readonly LibraryDbContext _context;
         private readonly IMapper _mapper;
 
-        public SearchPublisherDataService(LibraryDbContext context, IMapper mapper)
+        public PublisherServices(LibraryDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

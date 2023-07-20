@@ -1,5 +1,5 @@
 ﻿using Application.DTOs;
-using Application.Interfaces;
+using Application.Interfaces.IAppServices;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using System;
@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.AppServices
 {
-    public class SearchPayrollDataWithDetailService : ISearchPayrollDataWithDetailService
+    public class PayrollServices : IPayrollServices
     {
         private readonly LibraryDbContext _context;
 
-        public SearchPayrollDataWithDetailService(LibraryDbContext context)
+        public PayrollServices(LibraryDbContext context)
         {
             _context = context;
         }

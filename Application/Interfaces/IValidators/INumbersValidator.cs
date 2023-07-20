@@ -1,6 +1,4 @@
-﻿
-
-namespace Application.Interfaces
+﻿namespace Application.Interfaces.IValidators
 {
     public interface INumbersValidator
     {

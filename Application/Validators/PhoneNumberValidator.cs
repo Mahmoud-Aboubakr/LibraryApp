@@ -1,5 +1,4 @@
-﻿using Application.Interfaces;
-
+﻿using Application.Interfaces.IValidators;
 
 namespace Application.Validators
 {

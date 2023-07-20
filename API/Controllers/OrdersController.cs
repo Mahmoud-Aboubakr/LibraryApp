@@ -1,5 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
+using Application.Interfaces.IAppServices;
+using Application.Interfaces.IValidators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
@@ -145,8 +147,6 @@ namespace API.Controllers
             _orderServices.DeletOrderAsync(orderId);
         }
         #endregion
-
-       
 
     }
 }
