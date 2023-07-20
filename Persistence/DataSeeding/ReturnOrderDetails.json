@@ -1,0 +1,52 @@
+[
+    {
+        "Id": 0,
+        "ReturnedOrderId": 1,
+        "BookId": 20,
+        "Price": 444,
+        "Quantity": 2,
+        "DeviceName": "REWAN-LAPTOP",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "Id": 0,
+        "ReturnedOrderId": 1,
+        "BookId": 2,
+        "Price": 333,
+        "Quantity": 1,
+        "DeviceName": "REWAN-LAPTOP",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "Id": 0,
+        "ReturnedOrderId": 2,
+        "BookId": 1,
+        "Price": 444,
+        "Quantity": 1,
+        "DeviceName": "REWAN-LAPTOP",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "Id": 0,
+        "ReturnedOrderId": 3,
+        "BookId": 23,
+        "Price": 100,
+        "Quantity": 1,
+        "DeviceName": "REWAN-LAPTOP",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "Id": 0,
+        "ReturnedOrderId": 3,
+        "BookId": 26,
+        "Price": 100,
+        "Quantity": 3,
+        "DeviceName": "REWAN-LAPTOP",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    }
+]

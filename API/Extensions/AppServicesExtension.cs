@@ -36,6 +36,7 @@ namespace API.Extensions
             services.AddScoped<IAttendenceServices, AttendenceServices>();
             services.AddTransient<ISearchPayrollDataWithDetailService, SearchPayrollDataWithDetailService>();
             services.AddTransient<IVacationServices, VacationServices>();
+            services.AddTransient<IReturnedOrderServices,  ReturnedOrderServices>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             return services;

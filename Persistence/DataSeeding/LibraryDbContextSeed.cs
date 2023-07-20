@@ -40,6 +40,7 @@ namespace Persistence.Data
             if (context.ChangeTracker.HasChanges())
                 await context.SaveChangesAsync();
             #endregion
+
             #region Phase 2 to run
             if (!context.Books.Any())
             {
@@ -76,13 +77,6 @@ namespace Persistence.Data
                 context.BannedCustomers.AddRange(bannedCustomers);
             }
 
-            if (!context.Orders.Any())
-            {
-                var ordersData = File.ReadAllText("../Persistence/DataSeeding/Orders.json");
-                var orders = JsonSerializer.Deserialize<List<Order>>(ordersData);
-                context.Orders.AddRange(orders);
-            }
-
             if (!context.Borrows.Any())
             {
                 var borrowsData = File.ReadAllText("../Persistence/DataSeeding/Borrows.json");
@@ -90,15 +84,42 @@ namespace Persistence.Data
                 context.Borrows.AddRange(borrows);
             }
 
+            if (!context.Orders.Any())
+            {
+                var ordersData = File.ReadAllText("../Persistence/DataSeeding/Orders.json");
+                var orders = JsonSerializer.Deserialize<List<Order>>(ordersData);
+                context.Orders.AddRange(orders);
+            }
+
             if (context.ChangeTracker.HasChanges())
                 await context.SaveChangesAsync();
             #endregion
+
             #region Phase 3 to run
             if (!context.BookOrderDetails.Any())
             {
                 var bookOrderData = File.ReadAllText("../Persistence/DataSeeding/BookOrderDetails.json");
                 var bookOrder = JsonSerializer.Deserialize<List<BookOrderDetails>>(bookOrderData);
                 context.BookOrderDetails.AddRange(bookOrder);
+            }
+
+            if (!context.ReturnedOrders.Any())
+            {
+                var ReturnedOrdersData = File.ReadAllText("../Persistence/DataSeeding/ReturnedOrders.json");
+                var returnedOrders = JsonSerializer.Deserialize<List<ReturnedOrder>>(ReturnedOrdersData);
+                context.ReturnedOrders.AddRange(returnedOrders);
+            }
+
+            if (context.ChangeTracker.HasChanges())
+                await context.SaveChangesAsync();
+            #endregion
+
+            #region Phase 4 to run
+            if (!context.ReturnOrderDetails.Any())
+            {
+                var ReturnOrderDetailsData = File.ReadAllText("../Persistence/DataSeeding/ReturnOrderDetails.json");
+                var returnOrderDetails = JsonSerializer.Deserialize<List<ReturnOrderDetails>>(ReturnOrderDetailsData);
+                context.ReturnOrderDetails.AddRange(returnOrderDetails);
             }
 
             if (context.ChangeTracker.HasChanges())

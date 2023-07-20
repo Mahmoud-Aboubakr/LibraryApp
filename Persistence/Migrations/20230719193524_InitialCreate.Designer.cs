@@ -12,7 +12,7 @@ using Persistence.Context;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20230718215515_InitialCreate")]
+    [Migration("20230719193524_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,7 +38,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("DayDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 19, 0, 55, 15, 519, DateTimeKind.Local).AddTicks(3697));
+                        .HasDefaultValue(new DateTime(2023, 7, 19, 22, 35, 24, 450, DateTimeKind.Local).AddTicks(2190));
 
                     b.Property<string>("DeviceName")
                         .HasColumnType("nvarchar(max)");
@@ -113,7 +113,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("BanDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 19, 0, 55, 15, 519, DateTimeKind.Local).AddTicks(5988));
+                        .HasDefaultValue(new DateTime(2023, 7, 19, 22, 35, 24, 450, DateTimeKind.Local).AddTicks(7960));
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -235,7 +235,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("BorrowDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 19, 0, 55, 15, 519, DateTimeKind.Local).AddTicks(8505));
+                        .HasDefaultValue(new DateTime(2023, 7, 19, 22, 35, 24, 451, DateTimeKind.Local).AddTicks(3394));
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -249,7 +249,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("ReturnDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 22, 0, 55, 15, 519, DateTimeKind.Local).AddTicks(8668));
+                        .HasDefaultValue(new DateTime(2023, 7, 22, 22, 35, 24, 451, DateTimeKind.Local).AddTicks(3787));
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -381,7 +381,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 19, 0, 55, 15, 520, DateTimeKind.Local).AddTicks(34));
+                        .HasDefaultValue(new DateTime(2023, 7, 19, 22, 35, 24, 451, DateTimeKind.Local).AddTicks(7295));
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,3)");
@@ -475,6 +475,83 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Publishers");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ReturnedOrder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("ReturnedOrderId");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DeviceName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OriginOrderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReturnDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2023, 7, 19, 22, 35, 24, 454, DateTimeKind.Local).AddTicks(8515));
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,3)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("ReturnedOrders");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ReturnOrderDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeviceName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,3)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReturnedOrderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("ReturnedOrderId");
+
+                    b.ToTable("ReturnOrderDetails");
                 });
 
             modelBuilder.Entity("Domain.Entities.Vacation", b =>
@@ -644,6 +721,36 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ReturnedOrder", b =>
+                {
+                    b.HasOne("Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ReturnOrderDetails", b =>
+                {
+                    b.HasOne("Domain.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.ReturnedOrder", "Order")
+                        .WithMany()
+                        .HasForeignKey("ReturnedOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Domain.Entities.Vacation", b =>

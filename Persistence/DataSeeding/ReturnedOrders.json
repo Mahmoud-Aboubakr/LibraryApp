@@ -1,0 +1,32 @@
+[
+    {
+        "ReturnedOrderId": 0,
+        "OriginOrderId": 1,
+        "CustomerId": 1,
+        "ReturnDate": "2023-07-12T15:43:03.153Z",
+        "TotalPrice": 533,
+        "DeviceName": "REWAN-LAPTOP",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "ReturnedOrderId": 0,
+        "OriginOrderId": 2,
+        "CustomerId": 2,
+        "ReturnDate": "2023-07-14T12:43:03.153Z",
+        "TotalPrice": 444,
+        "DeviceName": "REWAN-LAPTOP",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    },
+    {
+        "ReturnedOrderId": 0,
+        "OriginOrderId": 3,
+        "CustomerId": 4,
+        "ReturnDate": "2023-07-13T10:43:03.153Z",
+        "TotalPrice": 400,
+        "DeviceName": "REWAN-LAPTOP",
+        "CreatedDate": null,
+        "UpdatedDate": null
+    }
+]
