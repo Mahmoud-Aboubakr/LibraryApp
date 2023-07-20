@@ -1,8 +1,8 @@
 ﻿using Application.DTOs;
 
-namespace Infrastructure.AppServicesContracts
+namespace Application.Interfaces.IAppServices
 {
-    public interface ISearchBookDataWithDetailService
+    public interface IBookServices
     {
         Task<IReadOnlyList<ReadBookDto>> SearchBookDataWithDetail(string bookTitle = null, string authorName = null, string publisherName = null);
     }

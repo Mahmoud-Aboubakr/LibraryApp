@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Interfaces
+namespace Application.Interfaces.IAppServices
 {
     public interface IReturnedOrderServices
     {
-        Task<IReadOnlyList<ReadReturnedOrderWithDetailsDto>> SearchReturnedOrders(int? originorderId = null, int? customerId = null, string? customerName = null, decimal? totalPrice = null, DateTime? returndate = null);
+        Task<IReadOnlyList<ReadReturnedOrderWithDetailsDto>> SearchReturnedOrders(int? originorderId = null, int? customerId = null, string customerName = null, decimal? totalPrice = null, DateTime? returndate = null);
 
-        Task<IReadOnlyList<ReadReturnOrderDetailsWithDetailsDto>> SearchReturnedOrdersDetails(int? returnedorderId = null, int? bookId = null, string? customerName = null, string? bookTitle = null);
+        Task<IReadOnlyList<ReadReturnOrderDetailsWithDetailsDto>> SearchReturnedOrdersDetails(int? returnedorderId = null, int? bookId = null, string customerName = null, string bookTitle = null);
 
         bool IsInReturnInterval(DateTime returndate, DateTime orderdate);
 

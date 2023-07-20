@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Interfaces
+namespace Application.Interfaces.IAppServices
 {
-    public interface ISearchPayrollDataWithDetailService
+    public interface IPayrollServices
     {
         Task<IReadOnlyList<ReadPayrollDetailsDto>> SearchPayrollDataWithDetail(string empName = null);
     }

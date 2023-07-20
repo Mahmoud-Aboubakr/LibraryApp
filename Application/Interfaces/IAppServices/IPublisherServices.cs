@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Interfaces
+namespace Application.Interfaces.IAppServices
 {
-    public interface ISearchPublisherDataService
+    public interface IPublisherServices
     {
         Task<IReadOnlyList<ReadPublisherDto>> SearchWithCriteria(string Name = null, string PhoneNumber = null);
     }

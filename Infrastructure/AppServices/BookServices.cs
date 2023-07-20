@@ -1,14 +1,14 @@
 ﻿using Application.DTOs;
-using Infrastructure.AppServicesContracts;
+using Application.Interfaces.IAppServices;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 
 namespace Infrastructure.AppServices
 {
-    public class SearchBookDataWithDetailService : ISearchBookDataWithDetailService
+    public class BookServices : IBookServices
     {
         private readonly LibraryDbContext _context;
-        public SearchBookDataWithDetailService(LibraryDbContext context)
+        public BookServices(LibraryDbContext context)
         {
             _context = context;
         }

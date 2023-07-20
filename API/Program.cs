@@ -1,12 +1,7 @@
 using API.Extensions;
-using Application.Interfaces;
-using Application.Validators;
-using Infrastructure.AppServices;
-using Infrastructure.AppServicesContracts;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using Persistence.Data;
-using Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.

@@ -1,11 +1,11 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
+using Application.Interfaces.IValidators;
 using Application.Validators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
 using Infrastructure.AppServices;
-using Infrastructure.AppServicesContracts;
 using Microsoft.AspNetCore.Mvc;
 using Persistence.Context;
 using System.Linq.Expressions;

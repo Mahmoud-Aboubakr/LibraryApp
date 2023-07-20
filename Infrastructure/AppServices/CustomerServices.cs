@@ -1,5 +1,5 @@
 ﻿using Application.DTOs;
-using Application.Interfaces;
+using Application.Interfaces.IAppServices;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +14,12 @@ using System.Xml.Linq;
 
 namespace Infrastructure.AppServices
 {
-    public class SearchCustomerService : ISearchCustomerService
+    public class CustomerServices : ICustomerServices
     {
         private readonly LibraryDbContext _context;
         private readonly IMapper _mapper;
 
-        public SearchCustomerService(LibraryDbContext context, IMapper mapper)
+        public CustomerServices(LibraryDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

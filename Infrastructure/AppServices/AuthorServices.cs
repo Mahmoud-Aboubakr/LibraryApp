@@ -1,4 +1,4 @@
-﻿using Application.Interfaces;
+﻿using Application.Interfaces.IAppServices;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -6,12 +6,12 @@ using Persistence.Context;
 
 namespace Infrastructure.AppServices
 {
-    public class SearchAuthorDataService : ISearchAuthorDataService
+    public class AuthorServices : IAuthorServices
     {
         private readonly LibraryDbContext _context;
         private readonly IMapper _mapper;
 
-        public SearchAuthorDataService(LibraryDbContext context, IMapper mapper)
+        public AuthorServices(LibraryDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

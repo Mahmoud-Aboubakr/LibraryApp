@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
+using Application.Interfaces.IAppServices;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
@@ -14,12 +15,12 @@ namespace API.Controllers
     {
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
-        private readonly ISearchPayrollDataWithDetailService _searchPayrollDataWithDetailService;
+        private readonly IPayrollServices _searchPayrollDataWithDetailService;
         private readonly ILogger<PayrollsController> _logger;
 
         public PayrollsController(IUnitOfWork uof,
                                   IMapper mapper, 
-                                  ISearchPayrollDataWithDetailService searchPayrollDataWithDetailService,
+                                  IPayrollServices searchPayrollDataWithDetailService,
                                    ILogger<PayrollsController> logger)
         {
             _uof = uof;

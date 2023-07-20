@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
+using Application.Interfaces.IAppServices;
 using Application.Validators;
 using AutoMapper;
 using Domain.Constants;
@@ -16,12 +17,12 @@ namespace API.Controllers
     {
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
-        private readonly ISearchBannedCustomerService _searchForBannedCustomerService;
+        private readonly IBannedCustomerServices _searchForBannedCustomerService;
         private readonly ILogger<BannedCustomersController> _logger;
 
         public BannedCustomersController(IUnitOfWork uof,
                                   IMapper mapper,
-                                  ISearchBannedCustomerService searchForBannedCustomerService,
+                                  IBannedCustomerServices searchForBannedCustomerService,
                                   ILogger<BannedCustomersController> logger
                                    )
         {
