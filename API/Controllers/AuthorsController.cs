@@ -14,13 +14,13 @@ namespace API.Controllers
 
     public class AuthorsController : ControllerBase
     {
-        private readonly IUnitOfWork _uof;
+        private readonly IUnitOfWork<Author> _uof;
         private readonly IMapper _mapper;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
         private readonly IAuthorServices _searchAuthorDataService;
         private readonly ILogger<AuthorsController> _logger;
 
-        public AuthorsController(IUnitOfWork uof,
+        public AuthorsController(IUnitOfWork<Author> uof,
             IMapper mapper,
             IPhoneNumberValidator phoneNumberValidator,
             IAuthorServices searchAuthorDataService,
@@ -37,16 +37,16 @@ namespace API.Controllers
         [HttpGet("GetAllAuthors")]
         public async Task<ActionResult<IReadOnlyList<ReadAuthorDto>>> GetAllAuthorsAsync()
         {
-            var authors = await _uof.GetRepository<Author>().GetAllAsync();
+            var authors = await _uof.GetRepository().GetAllAsync();
             return Ok(_mapper.Map<IReadOnlyList<Author>, IReadOnlyList<ReadAuthorDto>>(authors));
         }
 
         [HttpGet("GetAuthorById")]
         public async Task<ActionResult> GetAuthorByIdAsync(int id)
         {
-            if (await _uof.GetRepository<Author>().Exists(id))
+            if (await _uof.GetRepository().Exists(id))
             {
-                var author = await _uof.GetRepository<Author>().GetByIdAsync(id);
+                var author = await _uof.GetRepository().GetByIdAsync(id);
                 return Ok(_mapper.Map<Author, ReadAuthorDto>(author));
             }
 
@@ -69,7 +69,7 @@ namespace API.Controllers
             if (_phoneNumberValidator.IsValidPhoneNumber(authorDto.AuthorPhoneNumber))
             {
                 var author = _mapper.Map<CreateAuthorDto, Author>(authorDto);
-                _uof.GetRepository<Author>().InsertAsync(author);
+                _uof.GetRepository().InsertAsync(author);
                 await _uof.Commit();
 
                 return StatusCode(201, AppMessages.INSERTED);
@@ -85,13 +85,13 @@ namespace API.Controllers
         [HttpPut("UpdateAuthor")]
         public async Task<ActionResult> UpdateAuthorAsync(ReadAuthorDto authorDto)
         {
-            var result = await _uof.GetRepository<Author>().Exists(authorDto.Id);
+            var result = await _uof.GetRepository().Exists(authorDto.Id);
             if (!result)
                 return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {authorDto.Id}" });
             if (!_phoneNumberValidator.IsValidPhoneNumber(authorDto.AuthorPhoneNumber))
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {authorDto.AuthorPhoneNumber}" });
             var author = _mapper.Map<ReadAuthorDto, Author>(authorDto);
-            _uof.GetRepository<Author>().UpdateAsync(author);
+            _uof.GetRepository().UpdateAsync(author);
             await _uof.Commit();
 
             return Ok(AppMessages.UPDATED);
@@ -102,13 +102,13 @@ namespace API.Controllers
         [HttpDelete("DeleteAuthor")]
         public async Task<ActionResult> DeleteAuthorAsync(ReadAuthorDto authorDto)
         {
-            var result = _uof.GetRepository<Book>().FindUsingWhereAsync(b => b.AuthorId == authorDto.Id);
+            var result = _uof.GetRepository().FindUsingWhereAsync(b => b.Id == authorDto.Id);
             if (result == null)
                 return BadRequest(AppMessages.FAILED_DELETE);
             else
             {
                 var author = _mapper.Map<ReadAuthorDto, Author>(authorDto);
-                _uof.GetRepository<Author>().DeleteAsync(author);
+                _uof.GetRepository().DeleteAsync(author);
                 await _uof.Commit();
                 return Ok(AppMessages.DELETED);
             }

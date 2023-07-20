@@ -15,7 +15,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeesController : ControllerBase
-    {
+    {/*
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
@@ -163,6 +163,6 @@ namespace API.Controllers
             return Ok(AppMessages.FIRED);
         }
         #endregion
-
+        */
     }
 }

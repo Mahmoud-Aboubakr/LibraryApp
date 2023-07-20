@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Infrastructure.Specifications;
 using System.Linq.Expressions;
 
 namespace Application.Interfaces
@@ -20,5 +21,7 @@ namespace Application.Interfaces
         Task<bool> FindUsingWhereAsync(Expression<Func<T, bool>> match);
         void DeleteRangeAsync(List<T> entities);
         Task<List<T>> GetAllWithWhere(Expression<Func<T, bool>> predicate);
+        Task<T> FindSpec(IEntitySpec<T> spec);
+        Task<IEnumerable<T>> FindAllSpec(IEntitySpec<T> spec);
     }
 }

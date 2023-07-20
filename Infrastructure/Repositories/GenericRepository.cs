@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
+using Infrastructure.Specifications;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using System;
@@ -11,14 +12,20 @@ namespace Persistence.Repositories
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         private readonly LibraryDbContext _context;
+        private readonly IEntitySpec<T> _entitySpec;
         private DbSet<T> _entity = null;
 
-        public GenericRepository(LibraryDbContext context)
+        public GenericRepository(LibraryDbContext context, IEntitySpec<T> entitySpec)
         {
             _context = context;
             _entity = _context.Set<T>();
+            _entitySpec = entitySpec;
         }
-        
+        public GenericRepository()
+        {
+           
+        }
+
         #region GET Methods
         public async Task<List<T>> GetAllAsync()
             => await _context.Set<T>().ToListAsync();
@@ -112,5 +119,22 @@ namespace Persistence.Repositories
         }
 
         #endregion
+
+        #region Specification Methods
+        public async Task<T> FindSpec(IEntitySpec<T> spec)
+        {
+            return await ApplySpecification(spec).SingleOrDefaultAsync();
+        }
+        private IQueryable<T> ApplySpecification(IEntitySpec<T> spec)
+        {
+            return _entitySpec.GetQuery(_context.Set<T>().AsQueryable(), spec);
+        }
+
+        public async Task<IEnumerable<T>> FindAllSpec(IEntitySpec<T> spec)
+        {
+            return await ApplySpecification(spec).ToListAsync();
+        }
+        #endregion
+
     }
 }
