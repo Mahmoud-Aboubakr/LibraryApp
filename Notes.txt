@@ -1,10 +1,30 @@
 ﻿(01)DBCC CHECKIDENT ('Orders', RESEED, 0);
 (02)delete from Orders
 (03)date format in json to convert datetime2(7) in sql server : "2023-07-29T13:43:03.153Z"
-(04)تفعيل سياسه الارتجاع(*later*)
-
+(04)تفعيل سياسه الارتجاع
 (05)Employee Type Dictionary 
- =>librarian : 0
- =>dayguard : 1
- =>nightguard : 2
- =>manager : 3
+	=>librarian : 0
+	=>dayguard : 1
+	=>nightguard : 2
+	=>manager : 3
+(06)*** All authentication and authorization frameworks in .Net ***
+	--->ASP.NET Identity: A membership system that provides APIs and UI templates for 
+	    managing user authentication and authorization within an ASP.NET application.
+
+	--->IdentityServer: An open-source framework for building identity and access 
+	    management systems (IAM) that provides APIs and protocols for securing modern web and mobile applications.
+
+	--->OAuth 2.0: An authorization framework that enables third-party applications 
+		to obtain limited access to a user's account on a web service, without sharing the user's credentials.
+
+	--->OpenID Connect: An authentication protocol built on top of OAuth 2.0 
+		that provides single sign-on (SSO) and federation capabilities.
+
+	--->JSON Web Tokens (JWT): A compact, URL-safe means of representing claims to be 
+		transferred between two parties. JWT is commonly used for authentication and authorization in modern web applications.
+
+	--->Microsoft.Identity.Web: A set of libraries that provides authentication and 
+		authorization functionality for .NET applications, including support for Azure Active Directory and Microsoft identity platforms.
+
+	--->Simple Web Token (SWT): A token format that provides a lightweight mechanism 
+		for conveying security tokens between parties.

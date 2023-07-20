@@ -12,7 +12,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class PublishersController : ControllerBase
-    {
+    {/*
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
@@ -114,6 +114,6 @@ namespace API.Controllers
             }
         }
         #endregion
-
+*/
     }
 }

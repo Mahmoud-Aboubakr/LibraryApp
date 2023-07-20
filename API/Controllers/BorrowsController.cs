@@ -17,7 +17,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class BorrowsController : ControllerBase
-    {
+    {/*
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly IBorrowServices _borrowServices;
@@ -142,6 +142,6 @@ namespace API.Controllers
             return Ok(AppMessages.DELETED);
         }
         #endregion
-
+*/
     }
 }
