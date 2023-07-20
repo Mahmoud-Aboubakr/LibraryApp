@@ -3,6 +3,7 @@ using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
 using Application.Validators;
 using Infrastructure.AppServices;
+using Infrastructure.Specifications;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using Persistence.Repositories;
@@ -22,7 +23,8 @@ namespace API.Extensions
                 opt.UseSqlServer(config.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+            services.AddScoped(typeof(IEntitySpec<>), typeof(EntitySpec<>));
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IBookServices, BookServices>();
             services.AddScoped<INumbersValidator, NumbersValidator>();

@@ -15,7 +15,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
-    {
+    {/*
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly IOrderServices _orderServices;
@@ -147,6 +147,6 @@ namespace API.Controllers
             _orderServices.DeletOrderAsync(orderId);
         }
         #endregion
-
+        */
     }
 }

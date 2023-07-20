@@ -14,7 +14,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class VacationsController : ControllerBase
-    {
+    {/*
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly IVacationServices _vacServ;
@@ -137,6 +137,6 @@ namespace API.Controllers
             return Ok(AppMessages.DELETED);
         }
         #endregion
-
+        */
     }
 }

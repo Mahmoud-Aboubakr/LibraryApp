@@ -14,6 +14,7 @@ namespace API.Controllers
     [ApiController]
     public class AttendenceController : ControllerBase
     {
+        /*
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly IAttendenceServices _attendenceServices;
@@ -132,6 +133,6 @@ namespace API.Controllers
             return Ok(AppMessages.DELETED);
         }
         #endregion
-
+        */
     }
 }
