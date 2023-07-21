@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Author;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
@@ -83,14 +83,15 @@ namespace API.Controllers
 
         #region PUT
         [HttpPut("UpdateAuthor")]
-        public async Task<ActionResult> UpdateAuthorAsync(ReadAuthorDto authorDto)
+        public async Task<ActionResult> UpdateAuthorAsync(UpdateAuthorDto authorDto)
         {
             var result = await _uof.GetRepository().Exists(authorDto.Id);
             if (!result)
                 return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {authorDto.Id}" });
             if (!_phoneNumberValidator.IsValidPhoneNumber(authorDto.AuthorPhoneNumber))
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {authorDto.AuthorPhoneNumber}" });
-            var author = _mapper.Map<ReadAuthorDto, Author>(authorDto);
+
+            var author = _mapper.Map<UpdateAuthorDto, Author>(authorDto);
             _uof.GetRepository().UpdateAsync(author);
             await _uof.Commit();
 

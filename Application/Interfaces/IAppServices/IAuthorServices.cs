@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-
+﻿using Application.DTOs.Author;
 
 namespace Application.Interfaces.IAppServices
 {

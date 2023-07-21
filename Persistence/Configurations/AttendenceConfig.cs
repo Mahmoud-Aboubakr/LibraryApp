@@ -9,18 +9,6 @@ namespace Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Attendence> builder)
         {
-            //builder
-            //    .Property(A => A.EmpArrivalTime)
-            //    .HasColumnType("time(7)");
-
-            //builder
-            //    .Property(A => A.EmpLeavingTime)
-            //    .HasColumnType("time(7)");
-
-            //builder
-            //    .Property(A => A.DayDate)
-            //    .HasColumnType("date");
-
             builder
                 .HasOne(A => A.Employee)
                 .WithMany()

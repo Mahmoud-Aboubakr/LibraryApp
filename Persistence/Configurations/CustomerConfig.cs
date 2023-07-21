@@ -10,7 +10,9 @@ namespace Persistence.Configurations
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
             builder
-                 .Property(C => C.Id).HasColumnName("CustomerId");
+                 .Property(c => c.Id).HasColumnName("CustomerId");
+            builder.Property(c => c.CustomerName).IsRequired().HasMaxLength(200);
+            builder.Property(c => c.CustomerPhoneNumber).IsRequired().HasMaxLength(11);
         }
     }
 }
