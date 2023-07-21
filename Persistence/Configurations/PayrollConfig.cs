@@ -35,7 +35,12 @@ namespace Persistence.Configurations
                 .Property(P => P.TotalSalary)
                 .HasColumnType("decimal(18,3)")
                 .HasComputedColumnSql("[BasicSalary] + [Bonus] - [Deduct]");
-          
+
+            builder
+                .Property(P => P.SalaryDate)
+                .HasDefaultValue(DateTime.Now)
+                .IsRequired();
+
         }
     }
 }

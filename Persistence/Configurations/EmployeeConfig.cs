@@ -11,7 +11,7 @@ namespace Persistence.Configurations
         {
             builder
                 .Property(E => E.EmpName)
-                .IsRequired();
+                .IsRequired().HasMaxLength(200);
 
             builder
                .Property(E => E.EmpAddress)
@@ -19,7 +19,7 @@ namespace Persistence.Configurations
 
             builder
                .Property(E => E.EmpPhoneNumber)
-               .IsRequired();
+               .IsRequired().HasMaxLength(11);
 
             builder
                .Property(E => E.EmpBasicSalary)

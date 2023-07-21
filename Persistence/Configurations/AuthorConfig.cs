@@ -10,23 +10,16 @@ namespace Persistence.Configurations
         public void Configure(EntityTypeBuilder<Author> builder)
         {
             builder
-                .Property(A => A.AuthorName).IsRequired();
-
+                .Property(A => A.AuthorName).IsRequired().HasMaxLength(200);
+            
             builder
-                .Property(A => A.AuthorPhoneNumber).IsRequired();
+                .Property(A => A.AuthorPhoneNumber).IsRequired().HasMaxLength(11);
 
             builder
                 .Property(A => A.AuthorProfits).HasColumnType("decimal(18,3)");
 
             builder
                 .Property(A => A.Id).HasColumnName("AuthorId");
-
-            //builder
-            //    .Property(A => A.AuthorPhoneNumber)
-            //    .HasColumnType("PhoneNumber")
-            //    .HasMaxLength(20)
-            //    .HasAnnotation("RegularExpression", @"^[0-9]*$")
-            //    .IsRequired();
         }
     }
 }

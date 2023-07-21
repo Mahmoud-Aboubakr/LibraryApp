@@ -17,7 +17,7 @@ namespace Persistence.Configurations
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder
-                .Property(B => B.BanDate).HasDefaultValue(DateTime.Now);
+                .Property(B => B.BanDate).HasDefaultValue(DateTime.Now).IsRequired();
         }
     }
 }

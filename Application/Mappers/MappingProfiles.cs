@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Author;
 using AutoMapper;
 using Domain.Entities;
 
@@ -10,8 +11,7 @@ namespace Application.Mappers
         {
             #region Author
             CreateMap<Author, ReadAuthorDto>();
-            CreateMap<ReadAuthorDto, Author>();
-            CreateMap<Author, CreateAuthorDto>();
+            CreateMap<UpdateAuthorDto, Author>();
             CreateMap<CreateAuthorDto, Author>();
             #endregion
 

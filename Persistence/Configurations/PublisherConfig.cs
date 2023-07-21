@@ -11,11 +11,11 @@ namespace Persistence.Configurations
         {
             builder
                 .Property(P => P.PublisherName)
-                .IsRequired();
+                .IsRequired().HasMaxLength(200);
 
             builder
                 .Property(P => P.PublisherPhoneNumber)
-                .IsRequired();
+                .IsRequired().HasMaxLength(11);
 
             builder
                 .Property(P => P.Id).HasColumnName("PublisherId");

@@ -12,7 +12,7 @@ namespace Persistence.Configurations
             builder.Property(x => x.Id).HasColumnName("BookId");
             builder
                 .Property(b => b.BookTitle)
-                .IsRequired();
+                .IsRequired().HasMaxLength(200);
 
             builder
                 .Property(b => b.Quantity)
@@ -21,10 +21,6 @@ namespace Persistence.Configurations
             builder
                 .Property(b => b.AuthorId)
                 .IsRequired();
-
-            //builder
-            //    .Property(b => b.PublisherId)
-            //    .IsRequired();
 
             builder
                 .Property(b => b.Price)
@@ -36,20 +32,6 @@ namespace Persistence.Configurations
                 .WithMany()
                 .HasForeignKey(b => b.AuthorId)
                 .OnDelete(deleteBehavior: DeleteBehavior.NoAction);
-
-            //builder
-            //    .HasOne(b => b.Publisher)
-            //    .WithMany()
-            //    .HasForeignKey(b => b.PublisherId)
-            //    .OnDelete(deleteBehavior: DeleteBehavior.NoAction);
-
-            //builder
-            //    .HasMany(b => b.Orders)
-            //    .WithMany(b => b.Books)
-            //    .UsingEntity<OrderBooks>(
-            //        x => x.HasOne(p => p.Orders).WithMany().HasForeignKey(p => p.OrderId),
-            //        x => x.HasOne(p => p.Books).WithMany().HasForeignKey(p => p.BookId)
-            //    );
         }
     }
 }
