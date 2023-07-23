@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Customer;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
@@ -14,14 +14,15 @@ namespace API.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        /*
-        private readonly IUnitOfWork _uof;
+        private readonly IUnitOfWork<Customer> _uof;
+        private readonly IUnitOfWork<BannedCustomer> _bannedCustomerUof;
         private readonly IMapper _mapper;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
         private readonly ICustomerServices _searchCustomerService;
         private readonly ILogger<CustomersController> _logger;
 
-        public CustomersController(IUnitOfWork uof,
+        public CustomersController(IUnitOfWork<Customer> uof,
+                                  IUnitOfWork<BannedCustomer> bannedCustomerUof,
                                   IMapper mapper,
                                   IPhoneNumberValidator phoneNumberValidator,
                                   ICustomerServices searchCustomerService,
@@ -29,6 +30,7 @@ namespace API.Controllers
                                    )
         {
             _uof = uof;
+            _bannedCustomerUof = bannedCustomerUof;
             _mapper = mapper;
             _phoneNumberValidator = phoneNumberValidator;
             _searchCustomerService = searchCustomerService;
@@ -39,16 +41,16 @@ namespace API.Controllers
         [HttpGet("GetAll")]
         public async Task<ActionResult<IReadOnlyList<ReadCustomerDto>>> GetAllCustomerAsync()
         {
-            var customers = await _uof.GetRepository<Customer>().GetAllListAsync();
+            var customers = await _uof.GetRepository().GetAllListAsync();
             return Ok(_mapper.Map<IReadOnlyList<Customer>, IReadOnlyList<ReadCustomerDto>>(customers));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult> GetCustomerByIdAsync(int id)
         {
-            if (await _uof.GetRepository<Customer>().Exists(id))
+            if (await _uof.GetRepository().Exists(id))
             {
-                var author = await _uof.GetRepository<Customer>().GetByIdAsync(id);
+                var author = await _uof.GetRepository().GetByIdAsync(id);
                 return Ok(_mapper.Map<Customer, ReadCustomerDto>(author));
             }
 
@@ -71,7 +73,7 @@ namespace API.Controllers
             if (_phoneNumberValidator.IsValidPhoneNumber(createCustomerDto.CustomerPhoneNumber))
             {
                 var customer = _mapper.Map<CreateCustomerDto, Customer>(createCustomerDto);
-                _uof.GetRepository<Customer>().InsertAsync(customer);
+                _uof.GetRepository().InsertAsync(customer);
                 await _uof.Commit();
 
                 return StatusCode(201, AppMessages.INSERTED);
@@ -90,7 +92,7 @@ namespace API.Controllers
             if (_phoneNumberValidator.IsValidPhoneNumber(readCustomerDto.CustomerPhoneNumber))
             {
                 var customer = _mapper.Map<ReadCustomerDto, Customer>(readCustomerDto);
-                _uof.GetRepository<Customer>().UpdateAsync(customer);
+                _uof.GetRepository().UpdateAsync(customer);
                 await _uof.Commit();
 
                 return Ok(AppMessages.UPDATED);
@@ -104,14 +106,16 @@ namespace API.Controllers
 
         #region DELETE
         [HttpDelete]
-        public async Task<ActionResult> DeleteBannedCustomerAsync(ReadCustomerDto readCustomerDto)
+        public async Task<ActionResult> DeleteCustomerAsync(ReadCustomerDto readCustomerDto)
         {
+            var result = _bannedCustomerUof.GetRepository().FindUsingWhereAsync(b => b.CustomerId == readCustomerDto.Id);
+            if (result != null)
+                return BadRequest(AppMessages.FAILED_DELETE);
             var Customer = _mapper.Map<ReadCustomerDto, Customer>(readCustomerDto);
-            _uof.GetRepository<Customer>().DeleteAsync(Customer);
+            _uof.GetRepository().DeleteAsync(Customer);
             await _uof.Commit();
             return Ok(AppMessages.DELETED);
         }
         #endregion
-*/
     }
 }

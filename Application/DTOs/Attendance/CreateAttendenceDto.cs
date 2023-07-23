@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs
+namespace Application.DTOs.Attendance
 {
     public class CreateAttendenceDto
     {
@@ -14,5 +14,6 @@ namespace Application.DTOs
         public DateTime? DayDate { get; set; } = null;
         public byte Month { get; set; }
         public int EmpId { get; set; }
+        public DateTime? CreatedDate { get; set; } = DateTime.Now;
     }
 }

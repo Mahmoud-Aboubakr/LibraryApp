@@ -1,5 +1,13 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Attendance;
 using Application.DTOs.Author;
+using Application.DTOs.BannedCustomer;
+using Application.DTOs.Book;
+using Application.DTOs.BookOrderDetails;
+using Application.DTOs.Borrow;
+using Application.DTOs.Customer;
+using Application.DTOs.Employee;
+using Application.DTOs.Order;
 using AutoMapper;
 using Domain.Entities;
 
@@ -10,7 +18,7 @@ namespace Application.Mappers
         public MappingProfiles()
         {
             #region Author
-            CreateMap<Author, ReadAuthorDto>();
+            CreateMap<Author, ReadAuthorDto>().ReverseMap();
             CreateMap<UpdateAuthorDto, Author>();
             CreateMap<CreateAuthorDto, Author>();
             #endregion

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs
+namespace Application.DTOs.Borrow
 {
     public class ReadBorrowDto
     {
@@ -16,5 +16,6 @@ namespace Application.DTOs
         public string BookName { get; set; }
         public DateTime BorrowDate { get; set; }
         public DateTime ReturnDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
     }
 }

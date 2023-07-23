@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Borrow;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
@@ -6,6 +6,7 @@ using Application.Validators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
+using Infrastructure.Specifications;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,14 +18,14 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class BorrowsController : ControllerBase
-    {/*
-        private readonly IUnitOfWork _uof;
+    {
+        private readonly IUnitOfWork<Borrow> _uof;
         private readonly IMapper _mapper;
         private readonly IBorrowServices _borrowServices;
         private readonly INumbersValidator _numbersValidator;
         private readonly ILogger<BorrowsController> _logger;
 
-        public BorrowsController(IUnitOfWork uof,
+        public BorrowsController(IUnitOfWork<Borrow>uof,
             IMapper mapper,
             IBorrowServices borrowServices,
             INumbersValidator numbersValidator,
@@ -41,18 +42,18 @@ namespace API.Controllers
         [HttpGet("GetAll")]
         public async Task<ActionResult<IReadOnlyList<ReadBorrowDto>>> GetAllBorrowsAsync()
         {
-            var borrows = await _uof.GetRepository<Borrow>().GetAllAsync();
+            var borrows = await _uof.GetRepository().GetAllAsync();
             return Ok(_mapper.Map<IReadOnlyList<Borrow>, IReadOnlyList<ReadBorrowDto>>(borrows));
         }
 
         [HttpGet("GetById")]
         public async Task<ActionResult<ReadBorrowDto>> GetById(int id)
         {
-            var exists = await _uof.GetRepository<Borrow>().Exists(id);
+            var exists = await _uof.GetRepository().Exists(id);
 
             if (exists)
             {
-                var borrow = await _uof.GetRepository<Borrow>().GetByIdAsync(id);
+                var borrow = await _uof.GetRepository().GetByIdAsync(id);
 
                 if (borrow == null)
                     return NotFound();
@@ -63,25 +64,27 @@ namespace API.Controllers
         }
 
         [HttpGet("GetAllWithDetails")]
-        public async Task<ActionResult<IReadOnlyList<ReadBorrowDto>>> GetAllBorrowsWithDetails()
+        public async Task<ActionResult<IEnumerable<ReadBorrowDto>>> GetAllBorrowsWithDetails()
         {
-            var readBorrow = await _uof.GetRepository<Borrow>().GetAllListWithIncludesAsync(new Expression<Func<Borrow, object>>[] { x => x.Customer, x => x.Book });
-            return Ok(_mapper.Map<IReadOnlyList<Borrow>, IReadOnlyList<ReadBorrowDto>>(readBorrow));
+            var spec = new BorrowWithBookAndCustomerSpec();
+            var borrows = await _uof.GetRepository().FindAllSpec(spec);
+            return Ok(_mapper.Map<IEnumerable<Borrow>, IEnumerable<ReadBorrowDto>>(borrows));
         }
 
         [HttpGet("GetByIdWithDetails")]
         public async Task<ActionResult<ReadBorrowDto>> GetByIdWithIncludesAsync(int id)
         {
-            var exists = await _uof.GetRepository<Borrow>().Exists(id);
+            var exists = await _uof.GetRepository().Exists(id);
 
             if (exists)
             {
-                var readBorrow = await _uof.GetRepository<Borrow>().GetByIdAsyncWithIncludes(id, new Expression<Func<Borrow, object>>[] { x => x.Customer, x => x.Book });
+                var spec = new BorrowWithBookAndCustomerSpec(id);
+                var borrow = await _uof.GetRepository().FindSpec(spec);
 
-                if (readBorrow == null)
+                if (borrow == null)
                     return NotFound();
 
-                return Ok(_mapper.Map<ReadBorrowDto>(readBorrow));
+                return Ok(_mapper.Map<ReadBorrowDto>(borrow));
             }
             return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
@@ -115,7 +118,7 @@ namespace API.Controllers
                         return BadRequest(new { Detail = $"{AppMessages.INVALID_BOOK} {borrowDto.BookId}" });
 
                     var borrow = _mapper.Map<CreateBorrowDto, Borrow>(borrowDto);
-                    _uof.GetRepository<Borrow>().InsertAsync(borrow);
+                    _uof.GetRepository().InsertAsync(borrow);
                     await _uof.Commit();
 
                     return StatusCode(201, AppMessages.INSERTED);
@@ -128,20 +131,15 @@ namespace API.Controllers
         }
         #endregion
 
-        #region PUT
-
-        #endregion
-
         #region DELETE
         [HttpDelete]
         public async Task<ActionResult> DeleteOrderBookAsync(ReadBorrowDto readBorrowDto)
         {
             var borrow = _mapper.Map<ReadBorrowDto, Borrow>(readBorrowDto);
-            _uof.GetRepository<Borrow>().DeleteAsync(borrow);
+            _uof.GetRepository().DeleteAsync(borrow);
             await _uof.Commit();
             return Ok(AppMessages.DELETED);
         }
         #endregion
-*/
     }
 }

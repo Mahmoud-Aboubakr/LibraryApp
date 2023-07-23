@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Employee;
 using Application.Interfaces;
 using Application.Interfaces.IValidators;
 using Application.Validators;
@@ -15,20 +15,29 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeesController : ControllerBase
-    {/*
-        private readonly IUnitOfWork _uof;
+    {
+        private readonly IUnitOfWork<Employee> _uof;
+        private readonly IUnitOfWork<Attendence> _attendanceUof;
+        private readonly IUnitOfWork<Payroll> _payrollUof;
+        private readonly IUnitOfWork<Vacation> _vacationUof;
         private readonly IMapper _mapper;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
         private readonly EmployeeServices _employeeServices;
         private readonly ILogger<EmployeesController> _logger;
         
-        public EmployeesController(IUnitOfWork uof,
+        public EmployeesController(IUnitOfWork<Employee> uof,
+                                    IUnitOfWork<Attendence> AttendanceUof,
+                                    IUnitOfWork<Payroll> PayrollUof,
+                                    IUnitOfWork<Vacation> VacationUof,
                                     IMapper mapper,
                                     IPhoneNumberValidator phoneNumberValidator,
                                     EmployeeServices employeeServices,
                                     ILogger<EmployeesController> logger)
         {
             _uof = uof;
+            _attendanceUof = AttendanceUof;
+            _payrollUof = PayrollUof;
+            _vacationUof = VacationUof;
             _mapper = mapper;
             _phoneNumberValidator = phoneNumberValidator;
             _employeeServices = employeeServices;
@@ -40,7 +49,7 @@ namespace API.Controllers
         [HttpGet("GetAllEmployees")]
         public async Task<ActionResult<IReadOnlyList<ReadEmployeeDto>>> GetAllEmployeesAsync()
         {
-            var employees = await _uof.GetRepository<Employee>().GetAllAsync();
+            var employees = await _uof.GetRepository().GetAllAsync();
             return Ok(_mapper.Map<IReadOnlyList<Employee>, IReadOnlyList<ReadEmployeeDto>>(employees));
         }
 
@@ -48,9 +57,9 @@ namespace API.Controllers
         [HttpGet("GetEmployeeById")]
         public async Task<ActionResult> GetEmployeeByIdAsync(int id)
         {
-            if (await _uof.GetRepository<Employee>().Exists(id))
+            if (await _uof.GetRepository().Exists(id))
             {
-                var employee = await _uof.GetRepository<Employee>().GetByIdAsync(id);
+                var employee = await _uof.GetRepository().GetByIdAsync(id);
                 return Ok(_mapper.Map<Employee, ReadEmployeeDto>(employee));
             }
 
@@ -77,7 +86,7 @@ namespace API.Controllers
             if (!_phoneNumberValidator.IsValidPhoneNumber(employeeDto.EmpPhoneNumber))
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {employeeDto.EmpPhoneNumber}" });
             var employee = _mapper.Map<CreateEmployeeDto, Employee>(employeeDto);
-            _uof.GetRepository<Employee>().InsertAsync(employee);
+            _uof.GetRepository().InsertAsync(employee);
             await _uof.Commit();
 
             return StatusCode(201, AppMessages.INSERTED); 
@@ -88,7 +97,7 @@ namespace API.Controllers
         [HttpPut("UpdateEmployee")]
         public async Task<ActionResult> UpdateEmployeeAsync(ReadEmployeeDto employeeDto)
         {
-            var result = await _uof.GetRepository<Employee>().Exists(employeeDto.Id);
+            var result = await _uof.GetRepository().Exists(employeeDto.Id);
             if (!result)
                 return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {employeeDto.Id}" });
             if (!_employeeServices.IsValidEmployeeType(employeeDto.EmpType))
@@ -98,7 +107,7 @@ namespace API.Controllers
             if (!_phoneNumberValidator.IsValidPhoneNumber(employeeDto.EmpPhoneNumber))
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {employeeDto.EmpPhoneNumber}" });
             var employee = _mapper.Map<ReadEmployeeDto, Employee>(employeeDto);
-            _uof.GetRepository<Employee>().UpdateAsync(employee);
+            _uof.GetRepository().UpdateAsync(employee);
             await _uof.Commit();
 
             return Ok(AppMessages.UPDATED);
@@ -109,11 +118,11 @@ namespace API.Controllers
         [HttpDelete("DeleteEmployee")]
         public async Task<ActionResult> DeleteEmployeeAsync(ReadEmployeeDto employeeDto)
         {
-            var UsedInAttendance = await _uof.GetRepository<Attendence>().FindUsingWhereAsync(x => x.EmpId == employeeDto.Id);
-            var UsedInPayroll = await _uof.GetRepository<Payroll>().FindUsingWhereAsync(p => p.EmpId == employeeDto.Id);
-            var UsedInVacation = await _uof.GetRepository<Vacation>().FindUsingWhereAsync(v => v.EmpId == employeeDto.Id);
+            var UsedInAttendance = await _attendanceUof.GetRepository().FindUsingWhereAsync(x => x.EmpId == employeeDto.Id);
+            var UsedInPayroll = await _payrollUof.GetRepository().FindUsingWhereAsync(p => p.EmpId == employeeDto.Id);
+            var UsedInVacation = await _vacationUof.GetRepository().FindUsingWhereAsync(v => v.EmpId == employeeDto.Id);
 
-            var result = await _uof.GetRepository<Employee>().Exists(employeeDto.Id);
+            var result = await _uof.GetRepository().Exists(employeeDto.Id);
             if (!result)
             {
                 return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {employeeDto.Id}" });
@@ -127,7 +136,7 @@ namespace API.Controllers
                 else
                 {
                     var employee = _mapper.Map<ReadEmployeeDto, Employee>(employeeDto);
-                    _uof.GetRepository<Employee>().DeleteAsync(employee);
+                    _uof.GetRepository().DeleteAsync(employee);
                     await _uof.Commit();
                     return Ok(AppMessages.DELETED);
                 }
@@ -139,30 +148,29 @@ namespace API.Controllers
         [HttpDelete("FireEmployee")]
         public async Task<ActionResult> FireEmployeeAsync(int id)
         {
-            var result = await _uof.GetRepository<Employee>().Exists(id);
+            var result = await _uof.GetRepository().Exists(id);
             if (!result)
             {
                 return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
             }
-            var employee = await _uof.GetRepository<Employee>().GetByIdAsync(id);
-            _uof.GetRepository<Employee>().DeleteAsync(employee);
+            var employee = await _uof.GetRepository().GetByIdAsync(id);
+            _uof.GetRepository().DeleteAsync(employee);
 
-            var AttendanceRecords = await _uof.GetRepository<Attendence>().GetAllWithWhere(A => A.EmpId == employee.Id);
+            var AttendanceRecords = await _attendanceUof.GetRepository().GetAllWithWhere(A => A.EmpId == employee.Id);
             if (AttendanceRecords != null)
-                _uof.GetRepository<Attendence>().DeleteRangeAsync(AttendanceRecords);
+                _attendanceUof.GetRepository().DeleteRangeAsync(AttendanceRecords);
 
-            var PayrollRecords = await _uof.GetRepository<Payroll>().GetAllWithWhere(P => P.EmpId == employee.Id);
+            var PayrollRecords = await _payrollUof.GetRepository().GetAllWithWhere(P => P.EmpId == employee.Id);
             if (PayrollRecords != null)
-                _uof.GetRepository<Payroll>().DeleteRangeAsync(PayrollRecords);
+                _payrollUof.GetRepository().DeleteRangeAsync(PayrollRecords);
 
-            var VacationRecords = await _uof.GetRepository<Vacation>().GetAllWithWhere(v => v.EmpId == employee.Id);
+            var VacationRecords = await _vacationUof.GetRepository().GetAllWithWhere(v => v.EmpId == employee.Id);
             if (VacationRecords != null)
-                _uof.GetRepository<Vacation>().DeleteRangeAsync(VacationRecords);
+                _vacationUof.GetRepository().DeleteRangeAsync(VacationRecords);
 
             await _uof.Commit();
             return Ok(AppMessages.FIRED);
         }
         #endregion
-        */
     }
 }

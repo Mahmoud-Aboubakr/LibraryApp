@@ -1,6 +1,4 @@
-﻿
-
-namespace Application.DTOs
+﻿namespace Application.DTOs.Attendance
 {
     public class ReadAttendanceDto
     {
@@ -12,5 +10,6 @@ namespace Application.DTOs
         public byte Month { get; set; }
 
         public int EmpId { get; set; }
+        public DateTime? CreatedDate { get; set; }
     }
 }
