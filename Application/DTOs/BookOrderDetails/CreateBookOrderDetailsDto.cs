@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs
+namespace Application.DTOs.BookOrderDetails
 {
     public class CreateBookOrderDetailsDto
     {
@@ -12,5 +12,6 @@ namespace Application.DTOs
         public string BookId { get; set; }
         public string Price { get; set; }
         public string Quantity { get; set; }
+        public DateTime? CreatedDate { get; set; } = DateTime.Now;
     }
 }

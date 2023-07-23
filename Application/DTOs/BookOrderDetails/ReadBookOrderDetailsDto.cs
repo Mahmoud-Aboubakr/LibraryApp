@@ -1,6 +1,4 @@
-﻿
-
-namespace Application.DTOs
+﻿namespace Application.DTOs.BookOrderDetails
 {
     public class ReadBookOrderDetailsDto
     {
@@ -11,5 +9,6 @@ namespace Application.DTOs
         public string BookTitle { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
+        public DateTime? CreatedDate { get; set; }
     }
 }

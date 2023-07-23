@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs
+namespace Application.DTOs.Order
 {
     public class CreateOrderDto
     {
         public string CustomerId { get; set; }
-      
+
         public string TotalPrice { get; set; }
+        public DateTime? CreatedDate { get; set; } = DateTime.Now;
     }
 }

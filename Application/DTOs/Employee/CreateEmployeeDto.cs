@@ -1,9 +1,13 @@
-﻿
-namespace Application.DTOs
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.DTOs.Employee
 {
-    public class ReadEmployeeDto
+    public class CreateEmployeeDto
     {
-        public int Id { get; set; }
         public string EmpName { get; set; }
         public byte EmpType { get; set; }
         public int EmpAge { get; set; }
@@ -12,5 +16,6 @@ namespace Application.DTOs
         public DateTime EmpStartingShift { get; set; }
         public DateTime EmpEndingShift { get; set; }
         public decimal EmpBasicSalary { get; set; }
+        public DateTime? CreatedDate { get; set; } = DateTime.Now;
     }
 }

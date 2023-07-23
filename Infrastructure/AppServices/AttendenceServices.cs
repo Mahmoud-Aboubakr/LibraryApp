@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Attendance;
 using Application.Interfaces.IAppServices;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;

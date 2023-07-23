@@ -1,6 +1,4 @@
-﻿
-
-namespace Application.DTOs
+﻿namespace Application.DTOs.Book
 {
     public class CreateBookDto
     {
@@ -9,5 +7,6 @@ namespace Application.DTOs
         public string Price { get; set; }
         public int AuthorId { get; set; }
         public int PublisherId { get; set; }
+        public DateTime? CreatedDate { get; set; } = DateTime.Now;
     }
 }

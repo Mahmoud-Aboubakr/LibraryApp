@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Author;
+using Application.DTOs.BannedCustomer;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
@@ -15,18 +16,21 @@ namespace API.Controllers
     public class AuthorsController : ControllerBase
     {
         private readonly IUnitOfWork<Author> _uof;
+        private readonly IUnitOfWork<Book> _bookUof;
         private readonly IMapper _mapper;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
         private readonly IAuthorServices _searchAuthorDataService;
         private readonly ILogger<AuthorsController> _logger;
 
         public AuthorsController(IUnitOfWork<Author> uof,
+            IUnitOfWork<Book> bookUof,
             IMapper mapper,
             IPhoneNumberValidator phoneNumberValidator,
             IAuthorServices searchAuthorDataService,
             ILogger<AuthorsController> logger)
         {
             _uof = uof;
+            _bookUof = bookUof;
             _mapper = mapper;
             _phoneNumberValidator = phoneNumberValidator;
             _searchAuthorDataService = searchAuthorDataService;
@@ -103,8 +107,8 @@ namespace API.Controllers
         [HttpDelete("DeleteAuthor")]
         public async Task<ActionResult> DeleteAuthorAsync(ReadAuthorDto authorDto)
         {
-            var result = _uof.GetRepository().FindUsingWhereAsync(b => b.Id == authorDto.Id);
-            if (result == null)
+            var result = _bookUof.GetRepository().FindUsingWhereAsync(b => b.AuthorId == authorDto.Id);
+            if (result != null)
                 return BadRequest(AppMessages.FAILED_DELETE);
             else
             {

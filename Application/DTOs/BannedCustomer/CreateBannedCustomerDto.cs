@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs
+namespace Application.DTOs.BannedCustomer
 {
     public class CreateBannedCustomerDto
     {
@@ -12,5 +12,6 @@ namespace Application.DTOs
         public int CustomerId { get; set; }
         public DateTime? BanDate { get; set; } = null;
         public int EmpId { get; set; }
+        public DateTime? CreatedDate { get; set; } = DateTime.Now;
     }
 }

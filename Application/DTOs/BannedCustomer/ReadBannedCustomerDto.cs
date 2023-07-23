@@ -1,6 +1,4 @@
-﻿
-
-namespace Application.DTOs
+﻿namespace Application.DTOs.BannedCustomer
 {
     public class ReadBannedCustomerDto
     {
@@ -10,6 +8,7 @@ namespace Application.DTOs
         public DateTime? BanDate { get; set; } = null;
         public int EmpId { get; set; }
         public string EmpName { get; set; }
+        public DateTime? CreatedDate { get; set; }
 
     }
 }
