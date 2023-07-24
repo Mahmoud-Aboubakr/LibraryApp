@@ -12,7 +12,7 @@ namespace Domain.Entities
         public int CustomerId { get; set; }
         public DateTime ReturnDate { get; set; }
         public decimal TotalPrice { get; set; }
-        //public virtual Order Order { get; set; }
+        //public virtual Order Order { get; set; } 
         public virtual Customer Customer { get; set; }
     }
 }

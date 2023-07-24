@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Vacation;
 using System;
 using System.Collections.Generic;
 using System.Linq;

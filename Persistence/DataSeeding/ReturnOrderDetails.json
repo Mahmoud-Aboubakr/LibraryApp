@@ -6,8 +6,8 @@
         "Price": 444,
         "Quantity": 2,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -16,8 +16,8 @@
         "Price": 333,
         "Quantity": 1,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -26,8 +26,8 @@
         "Price": 444,
         "Quantity": 1,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -36,8 +36,8 @@
         "Price": 100,
         "Quantity": 1,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -46,7 +46,7 @@
         "Price": 100,
         "Quantity": 3,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     }
 ]

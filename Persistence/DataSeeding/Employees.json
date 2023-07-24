@@ -10,8 +10,8 @@
         "EmpEndingShift": "2023-07-15T18:00:00.000Z",
         "EmpBasicSalary": 6000,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     }, 
     {
         "EmpId": 0,
@@ -24,8 +24,8 @@
         "EmpEndingShift": "2023-07-15T18:00:00.000Z",
         "EmpBasicSalary": 6000,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "EmpId": 0,
@@ -38,8 +38,8 @@
         "EmpEndingShift": "2023-07-15T20:00:00.000Z",
         "EmpBasicSalary": 8000,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "EmpId": 0,
@@ -52,8 +52,8 @@
         "EmpEndingShift": "2023-07-15T20:00:00.000Z",
         "EmpBasicSalary": 3000,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "EmpId": 0,
@@ -66,8 +66,8 @@
         "EmpEndingShift": "2023-07-15T20:00:00.000Z",
         "EmpBasicSalary": 3000,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "EmpId": 0,
@@ -80,8 +80,8 @@
         "EmpEndingShift": "2023-07-15T06:00:00.000Z",
         "EmpBasicSalary": 4000,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "EmpId": 0,
@@ -94,8 +94,8 @@
         "EmpEndingShift": "2023-07-15T20:00:00.000Z",
         "EmpBasicSalary": 4000,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     }
 
 ]

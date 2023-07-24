@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs
+namespace Application.DTOs.Payroll
 {
-    public class CreatePayrollDto
+    public class ReadPayrollDetailsDto
     {
+        public int Id { get; set; }
         public DateTime? SalaryDate { get; set; } = null;
         public decimal BasicSalary { get; set; }
         public decimal Bonus { get; set; }
@@ -15,5 +16,8 @@ namespace Application.DTOs
         public decimal TotalSalary { get; set; }
 
         public int EmpId { get; set; }
+        public string EmpName { get; set; }
+
+        public DateTime? CreatedDate { get; set; } 
     }
 }

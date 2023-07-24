@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.ReturnedOrder;
+using Application.DTOs.ReturnOrderDetails;
 using Application.Interfaces.IAppServices;
 using AutoMapper;
 using Domain.Entities;
@@ -50,7 +51,7 @@ namespace Infrastructure.AppServices
         }
 
 
-        public async Task<IReadOnlyList<ReadReturnOrderDetailsWithDetailsDto>> SearchReturnedOrdersDetails(int? returnedorderId = null, int? bookId = null, string customerName = null, string bookTitle = null)
+        public async Task<IReadOnlyList<ReadReturnOrderDetailsWithIncludesDto>> SearchReturnedOrdersDetails(int? returnedorderId = null, int? bookId = null, string customerName = null, string bookTitle = null)
         {
             var query = _context.ReturnOrderDetails.Include(o => o.Order.Customer).Include(o => o.Book).AsQueryable();
             query = query.Where(o => o.ReturnedOrderId == returnedorderId 
@@ -59,7 +60,7 @@ namespace Infrastructure.AppServices
                                 || o.Book.BookTitle.Contains(bookTitle));
 
             var result = await query.ToListAsync();
-            return _mapper.Map<IReadOnlyList<ReturnOrderDetails>, IReadOnlyList<ReadReturnOrderDetailsWithDetailsDto>>(result);
+            return _mapper.Map<IReadOnlyList<ReturnOrderDetails>, IReadOnlyList<ReadReturnOrderDetailsWithIncludesDto>>(result);
         }
 
 

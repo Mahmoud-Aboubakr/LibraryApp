@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs
+namespace Application.DTOs.ReturnOrderDetails
 {
     public class CreateReturnOrderDetailsDto
     {
@@ -14,5 +14,7 @@ namespace Application.DTOs
 
         public int ReturnedOrderId { get; set; }
         public int BookId { get; set; }
+
+        public DateTime? CreatedDate { get; set; } = DateTime.Now;
     }
 }

@@ -6,8 +6,8 @@
         "ReturnDate": "2023-07-12T15:43:03.153Z",
         "TotalPrice": 533,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "ReturnedOrderId": 0,
@@ -16,8 +16,8 @@
         "ReturnDate": "2023-07-14T12:43:03.153Z",
         "TotalPrice": 444,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "ReturnedOrderId": 0,
@@ -26,7 +26,7 @@
         "ReturnDate": "2023-07-13T10:43:03.153Z",
         "TotalPrice": 400,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     }
 ]
