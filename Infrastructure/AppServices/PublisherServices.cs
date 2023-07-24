@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Publisher;
 using Application.Interfaces.IAppServices;
 using AutoMapper;
 using Domain.Entities;

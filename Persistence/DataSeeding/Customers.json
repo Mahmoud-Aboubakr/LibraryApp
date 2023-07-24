@@ -5,8 +5,8 @@
         "CustomerPhoneNumber": "01523548524",
         "CustomerAddress": "SidiGaber,Alexandria",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "CustomerId": 0,
@@ -14,8 +14,8 @@
         "CustomerPhoneNumber": "01236445187",
         "CustomerAddress": "Sporting,Alexandria",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "CustomerId": 0,
@@ -23,8 +23,8 @@
         "CustomerPhoneNumber": "01124598521",
         "CustomerAddress": "RamlStation,Alexandria",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "CustomerId": 0,
@@ -32,8 +32,8 @@
         "CustomerPhoneNumber": "01254623185",
         "CustomerAddress": "Shatby,Alexandria",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "CustomerId": 0,
@@ -41,8 +41,8 @@
         "CustomerPhoneNumber": "01252364571",
         "CustomerAddress": "Shatby,Alexandria",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "CustomerId": 0,
@@ -50,8 +50,8 @@
         "CustomerPhoneNumber": "01562348561",
         "CustomerAddress": "Smouha,Alexandria",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "CustomerId": 0,
@@ -59,8 +59,8 @@
         "CustomerPhoneNumber": "01125348126",
         "CustomerAddress": "MoharamBek,Alexandria",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "CustomerId": 0,
@@ -68,8 +68,8 @@
         "CustomerPhoneNumber": "01245684652",
         "CustomerAddress": "Attarin,Alexandria",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "CustomerId": 0,
@@ -77,8 +77,8 @@
         "CustomerPhoneNumber": "01545682491",
         "CustomerAddress": "Gleem,Alexandria",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "CustomerId": 0,
@@ -86,7 +86,7 @@
         "CustomerPhoneNumber": "01236548253",
         "CustomerAddress": "Sporting,Alexandria",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     }
 ]

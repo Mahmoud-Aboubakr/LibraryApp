@@ -8,10 +8,10 @@
         "DayDate": "2023-07-13T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
-    {   
+    {
         "Id": 0,
         "EmpId": 1,
         "EmpArrivalTime": "2023-07-14T11:00:00.000Z",
@@ -20,8 +20,8 @@
         "DayDate": "2023-07-14T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -32,8 +32,8 @@
         "DayDate": "2023-07-15T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -44,8 +44,8 @@
         "DayDate": "2023-07-13T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -56,8 +56,8 @@
         "DayDate": "2023-07-14T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -68,8 +68,8 @@
         "DayDate": "2023-07-15T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -80,8 +80,8 @@
         "DayDate": "2023-07-15T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -92,8 +92,8 @@
         "DayDate": "2023-07-13T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -104,8 +104,8 @@
         "DayDate": "2023-07-14T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -116,8 +116,8 @@
         "DayDate": "2023-07-15T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -128,8 +128,8 @@
         "DayDate": "2023-07-13T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -140,8 +140,8 @@
         "DayDate": "2023-07-14T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -152,8 +152,8 @@
         "DayDate": "2023-07-15T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -164,8 +164,8 @@
         "DayDate": "2023-07-13T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -176,8 +176,8 @@
         "DayDate": "2023-07-14T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -188,8 +188,8 @@
         "DayDate": "2023-07-15T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -200,8 +200,8 @@
         "DayDate": "2023-07-13T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -212,8 +212,8 @@
         "DayDate": "2023-07-14T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -224,8 +224,8 @@
         "DayDate": "2023-07-15T00:00:00.000Z",
         "Month": 7,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     }
 
 ]

@@ -8,8 +8,8 @@
         "Deduct": 0,
         "TotalSalary": 6100,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     { 
         "Id": 0,
@@ -20,8 +20,8 @@
         "Deduct": 0,
         "TotalSalary": 6000,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -32,8 +32,8 @@
         "Deduct": 0,
         "TotalSalary": 8000,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -44,8 +44,8 @@
         "Deduct": 100,
         "TotalSalary": 2900,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -56,8 +56,8 @@
         "Deduct": 0,
         "TotalSalary": 3000,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -68,8 +68,8 @@
         "Deduct": 0,
         "TotalSalary": 4100,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "Id": 0,
@@ -80,8 +80,8 @@
         "Deduct": 0,
         "TotalSalary": 4000,
         "DeviceName": "REWAN-LAPTOP",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     }
 
 ]

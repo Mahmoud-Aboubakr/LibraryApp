@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.BookOrderDetails;
+using Application.DTOs.Order;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
@@ -6,6 +7,7 @@ using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
 using Infrastructure.AppServices;
+using Infrastructure.Specifications;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
@@ -15,20 +17,23 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
-    {/*
-        private readonly IUnitOfWork _uof;
+    {
+        private readonly IUnitOfWork<Order> _uof;
+        private readonly IUnitOfWork<BookOrderDetails> _bookOrderDetaislUof;
         private readonly IMapper _mapper;
         private readonly IOrderServices _orderServices;
         private readonly INumbersValidator _numbersValidator;
         private readonly ILogger<OrdersController> _logger;
 
-        public OrdersController(IUnitOfWork uof,
+        public OrdersController(IUnitOfWork<Order> uof,
+            IUnitOfWork<BookOrderDetails> bookOrderDetaislUof,
             IMapper mapper,
             IOrderServices orderServices,
             INumbersValidator numbersValidator,
             ILogger<OrdersController> logger)
         {
             _uof = uof;
+            _bookOrderDetaislUof = bookOrderDetaislUof;
             _mapper = mapper;
             _orderServices = orderServices;
             _numbersValidator = numbersValidator;
@@ -37,20 +42,22 @@ namespace API.Controllers
 
         #region Get
         [HttpGet("GetAllOrders")]
-        public async Task<ActionResult<IReadOnlyList<ReadOrderDto>>> GetAllOrdersWithDetails()
+        public async Task<ActionResult<IEnumerable<ReadOrderDto>>> GetAllOrdersWithDetails()
         {
-            var orders = await _uof.GetRepository<Order>().GetAllListWithIncludesAsync(new Expression<Func<Order, object>>[] { x => x.Customer });
-            return Ok(_mapper.Map<IReadOnlyList<Order>, IReadOnlyList<ReadOrderDto>>(orders));
+            var spec = new OrderWithCustomerSpec();
+            var orders = await _uof.GetRepository().FindAllSpec(spec);
+            return Ok(_mapper.Map<IEnumerable<Order>, IEnumerable<ReadOrderDto>>(orders));
         }
 
         [HttpGet("GetByIdWithIncludes")]
         public async Task<ActionResult<ReadOrderDto>> GetByIdWithIncludesAsync(int id)
         {
-            var exists = await _uof.GetRepository<Order>().Exists(id);
+            var exists = await _uof.GetRepository().Exists(id);
 
             if (exists)
             {
-                var order = await _uof.GetRepository<Order>().GetByIdAsyncWithIncludes(id, new Expression<Func<Order, object>>[] { x => x.Customer });
+                var spec = new OrderWithCustomerSpec(id);
+                var order = await _uof.GetRepository().FindSpec(spec);
 
                 if (order == null)
                     return NotFound();
@@ -63,11 +70,11 @@ namespace API.Controllers
         [HttpGet("GetOrderById")]
         public async Task<ActionResult<ReadOrderDto>> GetById(int id)
         {
-            var exists = await _uof.GetRepository<Order>().Exists(id);
+            var exists = await _uof.GetRepository().Exists(id);
 
             if (exists)
             {
-                var order = await _uof.GetRepository<Order>().GetByIdAsync(id);
+                var order = await _uof.GetRepository().GetByIdAsync(id);
 
                 if (order == null)
                     return NotFound();
@@ -97,7 +104,7 @@ namespace API.Controllers
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_QUANTITY} {createOrder.TotalPrice}" });
 
             var orderBook = _mapper.Map<CreateOrderDto, Order>(createOrder);
-            _uof.GetRepository<Order>().InsertAsync(orderBook);
+            _uof.GetRepository().InsertAsync(orderBook);
             await _uof.Commit();
 
             return StatusCode(201, AppMessages.INSERTED);
@@ -123,7 +130,7 @@ namespace API.Controllers
                 if (validBook)
                 {
                     var orderBook = _mapper.Map<CreateBookOrderDetailsDto, BookOrderDetails>(createOrderBooks);
-                    _uof.GetRepository<BookOrderDetails>().InsertAsync(orderBook);
+                    _bookOrderDetaislUof.GetRepository().InsertAsync(orderBook);
                     await _uof.Commit();
                     _orderServices.DecreaseQuantity(createOrderBooks.BookId, createOrderBooks.Quantity);
                     return StatusCode(201, AppMessages.INSERTED);
@@ -147,6 +154,5 @@ namespace API.Controllers
             _orderServices.DeletOrderAsync(orderId);
         }
         #endregion
-        */
     }
 }

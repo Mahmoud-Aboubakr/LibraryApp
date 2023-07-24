@@ -6,8 +6,8 @@
         "BorrowDate": "2023-07-10T15:00:03.153Z",
         "ReturnDate": "2023-07-13T15:00:03.153Z",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "BorrowId": 0,
@@ -16,8 +16,8 @@
         "BorrowDate": "2023-07-10T15:02:03.153Z",
         "ReturnDate": "2023-07-13T15:02:03.153Z",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "BorrowId": 0,
@@ -26,8 +26,8 @@
         "BorrowDate": "2023-07-10T15:03:03.153Z",
         "ReturnDate": "2023-07-13T15:03:03.153Z",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "BorrowId": 0,
@@ -36,8 +36,8 @@
         "BorrowDate": "2023-07-14T11:00:03.153Z",
         "ReturnDate": "2023-07-17T11:00:03.153Z",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "BorrowId": 0,
@@ -46,8 +46,8 @@
         "BorrowDate": "2023-07-14T11:01:03.153Z",
         "ReturnDate": "2023-07-17T11:01:03.153Z",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "BorrowId": 0,
@@ -56,8 +56,8 @@
         "BorrowDate": "2023-07-14T17:00:03.153Z",
         "ReturnDate": "2023-07-17T17:00:03.153Z",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "BorrowId": 0,
@@ -66,8 +66,8 @@
         "BorrowDate": "2023-07-15T15:00:03.153Z",
         "ReturnDate": "2023-07-18T15:00:03.153Z",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "BorrowId": 0,
@@ -76,8 +76,8 @@
         "BorrowDate": "2023-07-15T15:00:03.153Z",
         "ReturnDate": "2023-07-18T15:00:03.153Z",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "BorrowId": 0,
@@ -86,7 +86,7 @@
         "BorrowDate": "2023-07-16T15:00:03.153Z",
         "ReturnDate": "2023-07-16T15:00:03.153Z",
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     }
 ]

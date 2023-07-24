@@ -1,5 +1,17 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Attendance;
 using Application.DTOs.Author;
+using Application.DTOs.BannedCustomer;
+using Application.DTOs.Book;
+using Application.DTOs.BookOrderDetails;
+using Application.DTOs.Borrow;
+using Application.DTOs.Customer;
+using Application.DTOs.Employee;
+using Application.DTOs.Order;
+using Application.DTOs.Payroll;
+using Application.DTOs.Publisher;
+using Application.DTOs.ReturnedOrder;
+using Application.DTOs.ReturnOrderDetails;
+using Application.DTOs.Vacation;
 using AutoMapper;
 using Domain.Entities;
 
@@ -10,7 +22,7 @@ namespace Application.Mappers
         public MappingProfiles()
         {
             #region Author
-            CreateMap<Author, ReadAuthorDto>();
+            CreateMap<Author, ReadAuthorDto>().ReverseMap();
             CreateMap<UpdateAuthorDto, Author>();
             CreateMap<CreateAuthorDto, Author>();
             #endregion
@@ -115,11 +127,11 @@ namespace Application.Mappers
             #endregion
 
             #region ReturnOrderDetails
-            CreateMap<ReturnOrderDetails, ReadReturnOrderDetailsWithDetailsDto>()
+            CreateMap<ReturnOrderDetails, ReadReturnOrderDetailsWithIncludesDto>()
               .ForMember(dest => dest.BookTitle, option => option.MapFrom(src => src.Book.BookTitle))
               .ForMember(dest => dest.Price, option => option.MapFrom(src => src.Book.Price))
               .ForMember(dest => dest.CustomerName, option => option.MapFrom(src => src.Order.Customer.CustomerName));
-            CreateMap<ReadReturnOrderDetailsWithDetailsDto, ReturnOrderDetails>();
+            CreateMap<ReadReturnOrderDetailsWithIncludesDto, ReturnOrderDetails>();
             CreateMap<ReadReturnOrderDetailsDto, ReturnOrderDetails>();
             CreateMap<ReturnOrderDetails, ReadReturnOrderDetailsDto>();
             CreateMap<ReturnOrderDetails, CreateReturnOrderDetailsDto>().ReverseMap();

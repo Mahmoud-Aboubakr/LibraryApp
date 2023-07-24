@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Book;
 
 namespace Application.Interfaces.IAppServices
 {
