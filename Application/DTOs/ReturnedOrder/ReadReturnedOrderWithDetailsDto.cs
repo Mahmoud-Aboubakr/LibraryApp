@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs
+namespace Application.DTOs.ReturnedOrder
 {
     public class ReadReturnedOrderWithDetailsDto
     {
@@ -15,5 +15,7 @@ namespace Application.DTOs
         public decimal TotalPrice { get; set; }
 
         public string CustomerName { get; set; }
+
+        public DateTime? CreatedDate { get; set; } 
     }
 }

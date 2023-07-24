@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.ReturnedOrder;
+using Application.DTOs.ReturnOrderDetails;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Application.Interfaces.IAppServices
     {
         Task<IReadOnlyList<ReadReturnedOrderWithDetailsDto>> SearchReturnedOrders(int? originorderId = null, int? customerId = null, string customerName = null, decimal? totalPrice = null, DateTime? returndate = null);
 
-        Task<IReadOnlyList<ReadReturnOrderDetailsWithDetailsDto>> SearchReturnedOrdersDetails(int? returnedorderId = null, int? bookId = null, string customerName = null, string bookTitle = null);
+        Task<IReadOnlyList<ReadReturnOrderDetailsWithIncludesDto>> SearchReturnedOrdersDetails(int? returnedorderId = null, int? bookId = null, string customerName = null, string bookTitle = null);
 
         bool IsInReturnInterval(DateTime returndate, DateTime orderdate);
 

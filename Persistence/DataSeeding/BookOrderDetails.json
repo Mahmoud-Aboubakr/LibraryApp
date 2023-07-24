@@ -5,8 +5,8 @@
         "Price": 444,
         "Quantity": 2,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "OrderId": 1,
@@ -14,8 +14,8 @@
         "Price": 333,
         "Quantity": 1,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "OrderId": 2,
@@ -23,8 +23,8 @@
         "Price": 444,
         "Quantity": 1,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "OrderId": 3,
@@ -32,8 +32,8 @@
         "Price": 100,
         "Quantity": 1,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "OrderId": 3,
@@ -41,8 +41,8 @@
         "Price": 100,
         "Quantity": 3,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "OrderId": 4,
@@ -50,8 +50,8 @@
         "Price": 455,
         "Quantity": 1,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "OrderId": 5,
@@ -59,8 +59,8 @@
         "Price": 120,
         "Quantity": 2,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "OrderId": 5,
@@ -68,8 +68,8 @@
         "Price": 100,
         "Quantity": 1,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "OrderId": 6,
@@ -77,8 +77,8 @@
         "Price": 140,
         "Quantity": 2,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "OrderId": 6,
@@ -86,8 +86,8 @@
         "Price": 100,
         "Quantity": 1,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "OrderId": 7,
@@ -95,8 +95,8 @@
         "Price": 100,
         "Quantity": 1,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "OrderId": 7,
@@ -104,8 +104,8 @@
         "Price": 100,
         "Quantity": 1,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "OrderId": 8,
@@ -113,8 +113,8 @@
         "Price": 100,
         "Quantity": 3,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "OrderId": 8,
@@ -122,8 +122,8 @@
         "Price": 740,
         "Quantity": 1,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "OrderId": 9,
@@ -131,8 +131,8 @@
         "Price": 120,
         "Quantity": 2,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     },
     {
         "OrderId": 10,
@@ -140,7 +140,7 @@
         "Price": 100,
         "Quantity": 1,
         "DeviceName": "DESKTOP-PU165U4",
-        "CreatedDate": null,
-        "UpdatedDate": null
+        "CreatedDate": "2023-07-24T18:00:00.000Z",
+        "UpdatedDate": "2023-07-26T18:00:00.000Z"
     }
 ]

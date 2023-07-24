@@ -1,5 +1,4 @@
-﻿
-namespace Application.DTOs
+﻿namespace Application.DTOs.Vacation
 {
     public class ReadVacationDto
     {
@@ -10,5 +9,7 @@ namespace Application.DTOs
         public bool? Absence { get; set; }
 
         public int EmpId { get; set; }
+
+        public DateTime? CreatedDate { get; set; } 
     }
 }
