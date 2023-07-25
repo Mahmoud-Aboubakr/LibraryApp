@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Application.Handlers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Application.DTOs.Vacation
@@ -12,7 +14,7 @@ namespace Application.DTOs.Vacation
         public int NormalVacationCount { get; set; }
         public int UrgentVacationCount { get; set; }
         public int AbsenceCount { get; set; }
-
-        public DateTime? CreatedDate { get; set; } 
+        [JsonConverter(typeof(CustomDateTimeConverter))]
+        public DateTime CreatedDate { get; set; } 
     }
 }

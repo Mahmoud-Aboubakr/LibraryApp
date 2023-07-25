@@ -10,13 +10,13 @@ namespace Application.DTOs.Attendance
 {
     public class CreateAttendenceDto
     {
-        [JsonConverter(typeof(CustomTimeConverter))]
-        public TimeOnly? EmpArrivalTime { get; set; } = null;
-        [JsonConverter(typeof(CustomTimeConverter))]
-        public TimeOnly? EmpLeavingTime { get; set; } = null;
+        //[JsonConverter(typeof(CustomTimeConverter))]
+        //public TimeOnly? EmpArrivalTime { get; set; } = null;
+        //[JsonConverter(typeof(CustomTimeConverter))]
+        //public TimeOnly? EmpLeavingTime { get; set; } = null;
         public int Permission { get; set; }
-        [JsonConverter(typeof(CustomDateConverter))]
-        public DateTime? DayDate { get; set; } = null;
+        //[JsonConverter(typeof(CustomDateConverter))]
+        //public DateTime? DayDate { get; set; } = null;
         public byte Month { get; set; }
         public int EmpId { get; set; }
         [JsonConverter(typeof(CustomDateTimeConverter))]

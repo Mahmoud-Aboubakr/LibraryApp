@@ -11,6 +11,6 @@ namespace Application.Interfaces.IAppServices
     {
         bool IsValidAttendencePermission(int permission);
         bool IsValidMonth(byte month);
-        Task<IReadOnlyList<ReadAttendanceDto>> SearchAttendenceDataWithDetail(string empName = null);
+        //Task<IReadOnlyList<ReadAttendanceDto>> SearchAttendenceDataWithDetail(string empName = null);
     }
 }

@@ -1,8 +1,10 @@
-﻿using Domain.Entities;
+﻿using Application.Handlers;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Application.DTOs.ReturnOrderDetails
@@ -14,7 +16,7 @@ namespace Application.DTOs.ReturnOrderDetails
 
         public int ReturnedOrderId { get; set; }
         public int BookId { get; set; }
-
-        public DateTime? CreatedDate { get; set; } = DateTime.Now;
+        [JsonConverter(typeof(CustomDateTimeConverter))]
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

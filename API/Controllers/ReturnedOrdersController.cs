@@ -62,11 +62,11 @@ namespace API.Controllers
         }
 
         [HttpGet("GetAllReturnedOrdersWithDetails")]
-        public async Task<ActionResult<IEnumerable<ReadReturnedOrderWithDetailsDto>>> GetAllReturnedOrdersWithDetails()
+        public async Task<ActionResult<IEnumerable<ReadReturnedOrderDto>>> GetAllReturnedOrdersWithDetails()
         {
             var spec = new ReturnedOrderWithCustomerSpec();
             var returnedOrders = await _uof.GetRepository().FindAllSpec(spec);
-            return Ok(_mapper.Map<IEnumerable<ReturnedOrder>, IEnumerable<ReadReturnedOrderWithDetailsDto>>(returnedOrders));
+            return Ok(_mapper.Map<IEnumerable<ReturnedOrder>, IEnumerable<ReadReturnedOrderDto>>(returnedOrders));
         }
 
         [HttpGet("GetAllReturnedOrderDetails")]
@@ -78,11 +78,11 @@ namespace API.Controllers
 
 
         [HttpGet("GetAllReturnedOrderDetailsWithIncludes")]
-        public async Task<ActionResult<IEnumerable<ReadReturnOrderDetailsWithIncludesDto>>> GetAllReturnedOrderDetailsWithIncludesAsync()
+        public async Task<ActionResult<IEnumerable<ReadReturnOrderDetailsDto>>> GetAllReturnedOrderDetailsWithIncludesAsync()
         {
             var spec = new ReturnOrderDetailsWithBookAndCustomerSpec();
             var returnOrdersDetails = await _returnOrderDetailsUof.GetRepository().FindAllSpec(spec);
-            return Ok(_mapper.Map<IEnumerable<ReturnOrderDetails>, IEnumerable<ReadReturnOrderDetailsWithIncludesDto>>(returnOrdersDetails));
+            return Ok(_mapper.Map<IEnumerable<ReturnOrderDetails>, IEnumerable<ReadReturnOrderDetailsDto>>(returnOrdersDetails));
         }
 
 
@@ -105,7 +105,7 @@ namespace API.Controllers
 
 
         [HttpGet("GetReturnedOrderByIdWithIncludes")]
-        public async Task<ActionResult<ReadReturnedOrderWithDetailsDto>> GetReturnedOrderByIdWithIncludesAsync(int id)
+        public async Task<ActionResult<ReadReturnedOrderDto>> GetReturnedOrderByIdWithIncludesAsync(int id)
         {
             var exists = await _uof.GetRepository().Exists(id);
 
@@ -117,7 +117,7 @@ namespace API.Controllers
                 if (returnedorder == null)
                     return NotFound();
 
-                return Ok(_mapper.Map<ReadReturnedOrderWithDetailsDto>(returnedorder));
+                return Ok(_mapper.Map<ReadReturnedOrderDto>(returnedorder));
             }
             return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
@@ -147,7 +147,7 @@ namespace API.Controllers
         }
 
         [HttpGet("GetReturnedOrderDetailsByIdWithIncludes")]
-        public async Task<ActionResult<ReadReturnOrderDetailsWithIncludesDto>> GetReturnedOrderDetailsByIdWithIncludesAsync(int id)
+        public async Task<ActionResult<ReadReturnOrderDetailsDto>> GetReturnedOrderDetailsByIdWithIncludesAsync(int id)
         {
             var exists = await _returnOrderDetailsUof.GetRepository().Exists(id);
 
@@ -159,7 +159,7 @@ namespace API.Controllers
                 if (returnOrdersDetails == null)
                     return NotFound();
 
-                return Ok(_mapper.Map<ReadReturnOrderDetailsWithIncludesDto>(returnOrdersDetails));
+                return Ok(_mapper.Map<ReadReturnOrderDetailsDto>(returnOrdersDetails));
             }
             return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }

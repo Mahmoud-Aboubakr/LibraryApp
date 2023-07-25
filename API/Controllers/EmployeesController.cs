@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Employee;
 using Application.Interfaces;
+using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
 using Application.Validators;
 using AutoMapper;
@@ -22,7 +23,7 @@ namespace API.Controllers
         private readonly IUnitOfWork<Vacation> _vacationUof;
         private readonly IMapper _mapper;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
-        private readonly EmployeeServices _employeeServices;
+        private readonly IEmployeeServices _employeeServices;
         private readonly ILogger<EmployeesController> _logger;
         
         public EmployeesController(IUnitOfWork<Employee> uof,
@@ -31,7 +32,7 @@ namespace API.Controllers
                                     IUnitOfWork<Vacation> VacationUof,
                                     IMapper mapper,
                                     IPhoneNumberValidator phoneNumberValidator,
-                                    EmployeeServices employeeServices,
+                                    IEmployeeServices employeeServices,
                                     ILogger<EmployeesController> logger)
         {
             _uof = uof;
