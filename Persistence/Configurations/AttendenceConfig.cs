@@ -15,9 +15,12 @@ namespace Persistence.Configurations
                 .WithMany()
                 .HasForeignKey(A => A.EmpId)
                 .OnDelete(deleteBehavior: DeleteBehavior.NoAction);
-
             builder
-                .Property(A => A.DayDate).HasDefaultValue(DateTime.Now).HasColumnType("date");
+               .Property(A => A.EmpArrivalTime).HasDefaultValue(DateTime.Now).HasColumnType("datetime");
+            builder
+               .Property(A => A.EmpLeavingTime).HasDefaultValue(DateTime.Now).HasColumnType("datetime");
+            builder
+                .Property(A => A.DayDate).HasDefaultValue(DateTime.Now).HasColumnType("datetime");
 
         }
     }

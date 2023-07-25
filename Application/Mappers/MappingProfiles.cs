@@ -21,6 +21,7 @@ namespace Application.Mappers
     {
         public MappingProfiles()
         {
+            //Rita => edit on attendence only
             #region Author
             CreateMap<Author, ReadAuthorDto>().ReverseMap();
             CreateMap<UpdateAuthorDto, Author>();
