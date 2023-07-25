@@ -28,6 +28,12 @@ namespace Persistence.Configurations
 
             builder
                 .Property(E => E.Id).HasColumnName("EmpId");
+
+            builder
+                .Property(E => E.EmpStartingShift).HasColumnType("datetime");
+
+            builder
+                .Property(E => E.EmpEndingShift).HasColumnType("datetime");
         }
     }
 }

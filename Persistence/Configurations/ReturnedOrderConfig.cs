@@ -20,7 +20,8 @@ namespace Persistence.Configurations
 
             builder
                 .Property(x => x.ReturnDate)
-                .HasDefaultValue(DateTime.Now);
+                .HasDefaultValue(DateTime.Now)
+                .HasColumnType("datetime");
 
 
             builder

@@ -39,6 +39,7 @@ namespace Persistence.Configurations
             builder
                 .Property(P => P.SalaryDate)
                 .HasDefaultValue(DateTime.Now)
+                .HasColumnType("datetime")
                 .IsRequired();
 
         }

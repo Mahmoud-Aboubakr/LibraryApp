@@ -15,10 +15,12 @@ namespace Application.DTOs.Attendance
         [JsonConverter(typeof(CustomDateTimeConverter))]
         public DateTime EmpLeavingTime { get; set; }
         public int Permission { get; set; }
+
         [JsonConverter(typeof(CustomDateTimeConverter))]
         public DateTime DayDate { get; set; }
         public byte Month { get; set; }
         public int EmpId { get; set; }
+
         [JsonConverter(typeof(CustomDateTimeConverter))]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
     }

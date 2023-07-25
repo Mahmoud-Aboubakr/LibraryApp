@@ -6,6 +6,7 @@ namespace Application.DTOs.Attendance
     public class ReadAttendanceDto
     {
         public int Id { get; set; }
+
         [JsonConverter(typeof(CustomDateTimeConverter))]
         public DateTime? EmpArrivalTime { get; set; } 
         [JsonConverter(typeof(CustomDateTimeConverter))]
@@ -14,7 +15,6 @@ namespace Application.DTOs.Attendance
         [JsonConverter(typeof(CustomDateTimeConverter))]
         public DateTime? DayDate { get; set; }
         public byte Month { get; set; }
-
         public int EmpId { get; set; }
         public string EmpName { get; set; }
         [JsonConverter(typeof(CustomDateTimeConverter))]
