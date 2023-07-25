@@ -15,22 +15,19 @@ namespace API.Controllers
 
     public class AuthorsController : ControllerBase
     {
-        private readonly IUnitOfWork<Author> _uof;
-        private readonly IUnitOfWork<Book> _bookUof;
+        private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
         private readonly IAuthorServices _searchAuthorDataService;
         private readonly ILogger<AuthorsController> _logger;
 
-        public AuthorsController(IUnitOfWork<Author> uof,
-            IUnitOfWork<Book> bookUof,
+        public AuthorsController(IUnitOfWork uof,
             IMapper mapper,
             IPhoneNumberValidator phoneNumberValidator,
             IAuthorServices searchAuthorDataService,
             ILogger<AuthorsController> logger)
         {
             _uof = uof;
-            _bookUof = bookUof;
             _mapper = mapper;
             _phoneNumberValidator = phoneNumberValidator;
             _searchAuthorDataService = searchAuthorDataService;
@@ -41,16 +38,16 @@ namespace API.Controllers
         [HttpGet("GetAllAuthors")]
         public async Task<ActionResult<IReadOnlyList<ReadAuthorDto>>> GetAllAuthorsAsync()
         {
-            var authors = await _uof.GetRepository().GetAllAsync();
+            var authors = await _uof.GetRepository<Author>().GetAllAsync();
             return Ok(_mapper.Map<IReadOnlyList<Author>, IReadOnlyList<ReadAuthorDto>>(authors));
         }
 
         [HttpGet("GetAuthorById")]
         public async Task<ActionResult> GetAuthorByIdAsync(int id)
         {
-            if (await _uof.GetRepository().Exists(id))
+            if (await _uof.GetRepository<Author>().Exists(id))
             {
-                var author = await _uof.GetRepository().GetByIdAsync(id);
+                var author = await _uof.GetRepository<Author>().GetByIdAsync(id);
                 return Ok(_mapper.Map<Author, ReadAuthorDto>(author));
             }
 
@@ -73,7 +70,7 @@ namespace API.Controllers
             if (_phoneNumberValidator.IsValidPhoneNumber(authorDto.AuthorPhoneNumber))
             {
                 var author = _mapper.Map<CreateAuthorDto, Author>(authorDto);
-                _uof.GetRepository().InsertAsync(author);
+                _uof.GetRepository<Author>().InsertAsync(author);
                 await _uof.Commit();
 
                 return StatusCode(201, AppMessages.INSERTED);
@@ -89,14 +86,14 @@ namespace API.Controllers
         [HttpPut("UpdateAuthor")]
         public async Task<ActionResult> UpdateAuthorAsync(UpdateAuthorDto authorDto)
         {
-            var result = await _uof.GetRepository().Exists(authorDto.Id);
+            var result = await _uof.GetRepository<Author>().Exists(authorDto.Id);
             if (!result)
                 return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {authorDto.Id}" });
             if (!_phoneNumberValidator.IsValidPhoneNumber(authorDto.AuthorPhoneNumber))
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {authorDto.AuthorPhoneNumber}" });
 
             var author = _mapper.Map<UpdateAuthorDto, Author>(authorDto);
-            _uof.GetRepository().UpdateAsync(author);
+            _uof.GetRepository<Author>().UpdateAsync(author);
             await _uof.Commit();
 
             return Ok(AppMessages.UPDATED);
@@ -107,18 +104,18 @@ namespace API.Controllers
         [HttpDelete("DeleteAuthor")]
         public async Task<ActionResult> DeleteAuthorAsync(ReadAuthorDto authorDto)
         {
-            var result = _bookUof.GetRepository().FindUsingWhereAsync(b => b.AuthorId == authorDto.Id);
+            var result = _uof.GetRepository<Book>().FindUsingWhereAsync(b => b.AuthorId == authorDto.Id);
             if (result != null)
                 return BadRequest(AppMessages.FAILED_DELETE);
             else
             {
                 var author = _mapper.Map<ReadAuthorDto, Author>(authorDto);
-                _uof.GetRepository().DeleteAsync(author);
+                _uof.GetRepository<Author>().DeleteAsync(author);
                 await _uof.Commit();
                 return Ok(AppMessages.DELETED);
             }
         }
         #endregion
-
+        
     }
 }

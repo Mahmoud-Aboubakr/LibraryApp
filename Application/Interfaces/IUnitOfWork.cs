@@ -4,9 +4,9 @@ using Domain.Entities;
 
 namespace Application.Interfaces
 {
-    public interface IUnitOfWork<T> : IDisposable where T : BaseEntity
+    public interface IUnitOfWork : IDisposable 
     {
-        IGenericRepository<T> GetRepository();
+        IGenericRepository<T> GetRepository<T>() where T : BaseEntity;
         Task<int> Commit();
     }
 }

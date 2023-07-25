@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Specifications.BannedCustomerSpec
 {
-    public class BannedCustomerWithEmployeeAndCustomerSpec : EntitySpec<BannedCustomer>
+    public class BannedCustomerWithEmployeeAndCustomerSpec : BaseSpecification<BannedCustomer>
     {
         public BannedCustomerWithEmployeeAndCustomerSpec()
         {

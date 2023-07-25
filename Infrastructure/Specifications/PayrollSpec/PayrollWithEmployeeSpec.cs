@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Specifications.PayrollSpec
 {
-    public class PayrollWithEmployeeSpec : EntitySpec<Payroll>
+    public class PayrollWithEmployeeSpec : BaseSpecification<Payroll>
     {
         public PayrollWithEmployeeSpec()
         {

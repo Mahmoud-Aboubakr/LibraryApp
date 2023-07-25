@@ -21,7 +21,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class ReturnedOrdersController : ControllerBase
-    {
+    {/*
         private readonly IUnitOfWork<ReturnedOrder> _uof;
         private readonly IUnitOfWork<ReturnOrderDetails> _returnOrderDetailsUof;
         private readonly IUnitOfWork<Order> _orderUof;
@@ -259,6 +259,6 @@ namespace API.Controllers
             return Ok(AppMessages.DELETED);
         }
         #endregion
-
+        */
     }
 }

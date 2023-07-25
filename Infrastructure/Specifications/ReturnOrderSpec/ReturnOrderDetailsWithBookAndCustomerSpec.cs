@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Specifications.ReturnOrderSpec
 {
-    public class ReturnOrderDetailsWithBookAndCustomerSpec : EntitySpec<ReturnOrderDetails>
+    public class ReturnOrderDetailsWithBookAndCustomerSpec : BaseSpecification<ReturnOrderDetails>
     {
         public ReturnOrderDetailsWithBookAndCustomerSpec()
         {

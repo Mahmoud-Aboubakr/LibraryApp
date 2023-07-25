@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Specifications.VacationSpec
 {
-    public class VacationWithEmployeeSpec : EntitySpec<Vacation>
+    public class VacationWithEmployeeSpec : BaseSpecification<Vacation>
     {
         public VacationWithEmployeeSpec()
         {

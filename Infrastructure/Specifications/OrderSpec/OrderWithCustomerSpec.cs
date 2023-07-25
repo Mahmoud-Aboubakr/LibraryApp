@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Specifications.OrderSpec
 {
-    public class OrderWithCustomerSpec : EntitySpec<Order>
+    public class OrderWithCustomerSpec : BaseSpecification<Order>
     {
         public OrderWithCustomerSpec()
         {

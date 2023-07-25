@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Specifications.AttendanceSpec
 {
-    public class AttendanceWithEmployeeSpec : EntitySpec<Attendence>
+    public class AttendanceWithEmployeeSpec : BaseSpecification<Attendence>
     {
         public AttendanceWithEmployeeSpec()
         {
