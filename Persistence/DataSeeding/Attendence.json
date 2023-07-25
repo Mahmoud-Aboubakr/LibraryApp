@@ -2,7 +2,7 @@
     {
         "Id": 0,
         "EmpId": 1,
-        "EmpArrivalTime": "T09:00:00.000Z",
+        "EmpArrivalTime": "2023-07-14T09:00:00.000Z",
         "EmpLeavingTime": "2023-07-14T18:00:00.000Z",
         "Permission": 1,
         "DayDate": "2023-07-14T00:00:00.000Z",

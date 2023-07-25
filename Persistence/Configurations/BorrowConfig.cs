@@ -24,10 +24,10 @@ namespace Persistence.Configurations
               .OnDelete(DeleteBehavior.NoAction);
 
             builder
-                .Property(B => B.BorrowDate).HasDefaultValue(DateTime.Now);
+                .Property(B => B.BorrowDate).HasDefaultValue(DateTime.Now).HasColumnType("datetime");
 
             builder
-                .Property(B => B.ReturnDate).HasDefaultValue(DateTime.Now.AddDays(3));
+                .Property(B => B.ReturnDate).HasDefaultValue(DateTime.Now.AddDays(3)).HasColumnType("datetime");
 
         }
     }

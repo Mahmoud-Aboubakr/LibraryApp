@@ -14,26 +14,26 @@ namespace Infrastructure.AppServices
             _context = context;
         }
 
-        //public async Task<IReadOnlyList<ReadAttendanceDto>> SearchAttendenceDataWithDetail(string empName = null)
-        //{
-        //    _context.Vacations.Where(v => v.NormalVacation == true).GroupBy(v => v.EmpId).Count();
-        //    var result = await (from a in _context.Attendence
-        //                        join e in _context.Employees
-        //                        on a.EmpId equals e.Id
-        //                        where empName == null || e.EmpName.Contains(empName)
-        //                        select new ReadAttendanceDto()
-        //                        {
-        //                            Id = a.Id,
-        //                            EmpArrivalTime = a.EmpArrivalTime,
-        //                            EmpLeavingTime = a.EmpLeavingTime,
-        //                            Permission = a.Permission,
-        //                            DayDate = a.DayDate,
-        //                            Month = a.Month,
-        //                            EmpId = e.Id,
-        //                            EmpName = e.EmpName
-        //                        }).ToListAsync();
-        //    return result;
-        //}
+        public async Task<IReadOnlyList<ReadAttendanceDto>> SearchAttendenceDataWithDetail(string empName = null)
+        {
+            _context.Vacations.Where(v => v.NormalVacation == true).GroupBy(v => v.EmpId).Count();
+            var result = await (from a in _context.Attendence
+                                join e in _context.Employees
+                                on a.EmpId equals e.Id
+                                where empName == null || e.EmpName.Contains(empName)
+                                select new ReadAttendanceDto()
+                                {
+                                    Id = a.Id,
+                                    EmpArrivalTime = a.EmpArrivalTime,
+                                    EmpLeavingTime = a.EmpLeavingTime,
+                                    Permission = a.Permission,
+                                    DayDate = a.DayDate,
+                                    Month = a.Month,
+                                    EmpId = e.Id,
+                                    EmpName = e.EmpName
+                                }).ToListAsync();
+            return result;
+        }
         public bool IsValidAttendencePermission(int permission)
         {
             return permission == 0 || permission == 1;
