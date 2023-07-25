@@ -6,27 +6,25 @@ using Persistence.Context;
 
 namespace Persistence.Repositories
 {
-    public class UnitOfWork<T> : IUnitOfWork<T> where T : BaseEntity
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly LibraryDbContext _dbContext;
-        private readonly IEntitySpec<T> _entitySpec;
         private readonly Dictionary<Type, object> _repositories;
 
-        public UnitOfWork(LibraryDbContext dbContext , IEntitySpec<T> entitySpec)
+        public UnitOfWork(LibraryDbContext dbContext)
         {
             _dbContext = dbContext;
-            _entitySpec = entitySpec;
             _repositories = new Dictionary<Type, object>();
         }
 
-        public IGenericRepository<T> GetRepository()
+        public IGenericRepository<T> GetRepository<T>() where T : BaseEntity
         {
             if (_repositories.TryGetValue(typeof(T), out var repository))
             {
                 return (IGenericRepository<T>)repository;
             }
 
-            var newRepository = new GenericRepository<T>(_dbContext,_entitySpec);
+            var newRepository = new GenericRepository<T>(_dbContext);
             _repositories.Add(typeof(T), newRepository);
             return newRepository;
         }

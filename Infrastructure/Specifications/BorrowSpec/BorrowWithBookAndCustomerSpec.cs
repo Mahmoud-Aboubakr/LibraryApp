@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Specifications.BorrowSpec
 {
-    public class BorrowWithBookAndCustomerSpec : EntitySpec<Borrow>
+    public class BorrowWithBookAndCustomerSpec : BaseSpecification<Borrow>
     {
         public BorrowWithBookAndCustomerSpec()
         {

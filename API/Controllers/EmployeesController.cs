@@ -16,7 +16,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeesController : ControllerBase
-    {
+    {/*
         private readonly IUnitOfWork<Employee> _uof;
         private readonly IUnitOfWork<Attendence> _attendanceUof;
         private readonly IUnitOfWork<Payroll> _payrollUof;
@@ -173,5 +173,6 @@ namespace API.Controllers
             return Ok(AppMessages.FIRED);
         }
         #endregion
+        */
     }
 }

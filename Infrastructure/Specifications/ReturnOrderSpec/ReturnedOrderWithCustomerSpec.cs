@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Specifications.ReturnOrderSpec
 {
-    public class ReturnedOrderWithCustomerSpec : EntitySpec<ReturnedOrder>
+    public class ReturnedOrderWithCustomerSpec : BaseSpecification<ReturnedOrder>
     {
         public ReturnedOrderWithCustomerSpec()
         {

@@ -15,7 +15,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class PayrollsController : ControllerBase
-    {
+    {/*
         private readonly IUnitOfWork<Payroll> _uof;
         private readonly IUnitOfWork<Employee> _employeeUof;
         private readonly IMapper _mapper;
@@ -130,6 +130,6 @@ namespace API.Controllers
             return Ok(AppMessages.DELETED);
         }
         #endregion
-
+        */
     }
 }

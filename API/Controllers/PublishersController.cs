@@ -12,7 +12,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class PublishersController : ControllerBase
-    {
+    {/*
         private readonly IUnitOfWork<Publisher> _uof;
         private readonly IUnitOfWork<Book> _bookUof;
         private readonly IMapper _mapper;
@@ -117,6 +117,6 @@ namespace API.Controllers
             }
         }
         #endregion
-
+        */
     }
 }

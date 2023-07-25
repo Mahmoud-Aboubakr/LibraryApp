@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Specifications.BookSpec
 {
-    public class BooksWithAuthorAndPublisherSpec : EntitySpec<Book>
+    public class BooksWithAuthorAndPublisherSpec : BaseSpecification<Book>
     {
         public BooksWithAuthorAndPublisherSpec()
         {

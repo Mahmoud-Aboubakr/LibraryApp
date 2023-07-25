@@ -21,7 +21,7 @@ namespace Application.Interfaces
         Task<bool> FindUsingWhereAsync(Expression<Func<T, bool>> match);
         void DeleteRangeAsync(List<T> entities);
         Task<List<T>> GetAllWithWhere(Expression<Func<T, bool>> predicate);
-        Task<T> FindSpec(IEntitySpec<T> spec);
-        Task<IEnumerable<T>> FindAllSpec(IEntitySpec<T> spec);
+        Task<T> FindSpec(ISpecification<T> spec);
+        Task<IEnumerable<T>> FindAllSpec(ISpecification<T> spec);
     }
 }

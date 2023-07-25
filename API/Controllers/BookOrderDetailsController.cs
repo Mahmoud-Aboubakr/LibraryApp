@@ -18,7 +18,7 @@ namespace API.Controllers
     [ApiController]
 
     public class BookOrderDetailsController : ControllerBase
-    {
+    {/*
         private readonly IUnitOfWork<BookOrderDetails> _uof;
         private readonly IMapper _mapper;
         private readonly IOrderServices _orderServices;
@@ -116,7 +116,7 @@ namespace API.Controllers
             return Ok(AppMessages.DELETED);
         }
         #endregion
-
+        */
     }
 
 }

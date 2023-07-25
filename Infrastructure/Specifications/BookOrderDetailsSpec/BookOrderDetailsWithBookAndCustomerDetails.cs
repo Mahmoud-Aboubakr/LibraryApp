@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Specifications.BookOrderDetailsSpec
 {
-    public class BookOrderDetailsWithBookAndCustomerDetails : EntitySpec<BookOrderDetails>
+    public class BookOrderDetailsWithBookAndCustomerDetails : BaseSpecification<BookOrderDetails>
     {
         public BookOrderDetailsWithBookAndCustomerDetails()
         {

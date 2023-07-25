@@ -15,7 +15,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class BannedCustomersController : ControllerBase
-    {
+    {/*
         private readonly IUnitOfWork<BannedCustomer> _uof;
         private readonly IMapper _mapper;
         private readonly IBannedCustomerServices _searchForBannedCustomerService;
@@ -115,5 +115,6 @@ namespace API.Controllers
             return Ok(AppMessages.DELETED);
         }
         #endregion
+        */
     }
 }

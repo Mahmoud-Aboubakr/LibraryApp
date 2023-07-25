@@ -23,8 +23,8 @@ namespace API.Extensions
                 opt.UseSqlServer(config.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
-            services.AddScoped(typeof(IEntitySpec<>), typeof(EntitySpec<>));
+            services.AddScoped<IUnitOfWork,UnitOfWork>();
+            services.AddScoped(typeof(ISpecification<>), typeof(BaseSpecification<>));
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IBookServices, BookServices>();
             services.AddScoped<INumbersValidator, NumbersValidator>();

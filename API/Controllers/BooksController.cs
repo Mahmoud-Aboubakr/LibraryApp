@@ -7,7 +7,6 @@ using Domain.Constants;
 using Domain.Entities;
 using Infrastructure.Specifications.BookSpec;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
 
 namespace API.Controllers
 {
@@ -15,13 +14,13 @@ namespace API.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly IUnitOfWork<Book> _uof;
+        private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly IBookServices _searchBookDataWithDetailService;
         private readonly INumbersValidator _numbersValidator;
         private readonly ILogger<BooksController> _logger;
 
-        public BooksController(IUnitOfWork<Book> uof,
+        public BooksController(IUnitOfWork uof,
                                IMapper mapper,
                                IBookServices searchBookDataWithDetailService,
                                INumbersValidator numbersValidator,
@@ -38,7 +37,7 @@ namespace API.Controllers
         [HttpGet("GetAllBooksAsync")]
         public async Task<ActionResult<IReadOnlyList<ReadBookDto>>> GetAllBooksAsync()
         {
-            var books = await _uof.GetRepository().GetAllAsync();
+            var books = await _uof.GetRepository<Book>().GetAllAsync();
             return Ok(_mapper.Map<IReadOnlyList<Book>, IReadOnlyList<ReadBookDto>>(books));
         }
 
@@ -46,18 +45,18 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<ReadBookDto>>> GetAllBooksWithDetails()
         {
             var spec = new BooksWithAuthorAndPublisherSpec();
-            var books = await _uof.GetRepository().FindAllSpec(spec);
+            var books = await _uof.GetRepository<Book>().FindAllSpec(spec);
             return Ok(_mapper.Map<IEnumerable<Book>, IEnumerable<ReadBookDto>>(books));
         }
 
         [HttpGet("GetBookById")]
         public async Task<ActionResult<ReadBookDto>> GetBookByIdAsync(int id)
         {
-            var exists = await _uof.GetRepository().Exists(id);
+            var exists = await _uof.GetRepository<Book>().Exists(id);
 
             if (exists)
             {
-                var book = await _uof.GetRepository().GetByIdAsync(id);
+                var book = await _uof.GetRepository<Book>().GetByIdAsync(id);
 
                 if (book == null)
                     return NotFound();
@@ -70,12 +69,12 @@ namespace API.Controllers
         [HttpGet("GetBookByIdWithDetailAsync")]
         public async Task<ActionResult<ReadBookDto>> GetBookByIdWithDetailAsync(int id)
         {
-            var exists = await _uof.GetRepository().Exists(id);
+            var exists = await _uof.GetRepository<Book>().Exists(id);
 
             if (exists)
             {
                 var spec = new BooksWithAuthorAndPublisherSpec(id);
-                var book = await _uof.GetRepository().FindSpec(spec);
+                var book = await _uof.GetRepository<Book>().FindSpec(spec);
                 if (book == null)
                     return NotFound();
 
@@ -103,7 +102,7 @@ namespace API.Controllers
             if (!_numbersValidator.IsValidDecimal(insertBookDto.Price))
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_PRICE} {insertBookDto.Price}" });
             var book = _mapper.Map<CreateBookDto, Book>(insertBookDto);
-            _uof.GetRepository().InsertAsync(book);
+            _uof.GetRepository<Book>().InsertAsync(book);
             await _uof.Commit();
 
             return StatusCode(201, AppMessages.INSERTED);
@@ -120,7 +119,7 @@ namespace API.Controllers
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_PRICE} {updateBookDto.Price}" });
 
             var book = _mapper.Map<UpdateBookDto, Book>(updateBookDto);
-            _uof.GetRepository().UpdateAsync(book);
+            _uof.GetRepository<Book>().UpdateAsync(book);
             await _uof.Commit();
 
             return Ok(AppMessages.UPDATED);
@@ -132,12 +131,12 @@ namespace API.Controllers
         public async Task<ActionResult> DeleteBookAsync(ReadBookDto readBookDto)
         {
             var book = _mapper.Map<ReadBookDto, Book>(readBookDto);
-            _uof.GetRepository().DeleteAsync(book);
+            _uof.GetRepository<Book>().DeleteAsync(book);
             await _uof.Commit();
             return Ok(AppMessages.DELETED);
         }
         #endregion
-
+        
     }
 }
 
