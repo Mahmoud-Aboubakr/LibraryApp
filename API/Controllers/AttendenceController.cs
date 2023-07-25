@@ -5,7 +5,7 @@ using Application.Validators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
-using Infrastructure.Specifications;
+using Infrastructure.Specifications.AttendanceSpec;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 
@@ -44,11 +44,11 @@ namespace API.Controllers
 
 
         [HttpGet("GetAllAttendenceWithDetails")]
-        public async Task<ActionResult<IEnumerable<ReadAttendenceDetailsDto>>> GetAllAttendenceWithDetails()
+        public async Task<ActionResult<IEnumerable<ReadAttendanceDto>>> GetAllAttendenceWithDetails()
         {
             var spec = new AttendanceWithEmployeeSpec();
             var attendences = await _uof.GetRepository().FindAllSpec(spec);
-            return Ok(_mapper.Map<IEnumerable<Attendence>, IEnumerable<ReadAttendenceDetailsDto>>(attendences));
+            return Ok(_mapper.Map<IEnumerable<Attendence>, IEnumerable<ReadAttendanceDto>>(attendences));
         }
 
         [HttpGet("GetAttendenceById")]
@@ -64,13 +64,13 @@ namespace API.Controllers
         }
 
         [HttpGet("GetAttendenceByIdWithDetailAsync")]
-        public async Task<ActionResult<ReadAttendenceDetailsDto>> GetAttendenceByIdWithDetailAsync(int id)
+        public async Task<ActionResult<ReadAttendanceDto>> GetAttendenceByIdWithDetailAsync(int id)
         {
             if (await _uof.GetRepository().Exists(id))
             {
                 var spec = new AttendanceWithEmployeeSpec(id);
                 var attendences = await _uof.GetRepository().FindSpec(spec);
-                return Ok(_mapper.Map<Attendence, ReadAttendenceDetailsDto>(attendences));
+                return Ok(_mapper.Map<Attendence, ReadAttendanceDto>(attendences));
             }
 
             return NotFound(new { Detail = AppMessages.INVALID_ID });
@@ -79,7 +79,7 @@ namespace API.Controllers
 
         [HttpGet("SearchEmployeeWithCriteria")]
 
-        public async Task<ActionResult<IReadOnlyList<ReadAttendenceDetailsDto>>> SearchEmpWithCriteria(string? empName = null)
+        public async Task<ActionResult<IReadOnlyList<ReadAttendanceDto>>> SearchEmpWithCriteria(string? empName = null)
         {
             var result = await _attendenceServices.SearchAttendenceDataWithDetail(empName);
             return Ok(result);

@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Specifications
+namespace Infrastructure.Specifications.BookSpec
 {
     public class BooksWithAuthorAndPublisherSpec : EntitySpec<Book>
     {

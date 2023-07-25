@@ -6,7 +6,7 @@ using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
 using Infrastructure.AppServices;
-using Infrastructure.Specifications;
+using Infrastructure.Specifications.PayrollSpec;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 
@@ -44,11 +44,11 @@ namespace API.Controllers
         }
 
         [HttpGet("GetAllPayrollsWithDetails")]
-        public async Task<ActionResult<IEnumerable<ReadPayrollDetailsDto>>> GetAllPayrollsWithDetails()
+        public async Task<ActionResult<IEnumerable<ReadPayrollDto>>> GetAllPayrollsWithDetails()
         {
             var spec = new PayrollWithEmployeeSpec();
             var payrolls = await _uof.GetRepository().FindAllSpec(spec);
-            return Ok(_mapper.Map<IEnumerable<Payroll>, IEnumerable<ReadPayrollDetailsDto>>(payrolls));
+            return Ok(_mapper.Map<IEnumerable<Payroll>, IEnumerable<ReadPayrollDto>>(payrolls));
         }
 
         [HttpGet("GetPayrollById")]
@@ -64,20 +64,20 @@ namespace API.Controllers
         }
 
         [HttpGet("GetPayrollByIdWithDetailAsync")]
-        public async Task<ActionResult<ReadPayrollDetailsDto>> GetPayrollByIdWithDetailAsync(int id)
+        public async Task<ActionResult<ReadPayrollDto>> GetPayrollByIdWithDetailAsync(int id)
         {
             if (await _uof.GetRepository().Exists(id))
             {
                 var spec = new PayrollWithEmployeeSpec(id);
                 var payrolls = await _uof.GetRepository().FindSpec(spec);
-                return Ok(_mapper.Map<Payroll, ReadPayrollDetailsDto>(payrolls));
+                return Ok(_mapper.Map<Payroll, ReadPayrollDto>(payrolls));
             }
 
             return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
         [HttpGet("SearchPayrollWithCriteria")]
-        public async Task<ActionResult<IReadOnlyList<ReadPayrollDetailsDto>>> SearchPayrollWithCriteria(string? empName = null)
+        public async Task<ActionResult<IReadOnlyList<ReadPayrollDto>>> SearchPayrollWithCriteria(string? empName = null)
         {
             var result = await _searchPayrollDataWithDetailService.SearchPayrollDataWithDetail(empName);
             return Ok(result);

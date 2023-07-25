@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Specifications
+namespace Infrastructure.Specifications.ReturnOrderSpec
 {
     public class ReturnOrderDetailsWithBookAndCustomerSpec : EntitySpec<ReturnOrderDetails>
     {

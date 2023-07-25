@@ -38,13 +38,13 @@ namespace Infrastructure.AppServices
             return true;
         }
 
-        public async Task<IReadOnlyList<ReadVacationDetailsDto>> SearchVactionDataWithDetail(string empName = null)
+        public async Task<IReadOnlyList<ReadVacationDto>> SearchVactionDataWithDetail(string empName = null)
         {
             var result = await (from v in _context.Vacations
                                 join e in _context.Employees
                                 on v.EmpId equals e.Id
                                 where empName == null || e.EmpName.Contains(empName)
-                                select new ReadVacationDetailsDto()
+                                select new ReadVacationDto()
                                 {
                                     Id = v.Id,
                                     DayDate = v.DayDate,

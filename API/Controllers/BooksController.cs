@@ -5,7 +5,7 @@ using Application.Interfaces.IValidators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
-using Infrastructure.Specifications;
+using Infrastructure.Specifications.BookSpec;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 

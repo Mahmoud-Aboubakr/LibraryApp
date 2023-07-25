@@ -26,7 +26,7 @@ namespace Infrastructure.AppServices
             _mapper = mapper;
         }
 
-        public async Task<IReadOnlyList<ReadReturnedOrderWithDetailsDto>> SearchReturnedOrders(int? originorderId = null, int? customerId = null, string? customerName = null, decimal? totalPrice = null, DateTime? returndate = null)
+        public async Task<IReadOnlyList<ReadReturnedOrderDto>> SearchReturnedOrders(int? originorderId = null, int? customerId = null, string? customerName = null, decimal? totalPrice = null, DateTime? returndate = null)
         {
             var result = await (from o in _context.ReturnedOrders
                               join c in _context.Customers
@@ -36,7 +36,7 @@ namespace Infrastructure.AppServices
                               || c.Id == customerId
                               || o.ReturnDate == returndate
                               || o.TotalPrice == totalPrice
-                              select new ReadReturnedOrderWithDetailsDto()
+                              select new ReadReturnedOrderDto()
                               {
                                   Id = o.Id,
                                   OriginOrderId = o.OriginOrderId,
@@ -51,7 +51,7 @@ namespace Infrastructure.AppServices
         }
 
 
-        public async Task<IReadOnlyList<ReadReturnOrderDetailsWithIncludesDto>> SearchReturnedOrdersDetails(int? returnedorderId = null, int? bookId = null, string customerName = null, string bookTitle = null)
+        public async Task<IReadOnlyList<ReadReturnOrderDetailsDto>> SearchReturnedOrdersDetails(int? returnedorderId = null, int? bookId = null, string customerName = null, string bookTitle = null)
         {
             var query = _context.ReturnOrderDetails.Include(o => o.Order.Customer).Include(o => o.Book).AsQueryable();
             query = query.Where(o => o.ReturnedOrderId == returnedorderId 
@@ -60,7 +60,7 @@ namespace Infrastructure.AppServices
                                 || o.Book.BookTitle.Contains(bookTitle));
 
             var result = await query.ToListAsync();
-            return _mapper.Map<IReadOnlyList<ReturnOrderDetails>, IReadOnlyList<ReadReturnOrderDetailsWithIncludesDto>>(result);
+            return _mapper.Map<IReadOnlyList<ReturnOrderDetails>, IReadOnlyList<ReadReturnOrderDetailsDto>>(result);
         }
 
 

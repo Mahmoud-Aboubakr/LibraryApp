@@ -11,7 +11,7 @@ namespace Application.Interfaces.IAppServices
     {
         bool IsValidNormalVacation(bool? normalvacation);
         bool IsValidUrgentVacation(bool? urgentvacation);
-        Task<IReadOnlyList<ReadVacationDetailsDto>> SearchVactionDataWithDetail(string empName = null);
+        Task<IReadOnlyList<ReadVacationDto>> SearchVactionDataWithDetail(string empName = null);
         Task<GetVacationsCountDto> GetTotalVacationsByEmpId(int empId, DateTime FromDate, DateTime ToDate);
     }
 }

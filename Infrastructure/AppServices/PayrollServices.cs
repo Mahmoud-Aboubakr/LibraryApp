@@ -19,13 +19,13 @@ namespace Infrastructure.AppServices
             _context = context;
         }
 
-        public async Task<IReadOnlyList<ReadPayrollDetailsDto>> SearchPayrollDataWithDetail(string empName = null)
+        public async Task<IReadOnlyList<ReadPayrollDto>> SearchPayrollDataWithDetail(string empName = null)
         {
             var result = await(from p in _context.Payrolls
                                join e in _context.Employees
                                on p.EmpId equals e.Id
                                where empName == null || e.EmpName.Contains(empName)
-                               select new ReadPayrollDetailsDto()
+                               select new ReadPayrollDto()
                                {
                                    Id = p.Id,
                                    SalaryDate = p.SalaryDate,

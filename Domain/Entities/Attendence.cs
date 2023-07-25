@@ -1,5 +1,8 @@
 ﻿
 
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
+
 namespace Domain.Entities
 {
     public class Attendence : BaseEntity
@@ -10,7 +13,6 @@ namespace Domain.Entities
         public int Permission { get; set; }
         public DateTime? DayDate { get; set; } = null;
         public byte Month { get; set; }
-
         public virtual Employee Employee { get; set; }
     }
 }

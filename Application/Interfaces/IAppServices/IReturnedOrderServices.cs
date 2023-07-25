@@ -10,9 +10,9 @@ namespace Application.Interfaces.IAppServices
 {
     public interface IReturnedOrderServices
     {
-        Task<IReadOnlyList<ReadReturnedOrderWithDetailsDto>> SearchReturnedOrders(int? originorderId = null, int? customerId = null, string customerName = null, decimal? totalPrice = null, DateTime? returndate = null);
+        Task<IReadOnlyList<ReadReturnedOrderDto>> SearchReturnedOrders(int? originorderId = null, int? customerId = null, string customerName = null, decimal? totalPrice = null, DateTime? returndate = null);
 
-        Task<IReadOnlyList<ReadReturnOrderDetailsWithIncludesDto>> SearchReturnedOrdersDetails(int? returnedorderId = null, int? bookId = null, string customerName = null, string bookTitle = null);
+        Task<IReadOnlyList<ReadReturnOrderDetailsDto>> SearchReturnedOrdersDetails(int? returnedorderId = null, int? bookId = null, string customerName = null, string bookTitle = null);
 
         bool IsInReturnInterval(DateTime returndate, DateTime orderdate);
 

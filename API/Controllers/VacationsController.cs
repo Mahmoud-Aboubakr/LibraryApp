@@ -6,7 +6,7 @@ using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
 using Infrastructure.AppServices;
-using Infrastructure.Specifications;
+using Infrastructure.Specifications.VacationSpec;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 
@@ -44,11 +44,11 @@ namespace API.Controllers
         }
 
         [HttpGet("GetAllVacationsWithDetails")]
-        public async Task<ActionResult<IEnumerable<ReadVacationDetailsDto>>> GetAllVacationsWithDetails()
+        public async Task<ActionResult<IEnumerable<ReadVacationDto>>> GetAllVacationsWithDetails()
         {
             var spec = new VacationWithEmployeeSpec();
             var vacations = await _uof.GetRepository().FindAllSpec(spec);
-            return Ok(_mapper.Map<IEnumerable<Vacation>, IEnumerable<ReadVacationDetailsDto>>(vacations));
+            return Ok(_mapper.Map<IEnumerable<Vacation>, IEnumerable<ReadVacationDto>>(vacations));
         }
 
         [HttpGet("GetVacationById")]
@@ -64,20 +64,20 @@ namespace API.Controllers
         }
 
         [HttpGet("GetVacationByIdWithDetailAsync")]
-        public async Task<ActionResult<ReadVacationDetailsDto>> GetVacationByIdWithDetailAsync(int id)
+        public async Task<ActionResult<ReadVacationDto>> GetVacationByIdWithDetailAsync(int id)
         {
             if (await _uof.GetRepository().Exists(id))
             {
                 var spec = new VacationWithEmployeeSpec(id);
                 var vacations = await _uof.GetRepository().FindSpec(spec);
-                return Ok(_mapper.Map<Vacation, ReadVacationDetailsDto>(vacations));
+                return Ok(_mapper.Map<Vacation, ReadVacationDto>(vacations));
             }
 
             return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
         [HttpGet("SearchVacationWithCriteria")]
-        public async Task<ActionResult<IReadOnlyList<ReadVacationDetailsDto>>> SearchVacationWithCriteria(string? empName = null)
+        public async Task<ActionResult<IReadOnlyList<ReadVacationDto>>> SearchVacationWithCriteria(string? empName = null)
         {
             var result = await _vacServ.SearchVactionDataWithDetail(empName);
             return Ok(result);
