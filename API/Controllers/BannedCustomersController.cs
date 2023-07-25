@@ -5,7 +5,7 @@ using Application.Validators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
-using Infrastructure.Specifications;
+using Infrastructure.Specifications.BannedCustomerSpec;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;

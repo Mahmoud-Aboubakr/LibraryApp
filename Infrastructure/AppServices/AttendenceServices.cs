@@ -14,14 +14,14 @@ namespace Infrastructure.AppServices
             _context = context;
         }
 
-        public async Task<IReadOnlyList<ReadAttendenceDetailsDto>> SearchAttendenceDataWithDetail(string empName = null)
+        public async Task<IReadOnlyList<ReadAttendanceDto>> SearchAttendenceDataWithDetail(string empName = null)
         {
             _context.Vacations.Where(v => v.NormalVacation == true).GroupBy(v => v.EmpId).Count();
             var result = await (from a in _context.Attendence
                                 join e in _context.Employees
                                 on a.EmpId equals e.Id
                                 where empName == null || e.EmpName.Contains(empName)
-                                select new ReadAttendenceDetailsDto()
+                                select new ReadAttendanceDto()
                                 {
                                     Id = a.Id,
                                     EmpArrivalTime = a.EmpArrivalTime,

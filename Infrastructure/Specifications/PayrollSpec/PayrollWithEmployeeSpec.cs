@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Specifications
+namespace Infrastructure.Specifications.PayrollSpec
 {
     public class PayrollWithEmployeeSpec : EntitySpec<Payroll>
     {
