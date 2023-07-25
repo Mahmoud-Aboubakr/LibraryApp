@@ -9,8 +9,8 @@ namespace Domain.Entities
         public int EmpAge { get; set; }
         public string EmpAddress { get; set; }
         public string EmpPhoneNumber { get; set; }
-        public DateTime? EmpStartingShift { get; set; } = null;
-        public DateTime? EmpEndingShift { get; set; } = null;
+        public DateTime EmpStartingShift { get; set; }
+        public DateTime EmpEndingShift { get; set; }
         public decimal EmpBasicSalary { get; set; }
     }
 }

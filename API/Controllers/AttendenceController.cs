@@ -77,13 +77,13 @@ namespace API.Controllers
         }
 
 
-        [HttpGet("SearchEmployeeWithCriteria")]
+        //[HttpGet("SearchEmployeeWithCriteria")]
 
-        public async Task<ActionResult<IReadOnlyList<ReadAttendanceDto>>> SearchEmpWithCriteria(string? empName = null)
-        {
-            var result = await _attendenceServices.SearchAttendenceDataWithDetail(empName);
-            return Ok(result);
-        }
+        //public async Task<ActionResult<IReadOnlyList<ReadAttendanceDto>>> SearchEmpWithCriteria(string? empName = null)
+        //{
+        //    var result = await _attendenceServices.SearchAttendenceDataWithDetail(empName);
+        //    return Ok(result);
+        //}
 
         #endregion
 

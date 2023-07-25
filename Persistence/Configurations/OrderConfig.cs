@@ -22,7 +22,7 @@ namespace Persistence.Configurations
                  .OnDelete(DeleteBehavior.NoAction);
 
             builder
-                .Property(O=>O.OrderDate).HasDefaultValue(DateTime.Now);
+                .Property(O=>O.OrderDate).HasDefaultValue(DateTime.Now).HasColumnType("datetime");
         }
     }
 }

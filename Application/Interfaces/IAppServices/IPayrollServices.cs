@@ -9,6 +9,6 @@ namespace Application.Interfaces.IAppServices
 {
     public interface IPayrollServices
     {
-        Task<IReadOnlyList<ReadPayrollDetailsDto>> SearchPayrollDataWithDetail(string empName = null);
+        Task<IReadOnlyList<ReadPayrollDto>> SearchPayrollDataWithDetail(string empName = null);
     }
 }
