@@ -6,7 +6,7 @@ using Application.Validators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
-using Infrastructure.Specifications;
+using Infrastructure.Specifications.BorrowSpec;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

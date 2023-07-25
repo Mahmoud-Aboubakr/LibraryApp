@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence.Context;
 
@@ -11,9 +12,10 @@ using Persistence.Context;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    partial class LibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230724141858_alterDateTime")]
+    partial class alterDateTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,27 +32,27 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("DayDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
-                        .HasDefaultValue(new DateTime(2023, 7, 25, 9, 32, 48, 933, DateTimeKind.Local).AddTicks(6761));
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2023, 7, 24, 17, 18, 58, 697, DateTimeKind.Local).AddTicks(6087));
 
                     b.Property<string>("DeviceName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<TimeSpan>("EmpArrivalTime")
-                        .HasColumnType("time");
+                    b.Property<DateTime?>("EmpArrivalTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("EmpId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("EmpLeavingTime")
-                        .HasColumnType("time");
+                    b.Property<DateTime?>("EmpLeavingTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<byte>("Month")
                         .HasColumnType("tinyint");
@@ -58,8 +60,8 @@ namespace Persistence.Migrations
                     b.Property<int>("Permission")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("UpdatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -90,16 +92,16 @@ namespace Persistence.Migrations
                     b.Property<decimal?>("AuthorProfits")
                         .HasColumnType("decimal(18,3)");
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DeviceName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("UpdatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -118,10 +120,10 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 25, 9, 32, 48, 934, DateTimeKind.Local).AddTicks(2440));
+                        .HasDefaultValue(new DateTime(2023, 7, 24, 17, 18, 58, 698, DateTimeKind.Local).AddTicks(2117));
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
@@ -134,8 +136,8 @@ namespace Persistence.Migrations
                     b.Property<int>("EmpId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("UpdatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -163,8 +165,8 @@ namespace Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DeviceName")
                         .IsRequired()
@@ -180,8 +182,8 @@ namespace Persistence.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("UpdatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -203,8 +205,8 @@ namespace Persistence.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DeviceName")
                         .IsRequired()
@@ -220,8 +222,8 @@ namespace Persistence.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("UpdatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -247,10 +249,10 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("BorrowDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 25, 9, 32, 48, 934, DateTimeKind.Local).AddTicks(6068));
+                        .HasDefaultValue(new DateTime(2023, 7, 24, 17, 18, 58, 698, DateTimeKind.Local).AddTicks(9254));
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
@@ -263,10 +265,10 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("ReturnDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 28, 9, 32, 48, 934, DateTimeKind.Local).AddTicks(6351));
+                        .HasDefaultValue(new DateTime(2023, 7, 27, 17, 18, 58, 698, DateTimeKind.Local).AddTicks(9778));
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("UpdatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -286,8 +288,8 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CustomerAddress")
                         .HasColumnType("nvarchar(max)");
@@ -307,8 +309,8 @@ namespace Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("UpdatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -324,8 +326,8 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DeviceName")
                         .IsRequired()
@@ -361,8 +363,8 @@ namespace Persistence.Migrations
                     b.Property<byte>("EmpType")
                         .HasColumnType("tinyint");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("UpdatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -378,8 +380,8 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
@@ -392,13 +394,13 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 25, 9, 32, 48, 934, DateTimeKind.Local).AddTicks(8796));
+                        .HasDefaultValue(new DateTime(2023, 7, 24, 17, 18, 58, 699, DateTimeKind.Local).AddTicks(3928));
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,3)");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("UpdatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -425,8 +427,8 @@ namespace Persistence.Migrations
                         .HasColumnType("decimal(18,3)")
                         .HasDefaultValue(0m);
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Deduct")
                         .ValueGeneratedOnAdd()
@@ -445,15 +447,15 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 25, 9, 32, 48, 935, DateTimeKind.Local).AddTicks(1768));
+                        .HasDefaultValue(new DateTime(2023, 7, 24, 17, 18, 58, 699, DateTimeKind.Local).AddTicks(9763));
 
                     b.Property<decimal>("TotalSalary")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("decimal(18,3)")
                         .HasComputedColumnSql("[BasicSalary] + [Bonus] - [Deduct]");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("UpdatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -471,8 +473,8 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DeviceName")
                         .IsRequired()
@@ -489,8 +491,8 @@ namespace Persistence.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("UpdatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -506,8 +508,8 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
@@ -523,13 +525,13 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("ReturnDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 25, 9, 32, 48, 935, DateTimeKind.Local).AddTicks(2663));
+                        .HasDefaultValue(new DateTime(2023, 7, 24, 17, 18, 58, 700, DateTimeKind.Local).AddTicks(1672));
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,3)");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("UpdatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -549,8 +551,8 @@ namespace Persistence.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DeviceName")
                         .IsRequired()
@@ -566,8 +568,8 @@ namespace Persistence.Migrations
                     b.Property<int>("ReturnedOrderId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("UpdatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -589,8 +591,8 @@ namespace Persistence.Migrations
                     b.Property<bool?>("Absence")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DayDate")
                         .HasColumnType("datetime2");
@@ -606,8 +608,8 @@ namespace Persistence.Migrations
                     b.Property<bool?>("NormalVacation")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("UpdatedDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool?>("UrgentVacation")
                         .HasColumnType("bit");

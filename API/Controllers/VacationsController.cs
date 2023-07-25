@@ -6,7 +6,7 @@ using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
 using Infrastructure.AppServices;
-using Infrastructure.Specifications;
+using Infrastructure.Specifications.VacationSpec;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 

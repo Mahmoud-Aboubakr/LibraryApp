@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Handlers;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -16,7 +17,8 @@ namespace Persistence.Configurations
                 .OnDelete(deleteBehavior: DeleteBehavior.NoAction);
 
             builder
-                .Property(A => A.DayDate).HasDefaultValue(DateTime.Now);
+                .Property(A => A.DayDate).HasDefaultValue(DateTime.Now).HasColumnType("date");
+
         }
     }
 }

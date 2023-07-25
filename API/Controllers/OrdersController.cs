@@ -7,7 +7,7 @@ using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
 using Infrastructure.AppServices;
-using Infrastructure.Specifications;
+using Infrastructure.Specifications.OrderSpec;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;

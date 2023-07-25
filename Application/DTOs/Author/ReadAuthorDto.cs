@@ -10,6 +10,6 @@ namespace Application.DTOs.Author
         public string AuthorPhoneNumber { get; set; }
         public decimal? AuthorProfits { get; set; }
         [JsonConverter(typeof(CustomDateTimeConverter))]
-        public string CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }
