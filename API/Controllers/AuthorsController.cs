@@ -6,6 +6,7 @@ using Application.Interfaces.IValidators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
+using Infrastructure.Specifications.BookSpec;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -104,7 +105,8 @@ namespace API.Controllers
         [HttpDelete("DeleteAuthor")]
         public async Task<ActionResult> DeleteAuthorAsync(ReadAuthorDto authorDto)
         {
-            var result = _uof.GetRepository<Book>().FindUsingWhereAsync(b => b.AuthorId == authorDto.Id);
+            var spec = new BooksWithAuthorAndPublisherSpec(authorDto.Id);
+            var result = _uof.GetRepository<Book>().FindAllSpec(spec);
             if (result != null)
                 return BadRequest(AppMessages.FAILED_DELETE);
             else
