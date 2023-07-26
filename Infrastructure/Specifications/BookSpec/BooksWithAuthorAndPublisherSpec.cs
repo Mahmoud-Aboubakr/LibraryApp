@@ -27,20 +27,24 @@ namespace Infrastructure.Specifications.BookSpec
             set => _search = value.ToLower();
         }
 
-        public BooksWithAuthorAndPublisherSpec(int id) : base(x => x.Id == id)
+        //public BooksWithAuthorAndPublisherSpec(int id) : base(x => x.Id == id)
+        //{
+        //    AddInclude(b => b.Author);
+        //    AddInclude(b => b.Publisher);
+        //}
+
+        public BooksWithAuthorAndPublisherSpec(int authorId) : base(x => x.AuthorId == authorId)
         {
-            AddInclude(b => b.Author);
-            AddInclude(b => b.Publisher);
         }
 
-        public BooksWithAuthorAndPublisherSpec(int pageSize = 6, int maxSize = 50,int pageIndex =1)
+        public BooksWithAuthorAndPublisherSpec(int pageSize = 6, int maxSize = 50,int pageIndex =1 , bool isPagingEnabled = true)
            : base()
         {
 
             AddInclude(b => b.Author);
             AddInclude(b => b.Publisher);
             AddOrederBy(b => b.BookTitle);
-            ApplyPanging(pageSize * (pageIndex - 1), pageSize);
+            ApplyPanging(pageSize * (pageIndex - 1), pageSize , isPagingEnabled);
 
             if (!string.IsNullOrEmpty(Sort))
             {

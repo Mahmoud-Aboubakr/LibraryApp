@@ -32,67 +32,25 @@ namespace Persistence.Repositories
         }
         public async Task<IReadOnlyList<T>> GetAllListAsync()
             => await _entity.ToListAsync();
-        public async Task<IReadOnlyList<T>> GetAllListWithIncludesAsync(Expression<Func<T, object>>[] includes)
+        public async Task<IReadOnlyList<T>> GetAllListWithIncludesAsync(ISpecification<T> spec)
         {
-            var query = _entity.AsQueryable();
-            if (includes != null)
-            {
-                query = includes.Aggregate(query, (current, include) => current.Include(include));
-            }
-            return await query.ToListAsync();
-        }
-        public async Task<List<T>> GetAllWithIncludesAsync(Expression<Func<T, object>>[] includes)
-        {
-            var query = _entity.AsQueryable();
-            if (includes != null)
-            {
-                query = includes.Aggregate(query, (current, include) => current.Include(include));
-            }
-            return await query.ToListAsync();
-        }
-        public async Task<T> GetByIdAsyncWithIncludes(int id, Expression<Func<T, object>>[] includes)
-        {
-            var query = _entity.AsQueryable();
-            if (includes != null)
-            {
-                query = includes.Aggregate(query, (current, include) => current.Include(include));
-            }
-
-            return await query.FirstOrDefaultAsync(e => e.Id == id);
-        }
-
-        public async Task<List<T>> GetAllWithWhere(Expression<Func<T, bool>> predicate)
-        {
-            return await _entity.Where(predicate).ToListAsync();
+            return await ApplySpecification(spec).ToListAsync();
         }
 
         #endregion
 
         #region FIND Methods
-        public Task<T> FindAsync(Expression<Func<T, bool>> match, Expression<Func<T, object>>[] includes)
-        {
-            var query = _entity.AsQueryable();
-            if (includes != null)
-            {
-                query = includes.Aggregate(query, (current, include) => current.Include(include));
-            }
-            return query.FirstOrDefaultAsync(match);
-        }
-        public Task<T> FindAsync(Expression<Func<T, bool>> match)
-        {
-            var query = _entity.AsQueryable();
-            return query.FirstOrDefaultAsync(match);
-        }
-        public async Task<bool> FindUsingWhereAsync(Expression<Func<T, bool>> match)
-        {
-            var query = _entity;
-            var result = await query.AnyAsync(match);
-
-            return result;
-        }
         public async Task<bool> Exists(int id)
         {
             return await _entity.AnyAsync(x => x.Id == id);
+        }
+        public async Task<bool> Exists(ISpecification<T> spec)
+        {
+            var result = await ApplySpecification(spec).SingleOrDefaultAsync();
+            if (result != null)
+                return true;
+            else
+                return false;
         }
         public async Task<T> FindSpec(ISpecification<T> spec)
         {

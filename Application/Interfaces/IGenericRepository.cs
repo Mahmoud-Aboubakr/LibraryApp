@@ -6,23 +6,18 @@ namespace Application.Interfaces
 {
     public interface IGenericRepository<T> where T : BaseEntity
     {
-        Task<List<T>> GetAllAsync();  
-        Task<T> GetByIdAsync(int id);       
-        Task<T> FindAsync(Expression<Func<T, bool>> match);
         Task<bool> Exists(int id);
+        Task<bool> Exists(ISpecification<T> spec);
         void DeleteAsync(T entity);
+        void DeleteRangeAsync(List<T> entities);
         void UpdateAsync(T entity);
         void InsertAsync(T entity);
-        Task<IReadOnlyList<T>> GetAllListWithIncludesAsync(Expression<Func<T, object>>[] includes);
-        Task<List<T>> GetAllWithIncludesAsync(Expression<Func<T, object>>[] includes);
-        Task<T> GetByIdAsyncWithIncludes(int id, Expression<Func<T, object>>[] includes);
+        Task<List<T>> GetAllAsync();
+        Task<T> GetByIdAsync(int id);
         Task<IReadOnlyList<T>> GetAllListAsync();
-        Task<T> FindAsync(Expression<Func<T, bool>> match, Expression<Func<T, object>>[] includes);
-        Task<bool> FindUsingWhereAsync(Expression<Func<T, bool>> match);
-        void DeleteRangeAsync(List<T> entities);
-        Task<List<T>> GetAllWithWhere(Expression<Func<T, bool>> predicate);
         Task<T> FindSpec(ISpecification<T> spec);
         Task<IEnumerable<T>> FindAllSpec(ISpecification<T> spec);
-        Task<int> CountAsync(ISpecification<T> specification);
+        Task<IReadOnlyList<T>> GetAllListWithIncludesAsync(ISpecification<T> spec);
+        Task<int> CountAsync(ISpecification<T> specification);      
     }
 }

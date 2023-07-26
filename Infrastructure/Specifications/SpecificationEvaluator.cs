@@ -34,7 +34,7 @@ namespace Infrastructure.Data
             if (spec.IncludeStrings.Count > 0)
                 query = spec.IncludeStrings.Aggregate(query, (current, include) =>
                         current.Include(include));
-            else
+            else if(spec.Includes.Count > 0)
                 query = spec.Includes.Aggregate(query, (current, include) => current.Include(include));
             return query;
         }

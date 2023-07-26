@@ -43,9 +43,9 @@ namespace API.Controllers
         }
 
         [HttpGet("GetAllBooksWithDetails")]
-        public async Task<ActionResult<Pagination<ReadBookDto>>> GetAllBooksWithDetails(int pagesize  ,int maxSize, int pageindex)
+        public async Task<ActionResult<Pagination<ReadBookDto>>> GetAllBooksWithDetails(int pagesize = 6 ,int maxSize = 10, int pageindex = 1 , bool isPagingEnabled = true)
         {
-            var spec = new BooksWithAuthorAndPublisherSpec(pagesize, maxSize , pageindex);
+            var spec = new BooksWithAuthorAndPublisherSpec(pagesize, maxSize , pageindex , isPagingEnabled);
 
             var totatBooks = await _uof.GetRepository<Book>().CountAsync(spec);
 
