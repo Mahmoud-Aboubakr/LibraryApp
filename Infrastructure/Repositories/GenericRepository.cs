@@ -20,7 +20,7 @@ namespace Persistence.Repositories
         }
         public GenericRepository()
         {
-           
+
         }
 
         #region GET Methods
@@ -129,6 +129,13 @@ namespace Persistence.Repositories
         private IQueryable<T> ApplySpecification(ISpecification<T> spec)
         {
             return SpecificationEvaluator<T>.GetQuery(_entity.AsQueryable(), spec);
+        }
+        #endregion
+
+        #region Count
+        public async Task<int> CountAsync(ISpecification<T> specification)
+        {
+            return await ApplySpecification(specification).CountAsync();
         }
         #endregion
 

@@ -5,6 +5,7 @@ using Application.Interfaces.IValidators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
+using Infrastructure;
 using Infrastructure.Specifications.BookSpec;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,11 +43,19 @@ namespace API.Controllers
         }
 
         [HttpGet("GetAllBooksWithDetails")]
-        public async Task<ActionResult<IEnumerable<ReadBookDto>>> GetAllBooksWithDetails()
+        public async Task<ActionResult<Pagination<ReadBookDto>>> GetAllBooksWithDetails(int pagesize  ,int maxSize, int pageindex)
         {
-            var spec = new BooksWithAuthorAndPublisherSpec();
+            var spec = new BooksWithAuthorAndPublisherSpec(pagesize, maxSize , pageindex);
+
+            var totatBooks = await _uof.GetRepository<Book>().CountAsync(spec);
+
             var books = await _uof.GetRepository<Book>().FindAllSpec(spec);
-            return Ok(_mapper.Map<IEnumerable<Book>, IEnumerable<ReadBookDto>>(books));
+
+            var mappedbooks = _mapper.Map<IReadOnlyList<ReadBookDto>>(books);
+
+            var paginationData = new Pagination<ReadBookDto>(spec.PageIndex, spec.PageSize, totatBooks, mappedbooks);
+
+            return Ok(paginationData);
         }
 
         [HttpGet("GetBookById")]

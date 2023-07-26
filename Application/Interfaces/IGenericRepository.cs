@@ -23,5 +23,6 @@ namespace Application.Interfaces
         Task<List<T>> GetAllWithWhere(Expression<Func<T, bool>> predicate);
         Task<T> FindSpec(ISpecification<T> spec);
         Task<IEnumerable<T>> FindAllSpec(ISpecification<T> spec);
+        Task<int> CountAsync(ISpecification<T> specification);
     }
 }
