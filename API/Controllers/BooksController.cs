@@ -43,17 +43,17 @@ namespace API.Controllers
         }
 
         [HttpGet("GetAllBooksWithDetails")]
-        public async Task<ActionResult<Pagination<ReadBookDto>>> GetAllBooksWithDetails(int pagesize = 6 ,int maxSize = 10, int pageindex = 1 , bool isPagingEnabled = true)
+        public async Task<ActionResult<Pagination<ReadBookDto>>> GetAllBooksWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
-            var spec = new BooksWithAuthorAndPublisherSpec(pagesize, maxSize , pageindex , isPagingEnabled);
+            var spec = new BooksWithAuthorAndPublisherSpec(pagesize, pageindex, isPagingEnabled);
 
-            var totatBooks = await _uof.GetRepository<Book>().CountAsync(spec);
+            var totalBooks = await _uof.GetRepository<Book>().CountAsync(spec);
 
             var books = await _uof.GetRepository<Book>().FindAllSpec(spec);
 
             var mappedbooks = _mapper.Map<IReadOnlyList<ReadBookDto>>(books);
 
-            var paginationData = new Pagination<ReadBookDto>(spec.PageIndex, spec.PageSize, totatBooks, mappedbooks);
+            var paginationData = new Pagination<ReadBookDto>(spec.PageIndex, spec.PageSize, totalBooks, mappedbooks);
 
             return Ok(paginationData);
         }
@@ -145,7 +145,7 @@ namespace API.Controllers
             return Ok(AppMessages.DELETED);
         }
         #endregion
-        
+
     }
 }
 

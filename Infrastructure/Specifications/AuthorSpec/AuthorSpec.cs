@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Specifications.BookSpec
 {
-    public class BooksWithAuthorAndPublisherSpec : BaseSpecification<Book>
+    public class AuthorSpec : BaseSpecification<Author>
     {
         public string Sort { get; set; }
         private int MaxPageSize { get; set; }
@@ -27,23 +27,14 @@ namespace Infrastructure.Specifications.BookSpec
             set => _search = value.ToLower();
         }
 
-        public BooksWithAuthorAndPublisherSpec(int id) : base(x => x.Id == id)
-        {
-            AddInclude(b => b.Author);
-            AddInclude(b => b.Publisher);
-        }
-
-        public BooksWithAuthorAndPublisherSpec(int? id = null, int? authorId = null, int? publisherId = null) : base(x => x.AuthorId == authorId)
+        public AuthorSpec(int id) : base(x => x.Id == id)
         {
         }
 
-        public BooksWithAuthorAndPublisherSpec(int pageSize = 6, int pageIndex = 1, bool isPagingEnabled = true)
+        public AuthorSpec(int pageSize = 6, int pageIndex = 1, bool isPagingEnabled = true)
            : base()
         {
-
-            AddInclude(b => b.Author);
-            AddInclude(b => b.Publisher);
-            AddOrederBy(b => b.BookTitle);
+            AddOrederBy(a => a.AuthorName);
             ApplyPanging(pageSize * (pageIndex - 1), pageSize, isPagingEnabled);
 
             if (!string.IsNullOrEmpty(Sort))
@@ -51,13 +42,13 @@ namespace Infrastructure.Specifications.BookSpec
                 switch (Sort)
                 {
                     case "Asc":
-                        AddOrederBy(b => b.BookTitle);
+                        AddOrederBy(a => a.AuthorName);
                         break;
                     case "Desc":
-                        AddOrederByDescending(b => b.BookTitle);
+                        AddOrederByDescending(a => a.AuthorName);
                         break;
                     default:
-                        AddOrederBy(b => b.BookTitle);
+                        AddOrederBy(a => a.AuthorName);
                         break;
                 }
             }

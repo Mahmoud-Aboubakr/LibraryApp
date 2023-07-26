@@ -1,5 +1,4 @@
 ﻿using Application.DTOs.Author;
-using Application.DTOs.BannedCustomer;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
@@ -103,21 +102,22 @@ namespace API.Controllers
 
         #region DELETE
         [HttpDelete("DeleteAuthor")]
-        public async Task<ActionResult> DeleteAuthorAsync(ReadAuthorDto authorDto)
+        public async Task<ActionResult> DeleteAuthorAsync(int id)
         {
-            var spec = new BooksWithAuthorAndPublisherSpec(authorDto.Id);
-            var result = _uof.GetRepository<Book>().FindAllSpec(spec);
-            if (result != null)
+            var bookSpec = new BooksWithAuthorAndPublisherSpec(id);
+            var result = _uof.GetRepository<Book>().FindAllSpec(bookSpec).Result;
+            if (result.Count() > 0)
                 return BadRequest(AppMessages.FAILED_DELETE);
             else
             {
-                var author = _mapper.Map<ReadAuthorDto, Author>(authorDto);
+                var authorSpec = new AuthorSpec(id);
+                var author = _uof.GetRepository<Author>().FindSpec(authorSpec).Result;
                 _uof.GetRepository<Author>().DeleteAsync(author);
                 await _uof.Commit();
                 return Ok(AppMessages.DELETED);
             }
         }
         #endregion
-        
+
     }
 }
