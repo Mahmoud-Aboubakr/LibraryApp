@@ -1,11 +1,14 @@
 ﻿using Application.DTOs.Author;
+using Application.DTOs.Customer;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
+using Infrastructure;
 using Infrastructure.Specifications.BookSpec;
+using Infrastructure.Specifications.CustomerSpec;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -36,10 +39,19 @@ namespace API.Controllers
 
         #region GET
         [HttpGet("GetAllAuthors")]
-        public async Task<ActionResult<IReadOnlyList<ReadAuthorDto>>> GetAllAuthorsAsync()
+        public async Task<ActionResult<Pagination<ReadAuthorDto>>> GetAllAuthorsAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
-            var authors = await _uof.GetRepository<Author>().GetAllAsync();
-            return Ok(_mapper.Map<IReadOnlyList<Author>, IReadOnlyList<ReadAuthorDto>>(authors));
+            var spec = new AuthorSpec(pagesize, pageindex, isPagingEnabled);
+
+            var totalAuthors = await _uof.GetRepository<Author>().CountAsync(spec);
+
+            var authors = await _uof.GetRepository<Author>().FindAllSpec(spec);
+
+            var mappedauthors = _mapper.Map<IReadOnlyList<ReadAuthorDto>>(authors);
+
+            var paginationData = new Pagination<ReadAuthorDto>(spec.PageIndex, spec.PageSize, totalAuthors, mappedauthors);
+
+            return Ok(paginationData);
         }
 
         [HttpGet("GetAuthorById")]
@@ -104,7 +116,7 @@ namespace API.Controllers
         [HttpDelete("DeleteAuthor")]
         public async Task<ActionResult> DeleteAuthorAsync(int id)
         {
-            var bookSpec = new BooksWithAuthorAndPublisherSpec(id);
+            var bookSpec = new BooksWithAuthorAndPublisherSpec(null, id, null);
             var result = _uof.GetRepository<Book>().FindAllSpec(bookSpec).Result;
             if (result.Count() > 0)
                 return BadRequest(AppMessages.FAILED_DELETE);

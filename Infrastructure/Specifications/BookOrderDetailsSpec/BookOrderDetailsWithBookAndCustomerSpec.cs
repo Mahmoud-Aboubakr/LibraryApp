@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Specifications.PayrollSpec
+namespace Infrastructure.Specifications.BookOrderDetailsSpec
 {
-    public class PayrollWithEmployeeSpec : BaseSpecification<Payroll>
+    public class BookOrderDetailsWithBookAndCustomerSpec : BaseSpecification<BookOrderDetails>
     {
         public string Sort { get; set; }
         private int MaxPageSize { get; set; }
@@ -25,11 +25,12 @@ namespace Infrastructure.Specifications.PayrollSpec
             get => _search;
             set => _search = value.ToLower();
         }
-        public PayrollWithEmployeeSpec(int pageSize = 6, int pageIndex = 1, bool isPagingEnabled = true)
-        {
-            AddInclude(p => p.Employee);
 
-            AddOrederBy(p => p.Employee.EmpName);
+        public BookOrderDetailsWithBookAndCustomerSpec(int pageSize = 6, int pageIndex = 1, bool isPagingEnabled = true)
+        {
+            AddInclude(B => B.Book);
+            AddInclude(B => B.Order.Customer);
+            AddOrederBy(B => B.OrderId);
             ApplyPanging(pageSize * (pageIndex - 1), pageSize, isPagingEnabled);
 
             if (!string.IsNullOrEmpty(Sort))
@@ -37,25 +38,26 @@ namespace Infrastructure.Specifications.PayrollSpec
                 switch (Sort)
                 {
                     case "Asc":
-                        AddOrederBy(p => p.Employee.EmpName);
+                        AddOrederBy(B => B.OrderId);
                         break;
                     case "Desc":
-                        AddOrederByDescending(p => p.Employee.EmpName);
+                        AddOrederByDescending(B => B.OrderId);
                         break;
                     default:
-                        AddOrederBy(p => p.Employee.EmpName);
+                        AddOrederBy(B => B.OrderId);
                         break;
                 }
             }
         }
 
-        public PayrollWithEmployeeSpec(int id) : base(x => x.Id == id)
+        public BookOrderDetailsWithBookAndCustomerSpec(int? id = null, int? bookId = null , int? orderId = null) : base(x => x.BookId == bookId || x.OrderId == orderId)
         {
-            AddInclude(p => p.Employee);
         }
-
-        public PayrollWithEmployeeSpec(int? id = null ,int? empId = null) : base(x => x.EmpId == empId)
+  
+        public BookOrderDetailsWithBookAndCustomerSpec(int id) : base(x => x.Id == id)
         {
+            AddInclude(B => B.Book);
+            AddInclude(B => B.Order.Customer);
         }
     }
 }
