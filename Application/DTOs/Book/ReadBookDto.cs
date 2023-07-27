@@ -1,4 +1,7 @@
-﻿namespace Application.DTOs.Book
+﻿using Application.Handlers;
+using System.Text.Json.Serialization;
+
+namespace Application.DTOs.Book
 {
     public class ReadBookDto
     {
@@ -8,6 +11,7 @@
         public decimal Price { get; set; }
         public string AuthorName { get; set; }
         public string PublisherName { get; set; }
-        public DateTime? CreatedDate { get; set; }
+        [JsonConverter(typeof(CustomDateTimeConverter))]
+        public DateTime CreatedDate { get; set; }
     }
 }

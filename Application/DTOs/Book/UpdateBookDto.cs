@@ -1,4 +1,7 @@
-﻿namespace Application.DTOs.Book
+﻿using Application.Handlers;
+using System.Text.Json.Serialization;
+
+namespace Application.DTOs.Book
 {
     public class UpdateBookDto
     {
@@ -8,7 +11,9 @@
         public string Price { get; set; }
         public int AuthorId { get; set; }
         public int PublisherId { get; set; }
-        public DateTime? CreatedDate { get; set; }
+        [JsonConverter(typeof(CustomDateTimeConverter))]
+        public DateTime CreatedDate { get; set; }
+        [JsonConverter(typeof(CustomDateTimeConverter))]
         public DateTime UpdatedDate { get; set; } = DateTime.Now;
     }
 }

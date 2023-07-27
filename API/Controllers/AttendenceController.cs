@@ -1,11 +1,14 @@
 ﻿using Application.DTOs.Attendance;
+using Application.DTOs.Book;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Validators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
+using Infrastructure;
 using Infrastructure.Specifications.AttendanceSpec;
+using Infrastructure.Specifications.BookSpec;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 
@@ -14,21 +17,18 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class AttendenceController : ControllerBase
-    {/*
-        private readonly IUnitOfWork<Attendence> _uof;
-        private readonly IUnitOfWork<Employee> _employeeUof;
+    {
+        private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly IAttendenceServices _attendenceServices;
         private readonly ILogger<AttendenceController> _logger;
 
-        public AttendenceController(IUnitOfWork<Attendence> uof,
-                                    IUnitOfWork<Employee> employeeUof,
+        public AttendenceController(IUnitOfWork uof,
                                     IMapper mapper,
                                     IAttendenceServices attendenceServices,
                                     ILogger<AttendenceController> logger)
         {
             _uof = uof;
-            _employeeUof = employeeUof;
             _mapper = mapper;
             _attendenceServices = attendenceServices;
             _logger = logger;
@@ -38,25 +38,33 @@ namespace API.Controllers
         [HttpGet("GetAllAttendenceAsync")]
         public async Task<ActionResult<IReadOnlyList<ReadAttendanceDto>>> GetAllAttendenceAsync()
         {
-            var attendences = await _uof.GetRepository().GetAllAsync();
+            var attendences = await _uof.GetRepository<Attendence>().GetAllAsync();
             return Ok(_mapper.Map<IReadOnlyList<Attendence>, IReadOnlyList<ReadAttendanceDto>>(attendences));
         }
 
 
         [HttpGet("GetAllAttendenceWithDetails")]
-        public async Task<ActionResult<IEnumerable<ReadAttendanceDto>>> GetAllAttendenceWithDetails()
+        public async Task<ActionResult<Pagination<ReadAttendanceDto>>> GetAllAttendenceWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
-            var spec = new AttendanceWithEmployeeSpec();
-            var attendences = await _uof.GetRepository().FindAllSpec(spec);
-            return Ok(_mapper.Map<IEnumerable<Attendence>, IEnumerable<ReadAttendanceDto>>(attendences));
+            var spec = new AttendanceWithEmployeeSpec(pagesize, pageindex, isPagingEnabled);
+
+            var totalAttendences = await _uof.GetRepository<Attendence>().CountAsync(spec);
+
+            var attendences = await _uof.GetRepository<Attendence>().FindAllSpec(spec);
+
+            var mappedattendences = _mapper.Map<IReadOnlyList<ReadAttendanceDto>>(attendences);
+
+            var paginationData = new Pagination<ReadAttendanceDto>(spec.PageIndex, spec.PageSize, totalAttendences, mappedattendences);
+
+            return Ok(paginationData);
         }
 
         [HttpGet("GetAttendenceById")]
         public async Task<ActionResult<ReadAttendanceDto>> GetAttendenceByIdAsync(int id)
         {
-            if (await _uof.GetRepository().Exists(id))
+            if (await _uof.GetRepository<Attendence>().Exists(id))
             {
-                var attendences = await _uof.GetRepository().GetByIdAsync(id);
+                var attendences = await _uof.GetRepository<Attendence>().GetByIdAsync(id);
                 return Ok(_mapper.Map<Attendence, ReadAttendanceDto>(attendences));
             }
 
@@ -66,10 +74,10 @@ namespace API.Controllers
         [HttpGet("GetAttendenceByIdWithDetailAsync")]
         public async Task<ActionResult<ReadAttendanceDto>> GetAttendenceByIdWithDetailAsync(int id)
         {
-            if (await _uof.GetRepository().Exists(id))
+            if (await _uof.GetRepository<Attendence>().Exists(id))
             {
                 var spec = new AttendanceWithEmployeeSpec(id);
-                var attendences = await _uof.GetRepository().FindSpec(spec);
+                var attendences = await _uof.GetRepository<Attendence>().FindSpec(spec);
                 return Ok(_mapper.Map<Attendence, ReadAttendanceDto>(attendences));
             }
 
@@ -95,11 +103,11 @@ namespace API.Controllers
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_PERMISSION} {attendenceDto.Permission}" });
             if (!_attendenceServices.IsValidMonth(attendenceDto.Month))
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_MONTH} {attendenceDto.Month}" });
-            var result = await _employeeUof.GetRepository().Exists(attendenceDto.EmpId);
+            var result = await _uof.GetRepository<Employee>().Exists(attendenceDto.EmpId);
             if (!result)
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_ID} {attendenceDto.EmpId}" });
             var attendences = _mapper.Map<CreateAttendenceDto, Attendence>(attendenceDto);
-            _uof.GetRepository().InsertAsync(attendences);
+            _uof.GetRepository<Attendence>().InsertAsync(attendences);
             await _uof.Commit();
 
             return StatusCode(201, AppMessages.INSERTED);
@@ -114,11 +122,11 @@ namespace API.Controllers
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_PERMISSION} {attendenceDto.Permission}" });
             if (!_attendenceServices.IsValidMonth(attendenceDto.Month))
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_MONTH} {attendenceDto.Month}" });
-            var result = await _uof.GetRepository().Exists(attendenceDto.Id);
+            var result = await _uof.GetRepository<Attendence>().Exists(attendenceDto.Id);
             if (!result)
                 return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {attendenceDto.Id}" });
             var attendences = _mapper.Map<ReadAttendanceDto, Attendence>(attendenceDto);
-            _uof.GetRepository().UpdateAsync(attendences);
+            _uof.GetRepository<Attendence>().UpdateAsync(attendences);
             await _uof.Commit();
 
             return Ok(AppMessages.UPDATED);
@@ -127,14 +135,15 @@ namespace API.Controllers
 
         #region DELETE
         [HttpDelete("DeleteAttendence")]
-        public async Task<ActionResult> DeleteAttendenceAsync(ReadAttendanceDto attendenceDto)
+        public async Task<ActionResult> DeleteAttendenceAsync(int id)
         {
-            var attendences = _mapper.Map<ReadAttendanceDto, Attendence>(attendenceDto);
-            _uof.GetRepository().DeleteAsync(attendences);
+            var attendenceSpec = new AttendanceWithEmployeeSpec(id);
+            var attendence = _uof.GetRepository<Attendence>().FindSpec(attendenceSpec).Result;
+            _uof.GetRepository<Attendence>().DeleteAsync(attendence);
             await _uof.Commit();
             return Ok(AppMessages.DELETED);
         }
         #endregion
-        */
+
     }
 }

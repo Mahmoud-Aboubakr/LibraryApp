@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Specifications.AttendanceSpec
+namespace Infrastructure.Specifications.CustomerSpec
 {
-    public class AttendanceWithEmployeeSpec : BaseSpecification<Attendence>
+    public class CustomerSpec : BaseSpecification<Customer>
     {
         public string Sort { get; set; }
         private int MaxPageSize { get; set; }
@@ -26,10 +26,14 @@ namespace Infrastructure.Specifications.AttendanceSpec
             set => _search = value.ToLower();
         }
 
-        public AttendanceWithEmployeeSpec(int pageSize = 6, int pageIndex = 1, bool isPagingEnabled = true)
+        public CustomerSpec(int id) : base(x => x.Id == id)
         {
-            AddInclude(A => A.Employee);
-            AddOrederBy(A => A.EmpId);
+        }
+
+        public CustomerSpec(int pageSize = 6, int pageIndex = 1, bool isPagingEnabled = true)
+           : base()
+        {
+            AddOrederBy(c => c.CustomerName);
             ApplyPanging(pageSize * (pageIndex - 1), pageSize, isPagingEnabled);
 
             if (!string.IsNullOrEmpty(Sort))
@@ -37,21 +41,16 @@ namespace Infrastructure.Specifications.AttendanceSpec
                 switch (Sort)
                 {
                     case "Asc":
-                        AddOrederBy(A => A.EmpId);
+                        AddOrederBy(c => c.CustomerName);
                         break;
                     case "Desc":
-                        AddOrederByDescending(A => A.EmpId);
+                        AddOrederByDescending(c => c.CustomerName);
                         break;
                     default:
-                        AddOrederBy(A => A.EmpId);
+                        AddOrederBy(c => c.CustomerName);
                         break;
                 }
             }
-        }
-
-        public AttendanceWithEmployeeSpec(int id) : base(x => x.Id == id)
-        {
-            AddInclude(A => A.Employee);
         }
     }
 }
