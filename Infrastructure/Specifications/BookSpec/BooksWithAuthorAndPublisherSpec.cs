@@ -33,7 +33,7 @@ namespace Infrastructure.Specifications.BookSpec
             AddInclude(b => b.Publisher);
         }
 
-        public BooksWithAuthorAndPublisherSpec(int? id = null, int? authorId = null, int? publisherId = null) : base(x => x.AuthorId == authorId)
+        public BooksWithAuthorAndPublisherSpec(int? id = null, int? authorId = null, int? publisherId = null) : base(x => x.AuthorId == authorId || x.PublisherId == publisherId)
         {
         }
 

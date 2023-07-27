@@ -53,5 +53,8 @@ namespace Infrastructure.Specifications.AttendanceSpec
         {
             AddInclude(A => A.Employee);
         }
+        public AttendanceWithEmployeeSpec(int? id = null, int? empId = null) : base(x => x.EmpId == empId)
+        {
+        }
     }
 }
