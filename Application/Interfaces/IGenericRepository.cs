@@ -9,7 +9,7 @@ namespace Application.Interfaces
         Task<bool> Exists(int id);
         Task<bool> Exists(ISpecification<T> spec);
         void DeleteAsync(T entity);
-        void DeleteRangeAsync(List<T> entities);
+        void DeleteRangeAsync(IEnumerable<T> entities);
         void UpdateAsync(T entity);
         void InsertAsync(T entity);
         Task<List<T>> GetAllAsync();

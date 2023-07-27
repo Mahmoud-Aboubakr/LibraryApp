@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Application.Handlers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Application.DTOs.BookOrderDetails
@@ -12,6 +14,7 @@ namespace Application.DTOs.BookOrderDetails
         public string BookId { get; set; }
         public string Price { get; set; }
         public string Quantity { get; set; }
-        public DateTime? CreatedDate { get; set; } = DateTime.Now;
+        [JsonConverter(typeof(CustomDateTimeConverter))]
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

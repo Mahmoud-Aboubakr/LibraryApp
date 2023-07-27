@@ -28,6 +28,7 @@ namespace Domain.Constants
         public const string FIRED = "This is employee is Fired successfully";
         public const string UNAVAILABLE_BOOK = "Book Is Unavailable";
         public const string MAX_NORMAL_VACATIONS = "You Can't take more normal vacations";
-
+        public const string FAILED_RETURN = "You Can't Return This Order";
+        public const string RETURNED = "Returned Successfully";
     }
 }

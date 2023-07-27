@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Specifications.PayrollSpec
+namespace Infrastructure.Specifications.EmployeeSpec
 {
-    public class PayrollWithEmployeeSpec : BaseSpecification<Payroll>
+    public class EmployeeSpec : BaseSpecification<Employee>
     {
         public string Sort { get; set; }
         private int MaxPageSize { get; set; }
@@ -25,11 +25,15 @@ namespace Infrastructure.Specifications.PayrollSpec
             get => _search;
             set => _search = value.ToLower();
         }
-        public PayrollWithEmployeeSpec(int pageSize = 6, int pageIndex = 1, bool isPagingEnabled = true)
-        {
-            AddInclude(p => p.Employee);
 
-            AddOrederBy(p => p.Employee.EmpName);
+        public EmployeeSpec(int id) : base(x => x.Id == id)
+        {
+        }
+    
+        public EmployeeSpec(int pageSize = 6, int pageIndex = 1, bool isPagingEnabled = true)
+           : base()
+        {
+            AddOrederBy(a => a.EmpName);
             ApplyPanging(pageSize * (pageIndex - 1), pageSize, isPagingEnabled);
 
             if (!string.IsNullOrEmpty(Sort))
@@ -37,25 +41,16 @@ namespace Infrastructure.Specifications.PayrollSpec
                 switch (Sort)
                 {
                     case "Asc":
-                        AddOrederBy(p => p.Employee.EmpName);
+                        AddOrederBy(a => a.EmpName);
                         break;
                     case "Desc":
-                        AddOrederByDescending(p => p.Employee.EmpName);
+                        AddOrederByDescending(a => a.EmpName);
                         break;
                     default:
-                        AddOrederBy(p => p.Employee.EmpName);
+                        AddOrederBy(a => a.EmpName);
                         break;
                 }
             }
-        }
-
-        public PayrollWithEmployeeSpec(int id) : base(x => x.Id == id)
-        {
-            AddInclude(p => p.Employee);
-        }
-
-        public PayrollWithEmployeeSpec(int? id = null ,int? empId = null) : base(x => x.EmpId == empId)
-        {
         }
     }
 }

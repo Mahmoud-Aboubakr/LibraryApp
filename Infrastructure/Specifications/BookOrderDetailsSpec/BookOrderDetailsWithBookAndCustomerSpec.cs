@@ -50,10 +50,10 @@ namespace Infrastructure.Specifications.BookOrderDetailsSpec
             }
         }
 
-        public BookOrderDetailsWithBookAndCustomerSpec(int? id = null, int? bookId = null) : base(x => x.BookId == bookId)
+        public BookOrderDetailsWithBookAndCustomerSpec(int? id = null, int? bookId = null , int? orderId = null) : base(x => x.BookId == bookId || x.OrderId == orderId)
         {
         }
-
+  
         public BookOrderDetailsWithBookAndCustomerSpec(int id) : base(x => x.Id == id)
         {
             AddInclude(B => B.Book);

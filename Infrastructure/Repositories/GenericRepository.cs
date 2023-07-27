@@ -76,7 +76,7 @@ namespace Persistence.Repositories
         public void DeleteAsync(T entity)
            => _entity.Remove(entity);
 
-        public void DeleteRangeAsync(List<T> entities)
+        public void DeleteRangeAsync(IEnumerable<T> entities)
         {
             _entity.RemoveRange(entities);
         }
