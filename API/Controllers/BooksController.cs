@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Book;
+using Application.DTOs.Publisher;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
@@ -6,7 +7,10 @@ using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
 using Infrastructure;
+using Infrastructure.Specifications.BannedCustomerSpec;
+using Infrastructure.Specifications.BookOrderDetailsSpec;
 using Infrastructure.Specifications.BookSpec;
+using Infrastructure.Specifications.CustomerSpec;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -136,13 +140,21 @@ namespace API.Controllers
         #endregion
 
         #region DELETE
-        [HttpDelete]
-        public async Task<ActionResult> DeleteBookAsync(ReadBookDto readBookDto)
+        [HttpDelete("DeleteBook")]
+        public async Task<ActionResult> DeleteBookAsync(int id)
         {
-            var book = _mapper.Map<ReadBookDto, Book>(readBookDto);
-            _uof.GetRepository<Book>().DeleteAsync(book);
-            await _uof.Commit();
-            return Ok(AppMessages.DELETED);
+            var bookOrderDetailsSpec = new BookOrderDetailsWithBookAndCustomerSpec(null, id);
+            var result = _uof.GetRepository<BookOrderDetails>().FindAllSpec(bookOrderDetailsSpec).Result;
+            if (result.Count() > 0)
+                return BadRequest(AppMessages.FAILED_DELETE);
+            else
+            {
+                var bookSpec = new BooksWithAuthorAndPublisherSpec(id);
+                var book = _uof.GetRepository<Book>().FindSpec(bookSpec).Result;
+                _uof.GetRepository<Book>().DeleteAsync(book);
+                await _uof.Commit();
+                return Ok(AppMessages.DELETED);
+            }
         }
         #endregion
 
