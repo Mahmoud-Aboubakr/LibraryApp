@@ -5,7 +5,9 @@ using Persistence.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(opt =>
+        opt.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull);
 
 builder.Services.AppServices(builder.Configuration);
 //AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
