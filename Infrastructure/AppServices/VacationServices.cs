@@ -78,5 +78,12 @@ namespace Infrastructure.AppServices
 
             return result;
         }
+
+        public async Task<int> GetAbsenceDaysByMonth(int employeeId, int month)
+        {
+            var AbsenceDaysCount = await _context.Vacations.Where(v => v.EmpId == employeeId && v.DayDate.Month == month && v.Absence == true).CountAsync();
+                                                        //.GroupBy(v => new { v.EmpId, v.DayDate.Month }).CountAsync();
+            return AbsenceDaysCount;
+        }
     }
 }

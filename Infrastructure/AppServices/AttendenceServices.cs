@@ -36,11 +36,83 @@ namespace Infrastructure.AppServices
         }
         public bool IsValidAttendencePermission(int permission)
         {
-            return permission == 0 || permission == 1;
+            return permission == 0 || permission == 1 || permission == 2;
         }
-        public bool IsValidMonth(byte month)
+
+        public bool IsValidPermission(int permission)
         {
-            return month >= 1 && month <= 12;
+            var result = _context.Attendence.Where(A => A.Permission == 1).GroupBy(A => new { A.EmpId, A.Month }).Count();
+            if (permission == 1 && result >= 2)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<int> GetLateHoursByMonth(int employeeId, int month)
+        {
+            var employee = _context.Employees.FirstOrDefault(e => e.Id == employeeId);
+            if (employee == null)
+            {
+                throw new ArgumentException($"Employee with ID {employeeId} not found.");
+            }
+
+            var startShift = employee.EmpStartingShift.TimeOfDay;
+            var endShift = employee.EmpEndingShift.TimeOfDay;
+
+            var attendances = await _context.Attendence.Where(a => a.EmpId == employeeId && a.DayDate.Month == month && a.Permission == 2).ToListAsync();
+
+            var totalLateHours = 0;
+
+            foreach (var attendance in attendances)
+            {
+                var arrivalTime = attendance.EmpArrivalTime.TimeOfDay;
+                var leavingTime = attendance.EmpLeavingTime.TimeOfDay;
+
+                var HoursDiff = (arrivalTime - startShift) + (endShift - leavingTime);
+                int lateHours = (int)HoursDiff.TotalHours;
+                if (lateHours < 0)
+                {
+                    lateHours = -lateHours;
+                }
+
+                totalLateHours += lateHours;
+            }
+
+            return totalLateHours;
+        }
+
+        public async Task<int> GetExtraHoursByMonth(int employeeId, int month)
+        {
+            var employee = _context.Employees.FirstOrDefault(e => e.Id == employeeId);
+            if (employee == null)
+            {
+                throw new ArgumentException($"Employee with ID {employeeId} not found.");
+            }
+
+            var startShift = employee.EmpStartingShift.TimeOfDay;
+            var endShift = employee.EmpEndingShift.TimeOfDay;
+
+            var attendances = await _context.Attendence.Where(a => a.EmpId == employeeId && a.DayDate.Month == month).ToListAsync();
+
+            var totalExtraHours = 0;
+
+            foreach (var attendance in attendances)
+            {
+                var arrivalTime = attendance.EmpArrivalTime.TimeOfDay;
+                var leavingTime = attendance.EmpLeavingTime.TimeOfDay;
+
+                var HoursDiff = leavingTime - endShift;
+                int extraHours = (int)HoursDiff.TotalHours;
+                if (extraHours < 0)
+                {
+                    extraHours = 0;
+                }
+
+                totalExtraHours += extraHours;
+            }
+
+            return totalExtraHours;
         }
     }
 }

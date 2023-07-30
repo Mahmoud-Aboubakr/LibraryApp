@@ -101,8 +101,8 @@ namespace API.Controllers
         {
             if (!_attendenceServices.IsValidAttendencePermission(attendenceDto.Permission))
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_PERMISSION} {attendenceDto.Permission}" });
-            if (!_attendenceServices.IsValidMonth(attendenceDto.Month))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_MONTH} {attendenceDto.Month}" });
+            if (!_attendenceServices.IsValidPermission(attendenceDto.Permission))
+                attendenceDto.Permission = 2;
             var result = await _uof.GetRepository<Employee>().Exists(attendenceDto.EmpId);
             if (!result)
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_ID} {attendenceDto.EmpId}" });
@@ -120,8 +120,8 @@ namespace API.Controllers
         {
             if (!_attendenceServices.IsValidAttendencePermission(attendenceDto.Permission))
                 return BadRequest(new { Detail = $"{AppMessages.INVALID_PERMISSION} {attendenceDto.Permission}" });
-            if (!_attendenceServices.IsValidMonth(attendenceDto.Month))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_MONTH} {attendenceDto.Month}" });
+            if (!_attendenceServices.IsValidPermission(attendenceDto.Permission))
+                attendenceDto.Permission = 2;
             var result = await _uof.GetRepository<Attendence>().Exists(attendenceDto.Id);
             if (!result)
                 return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {attendenceDto.Id}" });
@@ -131,6 +131,7 @@ namespace API.Controllers
 
             return Ok(AppMessages.UPDATED);
         }
+
         #endregion
 
         #region DELETE
