@@ -232,6 +232,7 @@ namespace API.Controllers
             _uof.GetRepository<ReturnOrderDetails>().InsertAsync(returnedOrderDetails);
             await _uof.Commit();
             _returnedOrderServices.IncreaseQuantity(createReturnOrderDetails.BookId, createReturnOrderDetails.Quantity);
+            _returnedOrderServices.DecreaseAuthorProfits(createReturnOrderDetails.BookId, createReturnOrderDetails.Price, createReturnOrderDetails.Quantity);
             return StatusCode(201, AppMessages.RETURNED);
         }
         #endregion

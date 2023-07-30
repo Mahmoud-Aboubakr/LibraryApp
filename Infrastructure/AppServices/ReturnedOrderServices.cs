@@ -103,5 +103,16 @@ namespace Infrastructure.AppServices
             _context.SaveChanges();
         }
 
+        public void DecreaseAuthorProfits(int BookId, decimal Price, int Quantity)
+        {
+            var authorId = _context.Set<Book>().FirstOrDefault(x => x.Id == BookId).AuthorId;
+
+            var author = _context.Set<Author>().FirstOrDefault(x => x.Id == authorId);
+
+            var Profit = Price * 0.05m * Quantity;
+            author.AuthorProfits -= Profit;
+
+            _context.SaveChanges();
+        }
     }
 }

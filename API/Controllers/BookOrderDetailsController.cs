@@ -100,15 +100,6 @@ namespace API.Controllers
             return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
         }
 
-        [HttpGet("GetBookOrderDetailsByOrderId")]
-        public async Task<ActionResult<IReadOnlyList<ReadBookOrderDetailsDto>>> GetOrderByIdWithDetails(int orderId)
-        {
-            var result = await _orderServices.GetOrderByIdWithDetail(orderId);
-            return Ok(result);
-        }
-
-
-
         [HttpGet("SearchInBookOrderDetails")]
         public async Task<ActionResult<IReadOnlyList<ReadBookOrderDetailsDto>>> SearchBookOrderDetails(int? orderId = null, string customerName = null, string bookTitle = null)
         {
