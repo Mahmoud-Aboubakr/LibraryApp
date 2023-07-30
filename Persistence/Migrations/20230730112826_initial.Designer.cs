@@ -12,8 +12,8 @@ using Persistence.Context;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20230727092340_update2")]
-    partial class update2
+    [Migration("20230730112826_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -35,31 +35,33 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime");
 
-                    b.Property<DateTime?>("DayDate")
+                    b.Property<DateTime>("DayDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 12, 23, 40, 117, DateTimeKind.Local).AddTicks(4389));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 386, DateTimeKind.Local).AddTicks(929));
 
                     b.Property<string>("DeviceName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTime?>("EmpArrivalTime")
+                    b.Property<DateTime>("EmpArrivalTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 12, 23, 40, 117, DateTimeKind.Local).AddTicks(3802));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 386, DateTimeKind.Local).AddTicks(268));
 
                     b.Property<int>("EmpId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("EmpLeavingTime")
+                    b.Property<DateTime>("EmpLeavingTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 12, 23, 40, 117, DateTimeKind.Local).AddTicks(4213));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 386, DateTimeKind.Local).AddTicks(639));
 
-                    b.Property<byte>("Month")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("Month")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("int")
+                        .HasComputedColumnSql("MONTH(DayDate)");
 
                     b.Property<int>("Permission")
                         .HasColumnType("int");
@@ -123,7 +125,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("BanDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 12, 23, 40, 118, DateTimeKind.Local).AddTicks(155));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 386, DateTimeKind.Local).AddTicks(6381));
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime");
@@ -252,7 +254,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("BorrowDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 12, 23, 40, 118, DateTimeKind.Local).AddTicks(5397));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 387, DateTimeKind.Local).AddTicks(974));
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime");
@@ -268,7 +270,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("ReturnDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 30, 12, 23, 40, 118, DateTimeKind.Local).AddTicks(5784));
+                        .HasDefaultValue(new DateTime(2023, 8, 2, 14, 28, 26, 387, DateTimeKind.Local).AddTicks(1287));
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime");
@@ -397,7 +399,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 12, 23, 40, 118, DateTimeKind.Local).AddTicks(8851));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 387, DateTimeKind.Local).AddTicks(4258));
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,3)");
@@ -449,7 +451,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("SalaryDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 12, 23, 40, 119, DateTimeKind.Local).AddTicks(2370));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 387, DateTimeKind.Local).AddTicks(8342));
 
                     b.Property<decimal>("TotalSalary")
                         .ValueGeneratedOnAddOrUpdate()
@@ -527,7 +529,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("ReturnDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 12, 23, 40, 119, DateTimeKind.Local).AddTicks(3515));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 387, DateTimeKind.Local).AddTicks(9635));
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,3)");
@@ -599,7 +601,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("DayDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 12, 23, 40, 119, DateTimeKind.Local).AddTicks(7288));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 388, DateTimeKind.Local).AddTicks(4314));
 
                     b.Property<string>("DeviceName")
                         .IsRequired()

@@ -18,7 +18,7 @@ namespace Application.DTOs.Attendance
 
         [JsonConverter(typeof(CustomDateTimeConverter))]
         public DateTime DayDate { get; set; }
-        public byte Month { get; set; }
+        public int Month { get; set; }
         public int EmpId { get; set; }
 
         [JsonConverter(typeof(CustomDateTimeConverter))]

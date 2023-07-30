@@ -13,5 +13,6 @@ namespace Application.Interfaces.IAppServices
         bool IsValidUrgentVacation(bool? urgentvacation);
         Task<IReadOnlyList<ReadVacationDto>> SearchVactionDataWithDetail(string empName = null);
         Task<GetVacationsCountDto> GetTotalVacationsByEmpId(int empId, DateTime FromDate, DateTime ToDate);
+        Task<int> GetAbsenceDaysByMonth(int employeeId, int month);
     }
 }

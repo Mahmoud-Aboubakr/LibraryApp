@@ -56,5 +56,29 @@ namespace Infrastructure.AppServices
             int[] validTypes = { 0, 1, 2, 3 };
             return validTypes.Contains(EmpType);
         }
+
+        public async Task<decimal> CalculateHourlyPay(int employeeId)
+        {
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Id == employeeId);
+            var startShift = employee.EmpStartingShift;
+            var endShift = employee.EmpEndingShift;
+            var workingHours = (int)(endShift - startShift).TotalHours;
+            var workingDays = 5 * DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month) / 7;
+            var hourlyPay = employee.EmpBasicSalary / (workingDays * workingHours);
+
+            return hourlyPay;
+        }
+
+        public async Task<decimal> CalculateDailyPay(int employeeId)
+        {
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Id == employeeId);
+            var startShift = employee.EmpStartingShift;
+            var endShift = employee.EmpEndingShift;
+            var workingHours = (int)(endShift - startShift).TotalHours;
+            var workingDays = 5 * DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month) / 7;
+            var dailyPay = employee.EmpBasicSalary / workingDays;
+
+            return dailyPay;
+        }
     }
 }

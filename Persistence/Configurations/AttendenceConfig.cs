@@ -21,7 +21,9 @@ namespace Persistence.Configurations
                .Property(A => A.EmpLeavingTime).HasDefaultValue(DateTime.Now).HasColumnType("datetime");
             builder
                 .Property(A => A.DayDate).HasDefaultValue(DateTime.Now).HasColumnType("datetime");
-
+            builder
+                .Property(A => A.Month)
+                .HasComputedColumnSql("MONTH(DayDate)");
         }
     }
 }

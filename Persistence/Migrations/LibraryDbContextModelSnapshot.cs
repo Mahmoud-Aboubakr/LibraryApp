@@ -33,31 +33,33 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime");
 
-                    b.Property<DateTime?>("DayDate")
+                    b.Property<DateTime>("DayDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 14, 2, 57, 625, DateTimeKind.Local).AddTicks(8919));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 386, DateTimeKind.Local).AddTicks(929));
 
                     b.Property<string>("DeviceName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTime?>("EmpArrivalTime")
+                    b.Property<DateTime>("EmpArrivalTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 14, 2, 57, 625, DateTimeKind.Local).AddTicks(7992));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 386, DateTimeKind.Local).AddTicks(268));
 
                     b.Property<int>("EmpId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("EmpLeavingTime")
+                    b.Property<DateTime>("EmpLeavingTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 14, 2, 57, 625, DateTimeKind.Local).AddTicks(8519));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 386, DateTimeKind.Local).AddTicks(639));
 
-                    b.Property<byte>("Month")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("Month")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("int")
+                        .HasComputedColumnSql("MONTH(DayDate)");
 
                     b.Property<int>("Permission")
                         .HasColumnType("int");
@@ -121,7 +123,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("BanDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 14, 2, 57, 626, DateTimeKind.Local).AddTicks(3884));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 386, DateTimeKind.Local).AddTicks(6381));
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime");
@@ -250,7 +252,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("BorrowDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 14, 2, 57, 627, DateTimeKind.Local).AddTicks(5947));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 387, DateTimeKind.Local).AddTicks(974));
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime");
@@ -266,7 +268,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("ReturnDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 2, 57, 627, DateTimeKind.Local).AddTicks(6494));
+                        .HasDefaultValue(new DateTime(2023, 8, 2, 14, 28, 26, 387, DateTimeKind.Local).AddTicks(1287));
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime");
@@ -395,7 +397,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 14, 2, 57, 628, DateTimeKind.Local).AddTicks(21));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 387, DateTimeKind.Local).AddTicks(4258));
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,3)");
@@ -447,7 +449,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("SalaryDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 14, 2, 57, 628, DateTimeKind.Local).AddTicks(4465));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 387, DateTimeKind.Local).AddTicks(8342));
 
                     b.Property<decimal>("TotalSalary")
                         .ValueGeneratedOnAddOrUpdate()
@@ -525,7 +527,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("ReturnDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 14, 2, 57, 628, DateTimeKind.Local).AddTicks(5734));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 387, DateTimeKind.Local).AddTicks(9635));
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,3)");
@@ -597,7 +599,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("DayDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 7, 27, 14, 2, 57, 629, DateTimeKind.Local).AddTicks(2855));
+                        .HasDefaultValue(new DateTime(2023, 7, 30, 14, 28, 26, 388, DateTimeKind.Local).AddTicks(4314));
 
                     b.Property<string>("DeviceName")
                         .IsRequired()
