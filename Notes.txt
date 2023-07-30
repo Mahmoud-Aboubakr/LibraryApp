@@ -27,4 +27,16 @@
 		authorization functionality for .NET applications, including support for Azure Active Directory and Microsoft identity platforms.
 
 	--->Simple Web Token (SWT): A token format that provides a lightweight mechanism 
-		for conveying security tokens between parties.
+		for conveying security tokens between parties
+
+(07)add profits to authors => 5% for every book ordered
+(08)in borrow the book is returned by deleting , if the customer did not return the book in 3 day he is banned 
+(09)Attendance Permissions :
+    Permission => 0 ------> Not late
+    Permission => 1 -------> Late,has permissions
+    Permission => 2 --------> late, Finish two permissions in one month
+	When permission equal 2 -------> one hour late ==> two hours deduct
+(10)Vacation Absence :
+    When absence equal true -----> one day absence ==> two days deduct 
+(11)add bonus : 
+    extra 1 hour after ending shift -----> 2 hours bonus

@@ -11,7 +11,8 @@ namespace Application.DTOs.Order
     public class CreateOrderDto
     {
         public string CustomerId { get; set; }
-
+        [JsonConverter(typeof(CustomDateTimeConverter))]
+        public DateTime OrderDate { get; set; } = DateTime.Now;
         public string TotalPrice { get; set; }
         [JsonConverter(typeof(CustomDateTimeConverter))]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
