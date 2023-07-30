@@ -38,5 +38,20 @@ namespace Infrastructure.AppServices
                                }).ToListAsync();
             return result;
         }
+
+
+        public decimal CalculateDeduct(int absenceDays, decimal dailyPay, int lateHours, decimal hourlyPay)
+        {
+            decimal deduct = (absenceDays * 2 * dailyPay) + (lateHours * 2 * hourlyPay);
+            deduct = Math.Round(deduct, 2);
+            return deduct;
+        }
+
+        public decimal CalculateBonus(int extraHours, decimal hourlyPay)
+        {
+            decimal bonus = extraHours * 2 * hourlyPay;
+            bonus = Math.Round(bonus, 2);
+            return bonus;
+        }
     }
 }

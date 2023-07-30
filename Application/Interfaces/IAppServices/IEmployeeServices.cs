@@ -12,5 +12,7 @@ namespace Application.Interfaces.IAppServices
         bool IsValidEmployeeAge(int age);
         bool IsValidEmployeeType(byte type);
         Task<IReadOnlyList<ReadEmployeeDto>> SearchEmployeeDataWithDetail(string empName = null, byte? empType = null, string empPhoneNumber = null, decimal? empBasicSalary = null);
+        Task<decimal> CalculateHourlyPay(int employeeId);
+        Task<decimal> CalculateDailyPay(int employeeId);
     }
 }

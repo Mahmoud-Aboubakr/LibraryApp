@@ -8,11 +8,11 @@ namespace Domain.Entities
     public class Attendence : BaseEntity
     {
         public int EmpId { get; set; }
-        public DateTime? EmpArrivalTime { get; set; } = null;
-        public DateTime? EmpLeavingTime { get; set; } = null;
+        public DateTime EmpArrivalTime { get; set; }
+        public DateTime EmpLeavingTime { get; set; }
         public int Permission { get; set; }
-        public DateTime? DayDate { get; set; } = null;
-        public byte Month { get; set; }
+        public DateTime DayDate { get; set; }
+        public int Month { get; set; }
         public virtual Employee Employee { get; set; }
     }
 }
