@@ -22,5 +22,6 @@ namespace Application.Interfaces.IAppServices
 
         void DeleteReturnedOrderAsync(int returnedorderId);
 
+        public void DecreaseAuthorProfits(int BookId, decimal Price, int Quantity);
     }
 }

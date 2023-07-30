@@ -135,6 +135,7 @@ namespace API.Controllers
                     _uof.GetRepository<BookOrderDetails>().InsertAsync(orderBook);
                     await _uof.Commit();
                     _orderServices.DecreaseQuantity(createOrderBooks.BookId, createOrderBooks.Quantity);
+                    _orderServices.AddAuthorProfits(createOrderBooks.BookId, createOrderBooks.Quantity, createOrderBooks.Price);
                     return StatusCode(201, AppMessages.INSERTED);
                 }
                 else
@@ -149,12 +150,5 @@ namespace API.Controllers
         }
         #endregion
 
-        #region Delete
-        [HttpDelete("DeleteOrderAsync")]
-        public void DeletOrderAsync(int orderId)
-        {
-            _orderServices.DeletOrderAsync(orderId);
-        }
-        #endregion
     }
 }
