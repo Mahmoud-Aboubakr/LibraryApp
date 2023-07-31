@@ -30,5 +30,10 @@ namespace Domain.Constants
         public const string MAX_NORMAL_VACATIONS = "You Can't take more normal vacations";
         public const string FAILED_RETURN = "You Can't Return This Order";
         public const string RETURNED = "Returned Successfully";
+        public const string INTERNAL_SERVER = "Internal Server Error";
+        public const string NOT_FOUNT = "Not Found";
+        public const string BAD_REQUEST = "Bad Request";
+        public const string UNAUTHORIZED = "Unauthorized";
+
     }
 }

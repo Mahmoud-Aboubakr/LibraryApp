@@ -1,11 +1,13 @@
 using API.Extensions;
+using API.Filters;
+using API.Middlewares;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using Persistence.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
-builder.Services.AddControllers()
+builder.Services.AddControllers(options => options.Filters.Add(new ExceptionAsync()))
     .AddJsonOptions(opt =>
         opt.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull);
 
@@ -18,6 +20,8 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
