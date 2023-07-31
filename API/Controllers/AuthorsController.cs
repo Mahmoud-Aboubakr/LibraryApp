@@ -1,5 +1,7 @@
-﻿using Application.DTOs.Author;
+﻿using API.Filters;
+using Application.DTOs.Author;
 using Application.DTOs.Customer;
+using Application.Exceptions;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
@@ -10,12 +12,14 @@ using Infrastructure;
 using Infrastructure.Specifications.BookSpec;
 using Infrastructure.Specifications.CustomerSpec;
 using Microsoft.AspNetCore.Mvc;
+using System.Web.Http.Filters;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
+    //[ExceptionFilter(typeof(ExceptionAsync))]
+    [TypeFilter(typeof(ExceptionAsync))]
     public class AuthorsController : ControllerBase
     {
         private readonly IUnitOfWork _uof;
@@ -55,15 +59,19 @@ namespace API.Controllers
         }
 
         [HttpGet("GetAuthorById")]
+       
         public async Task<ActionResult> GetAuthorByIdAsync(int id)
         {
+
             if (await _uof.GetRepository<Author>().Exists(id))
             {
                 var author = await _uof.GetRepository<Author>().GetByIdAsync(id);
                 return Ok(_mapper.Map<Author, ReadAuthorDto>(author));
             }
-
-            return NotFound(new { Detail = AppMessages.INVALID_ID });
+            throw new NotFoundException();
+            // new NotImplementedException("This method is not implemented");
+            //return NotFound(new { Detail = AppMessages.INVALID_ID });
+            //return NotFound();
         }
 
 
@@ -89,7 +97,8 @@ namespace API.Controllers
             }
             else
             {
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {authorDto.AuthorPhoneNumber}" });
+                //return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {authorDto.AuthorPhoneNumber}" });
+                throw new BadRequestException();
             }
         }
         #endregion
@@ -100,9 +109,11 @@ namespace API.Controllers
         {
             var result = await _uof.GetRepository<Author>().Exists(authorDto.Id);
             if (!result)
-                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {authorDto.Id}" });
+                throw new NotFoundException();
+            // return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {authorDto.Id}" });
             if (!_phoneNumberValidator.IsValidPhoneNumber(authorDto.AuthorPhoneNumber))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {authorDto.AuthorPhoneNumber}" });
+                throw new BadRequestException();
+            //return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {authorDto.AuthorPhoneNumber}" });
 
             var author = _mapper.Map<UpdateAuthorDto, Author>(authorDto);
             _uof.GetRepository<Author>().UpdateAsync(author);
@@ -119,7 +130,8 @@ namespace API.Controllers
             var bookSpec = new BooksWithAuthorAndPublisherSpec(null, id, null);
             var result = _uof.GetRepository<Book>().FindAllSpec(bookSpec).Result;
             if (result.Count() > 0)
-                return BadRequest(AppMessages.FAILED_DELETE);
+                throw new BadRequestException();
+            //return BadRequest(AppMessages.FAILED_DELETE);
             else
             {
                 var authorSpec = new AuthorSpec(id);

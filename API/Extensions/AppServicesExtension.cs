@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using API.Filters;
+using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
 using Application.Validators;
@@ -41,6 +42,8 @@ namespace API.Extensions
             services.AddTransient<IVacationServices, VacationServices>();
             services.AddTransient<IReturnedOrderServices,  ReturnedOrderServices>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            //services.AddScoped(typeof(CustomExceptionFilter));
 
             return services;
         }
