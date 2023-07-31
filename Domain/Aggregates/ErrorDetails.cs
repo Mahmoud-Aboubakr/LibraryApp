@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-namespace API.Filters
+namespace Domain.Aggregates
 {
     public class ErrorDetails
     {

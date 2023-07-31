@@ -34,6 +34,6 @@ namespace Domain.Constants
         public const string NOT_FOUNT = "Not Found";
         public const string BAD_REQUEST = "Bad Request";
         public const string UNAUTHORIZED = "Unauthorized";
-
+        public const string NOTACCEPTABLE = "Not Accepted Input";
     }
 }

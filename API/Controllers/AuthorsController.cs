@@ -1,7 +1,6 @@
-﻿using API.Filters;
-using Application.DTOs.Author;
-using Application.DTOs.Customer;
+﻿using Application.DTOs.Author;
 using Application.Exceptions;
+using Application.Handlers;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
@@ -10,16 +9,13 @@ using Domain.Constants;
 using Domain.Entities;
 using Infrastructure;
 using Infrastructure.Specifications.BookSpec;
-using Infrastructure.Specifications.CustomerSpec;
 using Microsoft.AspNetCore.Mvc;
-using System.Web.Http.Filters;
+
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[ExceptionFilter(typeof(ExceptionAsync))]
-    [TypeFilter(typeof(ExceptionAsync))]
     public class AuthorsController : ControllerBase
     {
         private readonly IUnitOfWork _uof;
@@ -58,22 +54,17 @@ namespace API.Controllers
             return Ok(paginationData);
         }
 
-        [HttpGet("GetAuthorById")]
+        [HttpGet("{id}")]
        
         public async Task<ActionResult> GetAuthorByIdAsync(int id)
         {
-
             if (await _uof.GetRepository<Author>().Exists(id))
             {
                 var author = await _uof.GetRepository<Author>().GetByIdAsync(id);
                 return Ok(_mapper.Map<Author, ReadAuthorDto>(author));
             }
-            throw new NotFoundException();
-            // new NotImplementedException("This method is not implemented");
-            //return NotFound(new { Detail = AppMessages.INVALID_ID });
-            //return NotFound();
+            return NotFound(new ApiResponse(404));
         }
-
 
         [HttpGet("SearchAuthorWithCriteria")]
         public async Task<ActionResult<IReadOnlyList<ReadAuthorDto>>> SearchWithCriteria(string name = null, string phone = null)

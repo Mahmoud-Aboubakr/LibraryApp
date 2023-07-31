@@ -1,14 +1,15 @@
-﻿using API.Extensions;
-using Application.Exceptions;
+﻿using Application.Exceptions;
+using Domain.Aggregates;
 using Domain.Constants;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 
-namespace API.Filters
+namespace Application.Handlers
 {
-    public class ExceptionAsync : IAsyncExceptionFilter
+    public class CustomApiExceptions : IAsyncExceptionFilter
     {
+
         public Task OnExceptionAsync(ExceptionContext context)
         {
             var exception = context.Exception;
@@ -24,10 +25,10 @@ namespace API.Filters
                 error.StatusCode = (int)HttpStatusCode.BadRequest;
                 error.Message = $"{AppMessages.BAD_REQUEST}: {exception.Message}";
             }
-            else if (exception is Application.Exceptions.UnauthorizedAccessException)
+            else if (exception is DivideByZeroException)
             {
-                error.StatusCode = (int)HttpStatusCode.Unauthorized;
-                error.Message = $"{AppMessages.UNAUTHORIZED}: {exception.Message}";
+                error.StatusCode = (int)HttpStatusCode.NotAcceptable;
+                error.Message = $"{AppMessages.NOTACCEPTABLE}: {exception.StackTrace}";
             }
             else if (exception is NotFoundException)
             {
@@ -35,6 +36,7 @@ namespace API.Filters
                 error.Message = $"{AppMessages.NOT_FOUNT}: {exception.Message}";
             }
             //Logs your technical exception with stack trace below
+
             context.Result = new JsonResult(error);
             return Task.CompletedTask;
         }
