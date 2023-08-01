@@ -12,6 +12,8 @@ using Infrastructure.Specifications.BannedCustomerSpec;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
+using Application.Handlers;
+using Application.Interfaces.IValidators;
 
 namespace API.Controllers
 {
@@ -47,9 +49,14 @@ namespace API.Controllers
         [HttpGet("GetBannedCustomersWithDetails")]
         public async Task<ActionResult<Pagination<ReadBannedCustomerDto>>> GetBannedCustomersWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
+            if (pagesize <= 0 || pageindex <= 0)
+                return BadRequest(new ApiResponse(400));
+
             var spec = new BannedCustomerWithEmployeeAndCustomerSpec(pagesize, pageindex, isPagingEnabled);
 
             var totalBannedCustomers = await _uof.GetRepository<BannedCustomer>().CountAsync(spec);
+            if (totalBannedCustomers == 0)
+                return NotFound(new ApiResponse(404));
 
             var bannedCustomers = await _uof.GetRepository<BannedCustomer>().FindAllSpec(spec);
 
@@ -70,11 +77,11 @@ namespace API.Controllers
                 var bannedCustomers = await _uof.GetRepository<BannedCustomer>().GetByIdAsync(id);
 
                 if (bannedCustomers == null)
-                    return NotFound();
+                    return NotFound(new ApiResponse(404));
 
                 return Ok(_mapper.Map<ReadBannedCustomerDto>(bannedCustomers));
             }
-            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
         [HttpGet("GetBannedCustomerByIdWithIncludesAsync")]
@@ -88,11 +95,11 @@ namespace API.Controllers
                 var bannedCustomers = await _uof.GetRepository<BannedCustomer>().FindSpec(spec);
 
                 if (bannedCustomers == null)
-                    return NotFound();
+                    return NotFound(new ApiResponse(404));
 
                 return Ok(_mapper.Map<ReadBannedCustomerDto>(bannedCustomers));
             }
-            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
 
@@ -100,6 +107,10 @@ namespace API.Controllers
         public async Task<ActionResult<IReadOnlyList<ReadBannedCustomerDto>>> SearchByCriteria(string? EmpName = null, string? CustomerName = null)
         {
             var result = await _searchForBannedCustomerService.SearchForBannedCustomer(EmpName, CustomerName);
+            if (result == null || result.Count == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             return Ok(result);
         }
         #endregion
@@ -108,6 +119,9 @@ namespace API.Controllers
         [HttpPost("InsertBannedCustomer")]
         public async Task<ActionResult> InsertannedCustomerAsync(CreateBannedCustomerDto createBannedCustomerDto)
         {
+            var result = await _uof.GetRepository<Customer>().Exists(createBannedCustomerDto.CustomerId);
+            if (!result)
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
             var bannedCustomer = _mapper.Map<CreateBannedCustomerDto, BannedCustomer>(createBannedCustomerDto);
             _uof.GetRepository<BannedCustomer>().InsertAsync(bannedCustomer);
             await _uof.Commit();
@@ -122,6 +136,8 @@ namespace API.Controllers
         {
             var bannedCustomerSpec = new BannedCustomerWithEmployeeAndCustomerSpec(id);
             var bannedCustomer = _uof.GetRepository<BannedCustomer>().FindSpec(bannedCustomerSpec).Result;
+            if (bannedCustomer == null)
+                return NotFound(new ApiResponse(404));
             _uof.GetRepository<BannedCustomer>().DeleteAsync(bannedCustomer);
             await _uof.Commit();
             return Ok(AppMessages.DELETED);

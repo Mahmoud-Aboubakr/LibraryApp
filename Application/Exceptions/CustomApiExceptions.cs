@@ -23,7 +23,7 @@ namespace Application.Handlers
             if (exception is BadRequestException)
             {
                 error.StatusCode = (int)HttpStatusCode.BadRequest;
-                error.Message = $"{AppMessages.BAD_REQUEST}: {exception.Message}";
+                error.Message = $"{AppMessages.BAD_REQUEST}: {exception.StackTrace}";
             }
             else if (exception is DivideByZeroException)
             {
@@ -33,7 +33,7 @@ namespace Application.Handlers
             else if (exception is NotFoundException)
             {
                 error.StatusCode = (int)HttpStatusCode.NotFound;
-                error.Message = $"{AppMessages.NOT_FOUNT}: {exception.Message}";
+                error.Message = $"{AppMessages.NOT_FOUNT}: {exception.StackTrace}";
             }
             //Logs your technical exception with stack trace below
 

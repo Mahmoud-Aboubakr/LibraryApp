@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.IValidators;
+﻿using Application.Exceptions;
+using Application.Interfaces.IValidators;
 
 namespace Application.Validators
 {
@@ -6,12 +7,19 @@ namespace Application.Validators
     {
         public bool IsValidPhoneNumber(string phoneNumber)
         {
-            int number;
-            if (phoneNumber.Length != 11 || !phoneNumber.StartsWith("0") ||
-                !int.TryParse(phoneNumber, out number))
-                return false;
-            else
-                return true;
+            try
+            {
+                int number;
+                if (phoneNumber.Length != 11 || !phoneNumber.StartsWith("0") ||
+                    !int.TryParse(phoneNumber, out number))
+                    return false;
+                else
+                    return true;
+            }
+            catch(Exception ex)
+            {
+                throw new BadRequestException(ex.ToString());
+            }
         }
     }
 }
