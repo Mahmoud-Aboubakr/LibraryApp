@@ -1,6 +1,9 @@
 ﻿using Application.DTOs.Author;
+using Application.Exceptions;
+using Application.Handlers;
 using Application.Interfaces.IAppServices;
 using AutoMapper;
+using Domain.Constants;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
@@ -20,22 +23,30 @@ namespace Infrastructure.AppServices
 
         public async Task<IReadOnlyList<ReadAuthorDto>> SearchWithCriteria(string name = null, string phone = null)
         {
-            var query = _context.Set<Author>().AsQueryable();
+            try
+            {
+                var query = _context.Set<Author>().AsQueryable();
 
-            if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(phone))
-            {
-                query = query.Where(A => A.AuthorName.Contains(name) && A.AuthorPhoneNumber.Contains(phone));
+                if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(phone))
+                {
+                    query = query.Where(A => A.AuthorName.Contains(name) && A.AuthorPhoneNumber.Contains(phone));
+                }
+                else if (!string.IsNullOrEmpty(name))
+                {
+                    query = query.Where(t => t.AuthorName.Contains(name));
+                }
+                else if (!string.IsNullOrEmpty(phone))
+                {
+                    query = query.Where(t => t.AuthorPhoneNumber.Contains(phone));
+                }
+                var result = await query.ToListAsync();
+               
+                return _mapper.Map<IReadOnlyList<Author>, IReadOnlyList<ReadAuthorDto>>(result);
             }
-            else if (!string.IsNullOrEmpty(name))
+            catch(Exception ex)
             {
-                query = query.Where(t => t.AuthorName.Contains(name));
+                throw new NotFoundException(ex.Message);
             }
-            else if (!string.IsNullOrEmpty(phone))
-            {
-                query = query.Where(t => t.AuthorPhoneNumber.Contains(phone));
-            }
-            var result = await query.ToListAsync();
-            return _mapper.Map<IReadOnlyList<Author>, IReadOnlyList<ReadAuthorDto>>(result);
         }
     }
 
