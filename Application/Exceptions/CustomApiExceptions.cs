@@ -33,7 +33,7 @@ namespace Application.Handlers
             else if (exception is NotFoundException)
             {
                 error.StatusCode = (int)HttpStatusCode.NotFound;
-                error.Message = $"{AppMessages.NOT_FOUNT}: {exception.Message}";
+                error.Message = $"{AppMessages.NOT_FOUND}: {exception.Message}";
             }
             //Logs your technical exception with stack trace below
 
