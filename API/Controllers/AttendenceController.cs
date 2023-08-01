@@ -1,7 +1,9 @@
 ﻿using Application.DTOs.Attendance;
 using Application.DTOs.Book;
+using Application.Handlers;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
+using Application.Interfaces.IValidators;
 using Application.Validators;
 using AutoMapper;
 using Domain.Constants;
@@ -46,9 +48,14 @@ namespace API.Controllers
         [HttpGet("GetAllAttendenceWithDetails")]
         public async Task<ActionResult<Pagination<ReadAttendanceDto>>> GetAllAttendenceWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
+            if (pagesize <= 0 || pageindex <= 0)
+                return BadRequest(new ApiResponse(400));
+
             var spec = new AttendanceWithEmployeeSpec(pagesize, pageindex, isPagingEnabled);
 
             var totalAttendences = await _uof.GetRepository<Attendence>().CountAsync(spec);
+            if(totalAttendences == 0)
+                return NotFound(new ApiResponse(404));
 
             var attendences = await _uof.GetRepository<Attendence>().FindAllSpec(spec);
 
@@ -68,7 +75,7 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Attendence, ReadAttendanceDto>(attendences));
             }
 
-            return NotFound(new { Detail = AppMessages.INVALID_ID });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
         [HttpGet("GetAttendenceByIdWithDetailAsync")]
@@ -78,18 +85,24 @@ namespace API.Controllers
             {
                 var spec = new AttendanceWithEmployeeSpec(id);
                 var attendences = await _uof.GetRepository<Attendence>().FindSpec(spec);
+                if (attendences == null)
+                    return NotFound(new ApiResponse(404));
                 return Ok(_mapper.Map<Attendence, ReadAttendanceDto>(attendences));
             }
 
-            return NotFound(new { Detail = AppMessages.INVALID_ID });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
 
-        [HttpGet("SearchEmployeeWithCriteria")]
+        [HttpGet("SearchAttendenceWithCriteria")]
 
         public async Task<ActionResult<IReadOnlyList<ReadAttendanceDto>>> SearchEmpWithCriteria(string? empName = null)
         {
             var result = await _attendenceServices.SearchAttendenceDataWithDetail(empName);
+            if (result == null || result.Count == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             return Ok(result);
         }
 
@@ -100,12 +113,12 @@ namespace API.Controllers
         public async Task<ActionResult> InsertAttendenceAsync(CreateAttendenceDto attendenceDto)
         {
             if (!_attendenceServices.IsValidAttendencePermission(attendenceDto.Permission))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_PERMISSION} {attendenceDto.Permission}" });
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_PERMISSION));
             if (!_attendenceServices.IsValidPermission(attendenceDto.Permission))
                 attendenceDto.Permission = 2;
             var result = await _uof.GetRepository<Employee>().Exists(attendenceDto.EmpId);
             if (!result)
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_ID} {attendenceDto.EmpId}" });
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
             var attendences = _mapper.Map<CreateAttendenceDto, Attendence>(attendenceDto);
             _uof.GetRepository<Attendence>().InsertAsync(attendences);
             await _uof.Commit();
@@ -119,12 +132,12 @@ namespace API.Controllers
         public async Task<ActionResult> UpdateAttendenceAsync(ReadAttendanceDto attendenceDto)
         {
             if (!_attendenceServices.IsValidAttendencePermission(attendenceDto.Permission))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_PERMISSION} {attendenceDto.Permission}" });
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_PERMISSION));
             if (!_attendenceServices.IsValidPermission(attendenceDto.Permission))
                 attendenceDto.Permission = 2;
             var result = await _uof.GetRepository<Attendence>().Exists(attendenceDto.Id);
             if (!result)
-                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {attendenceDto.Id}" });
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
             var attendences = _mapper.Map<ReadAttendanceDto, Attendence>(attendenceDto);
             _uof.GetRepository<Attendence>().UpdateAsync(attendences);
             await _uof.Commit();
@@ -140,6 +153,8 @@ namespace API.Controllers
         {
             var attendenceSpec = new AttendanceWithEmployeeSpec(id);
             var attendence = _uof.GetRepository<Attendence>().FindSpec(attendenceSpec).Result;
+            if (attendence == null)
+                return NotFound(new ApiResponse(404));
             _uof.GetRepository<Attendence>().DeleteAsync(attendence);
             await _uof.Commit();
             return Ok(AppMessages.DELETED);

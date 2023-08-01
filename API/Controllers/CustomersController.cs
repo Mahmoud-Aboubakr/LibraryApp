@@ -1,18 +1,23 @@
 ﻿using Application.DTOs.Attendance;
 using Application.DTOs.Customer;
+using Application.Handlers;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
+using Application.Validators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
 using Infrastructure;
+using Infrastructure.AppServices;
 using Infrastructure.Specifications.AttendanceSpec;
 using Infrastructure.Specifications.BannedCustomerSpec;
 using Infrastructure.Specifications.BookSpec;
 using Infrastructure.Specifications.CustomerSpec;
+using Infrastructure.Specifications.EmployeeSpec;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Numerics;
 
 namespace API.Controllers
 {
@@ -44,9 +49,14 @@ namespace API.Controllers
         [HttpGet("GetAllCustomers")]
         public async Task<ActionResult<Pagination<ReadCustomerDto>>> GetAllCustomerAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
+            if (pagesize <= 0 || pageindex <= 0)
+                return BadRequest(new ApiResponse(400));
+
             var spec = new CustomerSpec(pagesize, pageindex, isPagingEnabled);
 
             var totalCustomers = await _uof.GetRepository<Customer>().CountAsync(spec);
+            if (totalCustomers == 0)
+                return NotFound(new ApiResponse(404));
 
             var customers = await _uof.GetRepository<Customer>().FindAllSpec(spec);
 
@@ -66,7 +76,7 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Customer, ReadCustomerDto>(author));
             }
 
-            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
 
@@ -74,6 +84,10 @@ namespace API.Controllers
         public async Task<ActionResult<IReadOnlyList<ReadCustomerDto>>> SearchWithCriteria(string? Name = null, string? PhoneNumber = null)
         {
             var result = await _searchCustomerService.SearchWithCriteria(Name, PhoneNumber);
+            if (result == null || result.Count == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             return Ok(result);
         }
         #endregion
@@ -92,7 +106,7 @@ namespace API.Controllers
             }
             else
             {
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {createCustomerDto.CustomerPhoneNumber}" });
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_PHONENUMBER));
             }
         }
         #endregion
@@ -101,18 +115,16 @@ namespace API.Controllers
         [HttpPut("UpdateCustomer")]
         public async Task<ActionResult> UpdateCustomerAsync(ReadCustomerDto readCustomerDto)
         {
-            if (_phoneNumberValidator.IsValidPhoneNumber(readCustomerDto.CustomerPhoneNumber))
-            {
-                var customer = _mapper.Map<ReadCustomerDto, Customer>(readCustomerDto);
-                _uof.GetRepository<Customer>().UpdateAsync(customer);
-                await _uof.Commit();
+            var result = await _uof.GetRepository<Customer>().Exists(readCustomerDto.Id);
+            if (!result)
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
+            if (!_phoneNumberValidator.IsValidPhoneNumber(readCustomerDto.CustomerPhoneNumber))
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_PHONENUMBER));
+            var customer = _mapper.Map<ReadCustomerDto, Customer>(readCustomerDto);
+            _uof.GetRepository<Customer>().UpdateAsync(customer);
+            await _uof.Commit();
 
-                return Ok(AppMessages.UPDATED);
-            }
-            else
-            {
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {readCustomerDto.CustomerPhoneNumber}" });
-            }
+            return Ok(AppMessages.UPDATED);
         }
         #endregion
 
@@ -123,10 +135,12 @@ namespace API.Controllers
             var bannedCustomerSpec = new BannedCustomerWithEmployeeAndCustomerSpec(null, id);
             var result = _uof.GetRepository<BannedCustomer>().FindAllSpec(bannedCustomerSpec).Result;
             if (result.Count() > 0)
-                return BadRequest(AppMessages.FAILED_DELETE);
+                return BadRequest(new ApiResponse(400, AppMessages.FAILED_DELETE));
             else
             {
                 var customerSpec = new CustomerSpec(id);
+                if (customerSpec == null)
+                    return NotFound(new ApiResponse(404));
                 var customer = _uof.GetRepository<Customer>().FindSpec(customerSpec).Result;
                 _uof.GetRepository<Customer>().DeleteAsync(customer);
                 await _uof.Commit();

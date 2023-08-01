@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Employee;
 using Application.DTOs.Publisher;
+using Application.Handlers;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
@@ -49,9 +50,14 @@ namespace API.Controllers
         [HttpGet("GetAllEmployees")]
         public async Task<ActionResult<IReadOnlyList<ReadEmployeeDto>>> GetAllEmployeesAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
+            if (pagesize <= 0 || pageindex <= 0)
+                return BadRequest(new ApiResponse(400));
+
             var spec = new EmployeeSpec(pagesize, pageindex, isPagingEnabled);
 
             var totalEmployees = await _uof.GetRepository<Employee>().CountAsync(spec);
+            if(totalEmployees == 0)
+                return NotFound(new ApiResponse(404));
 
             var employees = await _uof.GetRepository<Employee>().FindAllSpec(spec);
 
@@ -72,7 +78,7 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Employee, ReadEmployeeDto>(employee));
             }
 
-            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
 
@@ -80,6 +86,10 @@ namespace API.Controllers
         public async Task<ActionResult<IReadOnlyList<ReadEmployeeDto>>> SearchWithCriteria(string name = null, byte? type = null, string phone = null, decimal? salary = null)
         {
             var result = await _employeeServices.SearchEmployeeDataWithDetail(name, type, phone, salary);
+            if (result == null || result.Count == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             return Ok(result);
         }
         #endregion
@@ -89,11 +99,11 @@ namespace API.Controllers
         public async Task<ActionResult> InsertEmployeeAsync(CreateEmployeeDto employeeDto)
         {
             if (!_employeeServices.IsValidEmployeeType(employeeDto.EmpType))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_EMPTYPE} {employeeDto.EmpType}" });
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_EMPTYPE));
             if (!_employeeServices.IsValidEmployeeAge(employeeDto.EmpAge))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_AGE} {employeeDto.EmpAge}" });
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_AGE));
             if (!_phoneNumberValidator.IsValidPhoneNumber(employeeDto.EmpPhoneNumber))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {employeeDto.EmpPhoneNumber}" });
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_PHONENUMBER));
             var employee = _mapper.Map<CreateEmployeeDto, Employee>(employeeDto);
             _uof.GetRepository<Employee>().InsertAsync(employee);
             await _uof.Commit();
@@ -108,13 +118,13 @@ namespace API.Controllers
         {
             var result = await _uof.GetRepository<Employee>().Exists(employeeDto.Id);
             if (!result)
-                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {employeeDto.Id}" });
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
             if (!_employeeServices.IsValidEmployeeType(employeeDto.EmpType))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_EMPTYPE} {employeeDto.EmpType}" });
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_EMPTYPE));
             if (!_employeeServices.IsValidEmployeeAge(employeeDto.EmpAge))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_AGE} {employeeDto.EmpAge}" });
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_AGE));
             if (!_phoneNumberValidator.IsValidPhoneNumber(employeeDto.EmpPhoneNumber))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {employeeDto.EmpPhoneNumber}" });
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_PHONENUMBER));
             var employee = _mapper.Map<ReadEmployeeDto, Employee>(employeeDto);
             _uof.GetRepository<Employee>().UpdateAsync(employee);
             await _uof.Commit();
@@ -129,7 +139,7 @@ namespace API.Controllers
         {
             var attendanceSpec = new AttendanceWithEmployeeSpec(null, id);
             var UsedInAttendance = _uof.GetRepository<Attendence>().FindAllSpec(attendanceSpec).Result;
-
+            
             var payrollSpec = new PayrollWithEmployeeSpec(null, id);
             var UsedInPayroll = _uof.GetRepository<Payroll>().FindAllSpec(payrollSpec).Result;
 
@@ -138,12 +148,14 @@ namespace API.Controllers
 
             if (UsedInAttendance.Count() > 0 || UsedInPayroll.Count() > 0 || UsedInVacation.Count() > 0)
             {
-                return BadRequest(new { Detail = AppMessages.FAILED_DELETE});
+                return BadRequest(new ApiResponse(400, AppMessages.FAILED_DELETE));
             }
             else
             {
                 var employeeSpec = new EmployeeSpec(id);
                 var employee = _uof.GetRepository<Employee>().FindSpec(employeeSpec).Result;
+                if (employee == null)
+                    return NotFound(new ApiResponse(404));
                 _uof.GetRepository<Employee>().DeleteAsync(employee);
                 await _uof.Commit();
                 return Ok(AppMessages.DELETED);
@@ -156,7 +168,7 @@ namespace API.Controllers
             var result = await _uof.GetRepository<Employee>().Exists(id);
             if (!result)
             {
-                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
             }
             var employee = await _uof.GetRepository<Employee>().GetByIdAsync(id);
             _uof.GetRepository<Employee>().DeleteAsync(employee);
