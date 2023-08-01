@@ -31,9 +31,10 @@ namespace Domain.Constants
         public const string FAILED_RETURN = "You Can't Return This Order";
         public const string RETURNED = "Returned Successfully";
         public const string INTERNAL_SERVER = "Internal Server Error";
-        public const string NOT_FOUNT = "Not Found";
+        public const string NOT_FOUND = "Not Found";
         public const string BAD_REQUEST = "Bad Request";
         public const string UNAUTHORIZED = "Unauthorized";
         public const string NOTACCEPTABLE = "Not Accepted Input";
+        public const string INAVIL_PAGING = "Inavild Page Size and Page Index";
     }
 }

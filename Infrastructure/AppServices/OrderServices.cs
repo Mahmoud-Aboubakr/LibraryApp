@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.BookOrderDetails;
 using Application.DTOs.Order;
+using Application.Exceptions;
 using Application.Interfaces.IAppServices;
 using AutoMapper;
 using Domain.Entities;
@@ -29,58 +30,72 @@ namespace Infrastructure.AppServices
         #region get services
         public async Task<IReadOnlyList<ReadBookOrderDetailsDto>> SearchBookOrderDetails(int? orderId = null, string customerName = null, string bookTitle = null)
         {
-            var query = _context.BookOrderDetails.Include(b => b.Order.Customer).Include(b => b.Book).AsQueryable();
-
-            if (orderId.HasValue)
+            try
             {
-                query = query.Where(b => b.OrderId == orderId.Value);
-            }
+                var query = _context.BookOrderDetails.Include(b => b.Order.Customer).Include(b => b.Book).AsQueryable();
 
-            if (!string.IsNullOrEmpty(customerName))
+                if (orderId.HasValue)
+                {
+                    query = query.Where(b => b.OrderId == orderId.Value);
+                }
+
+                if (!string.IsNullOrEmpty(customerName))
+                {
+                    query = query.Where(b => b.Order.Customer.CustomerName.Contains(customerName));
+                }
+
+                if (!string.IsNullOrEmpty(bookTitle))
+                {
+                    query = query.Where(b => b.Book.BookTitle.Contains(bookTitle));
+                }
+
+                var result = await query.ToListAsync();
+                return _mapper.Map<IReadOnlyList<BookOrderDetails>, IReadOnlyList<ReadBookOrderDetailsDto>>(result);
+            }
+            catch (Exception ex)
             {
-                query = query.Where(b => b.Order.Customer.CustomerName.Contains(customerName));
+                throw new BadRequestException(ex.Message);
             }
-
-            if (!string.IsNullOrEmpty(bookTitle))
-            {
-                query = query.Where(b => b.Book.BookTitle.Contains(bookTitle));
-            }
-
-            var result = await query.ToListAsync();
-            return _mapper.Map<IReadOnlyList<BookOrderDetails>, IReadOnlyList<ReadBookOrderDetailsDto>>(result);
         }
 
         public async Task<IReadOnlyList<ReadOrderDto>> SearchOrders(int? orderId = null, int? customerId = null, string customerName = null, decimal? totalPrice = null, DateTime? date = null)
         {
-            var query = _context.Orders.Include(b => b.Customer).AsQueryable();
-
-            if (orderId.HasValue)
+            try
             {
-                query = query.Where(b => b.Id == orderId.Value);
-            }
+                var query = _context.Orders.Include(b => b.Customer).AsQueryable();
 
-            if (customerId.HasValue)
+                if (orderId.HasValue)
+                {
+                    query = query.Where(b => b.Id == orderId.Value);
+                }
+
+                if (customerId.HasValue)
+                {
+                    query = query.Where(b => b.CustomerId == customerId.Value);
+                }
+
+                if (!string.IsNullOrEmpty(customerName))
+                {
+                    query = query.Where(b => b.Customer.CustomerName.Contains(customerName));
+                }
+
+                if (totalPrice.HasValue)
+                {
+                    query = query.Where(b => b.TotalPrice >= totalPrice);
+                }
+
+                if (date.HasValue)
+                {
+                    query = query.Where(b => b.OrderDate.Date >= date.Value.Date);
+                }
+
+                var result = await query.ToListAsync();
+                return _mapper.Map<IReadOnlyList<Order>, IReadOnlyList<ReadOrderDto>>(result);
+            }
+            catch (Exception ex)
             {
-                query = query.Where(b => b.CustomerId == customerId.Value);
+                throw new BadRequestException(ex.Message);
             }
-
-            if (!string.IsNullOrEmpty(customerName))
-            {
-                query = query.Where(b => b.Customer.CustomerName.Contains(customerName));
-            }
-
-            if (totalPrice.HasValue)
-            {
-                query = query.Where(b => b.TotalPrice >= totalPrice);
-            }
-
-            if (date.HasValue)
-            {
-                query = query.Where(b => b.OrderDate.Date >= date.Value.Date);
-            }
-
-            var result = await query.ToListAsync();
-            return _mapper.Map<IReadOnlyList<Order>, IReadOnlyList<ReadOrderDto>>(result);
         }
         #endregion
 

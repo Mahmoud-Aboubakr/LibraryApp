@@ -19,7 +19,7 @@ namespace Application.Handlers
             {
                 400 => AppMessages.BAD_REQUEST,
                 401 => AppMessages.UNAUTHORIZED,
-                404 => AppMessages.NOT_FOUNT,
+                404 => AppMessages.NOT_FOUND,
                 500 => AppMessages.INTERNAL_SERVER,
                 201 => AppMessages.INSERTED,
                 _ => null
