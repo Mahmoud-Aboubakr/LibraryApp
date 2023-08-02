@@ -72,6 +72,7 @@ namespace API.Middlewares
             var exceptionResult = JsonSerializer.Serialize(new
             {
                 //StatusCode = context.Response.StatusCode,
+                status,
                 error = message,
                 stackTrace
             });
