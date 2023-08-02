@@ -1,16 +1,19 @@
 using API.Extensions;
+using API.Middlewares;
 using Application.Handlers;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using Persistence.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-// Add services to the container.
-builder.Services.AddControllers(o => o.Filters.Add(new CustomApiExceptions()))
+
+builder.Services.AddControllers()
     .AddJsonOptions(opt =>
         opt.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull);
 
+
 builder.Services.AppServices(builder.Configuration);
+builder.Services.IdentityService(builder.Configuration);
 //AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var app = builder.Build();
 // Configure the HTTP request pipeline.
@@ -20,9 +23,10 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
-//app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
+app.UseMiddleware(typeof(ExceptionHandlerMiddleware));
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
     

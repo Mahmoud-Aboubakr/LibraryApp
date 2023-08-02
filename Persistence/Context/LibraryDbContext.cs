@@ -1,10 +1,12 @@
 ﻿using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace Persistence.Context
 {
-    public class LibraryDbContext : DbContext
+    public class LibraryDbContext : IdentityDbContext<IdentityUser>
     {
         public LibraryDbContext(DbContextOptions<LibraryDbContext> options) : base(options)
         {

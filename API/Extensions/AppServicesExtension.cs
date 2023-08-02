@@ -3,6 +3,7 @@ using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
 using Application.Validators;
 using Infrastructure.AppServices;
+using Infrastructure.IdentityServices;
 using Infrastructure.Specifications;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
@@ -39,7 +40,7 @@ namespace API.Extensions
             services.AddScoped<IAttendenceServices, AttendenceServices>();
             services.AddTransient<IPayrollServices, PayrollServices>();
             services.AddTransient<IVacationServices, VacationServices>();
-            services.AddTransient<IReturnedOrderServices,  ReturnedOrderServices>();
+            services.AddTransient<IReturnedOrderServices,  ReturnedOrderServices>();           
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             return services;

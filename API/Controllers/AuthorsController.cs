@@ -8,8 +8,11 @@ using Application.Interfaces.IValidators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
+using Domain.Entities.Identity;
 using Infrastructure;
 using Infrastructure.Specifications.BookSpec;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -17,6 +20,8 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Roles = "Manager")]
     public class AuthorsController : ControllerBase
     {
         private readonly IUnitOfWork _uof;
@@ -37,7 +42,7 @@ namespace API.Controllers
             _searchAuthorDataService = searchAuthorDataService;
             _logger = logger;
         }
-
+        
         #region GET
         [HttpGet("GetAllAuthors")]
         public async Task<ActionResult<Pagination<ReadAuthorDto>>> GetAllAuthorsAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
