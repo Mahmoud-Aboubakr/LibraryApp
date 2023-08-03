@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,7 @@ using System.Reflection;
 
 namespace Persistence.Context
 {
-    public class LibraryDbContext : IdentityDbContext<IdentityUser>
+    public class LibraryDbContext : IdentityDbContext<ApplicationUser>
     {
         public LibraryDbContext(DbContextOptions<LibraryDbContext> options) : base(options)
         {

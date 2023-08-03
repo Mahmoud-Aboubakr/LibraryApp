@@ -1,0 +1,10 @@
+[
+    {
+        "UserName": "Rawan",
+        "Email": "Rawan@gmail.com",
+        "EmailConfirmed": true,
+        "PhoneNumber": "01013451622",
+        "PhoneNumberConfirmed": true,
+        "PasswordHash": "Rawan#111"
+    }
+]

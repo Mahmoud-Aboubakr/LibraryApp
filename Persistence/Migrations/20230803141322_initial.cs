@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Persistence.Migrations
 {
-    public partial class init : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -237,7 +237,7 @@ namespace Persistence.Migrations
                     OrderId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 2, 11, 14, 38, 926, DateTimeKind.Local).AddTicks(6046)),
+                    OrderDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 3, 17, 13, 22, 47, DateTimeKind.Local).AddTicks(6238)),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,3)", nullable: false),
                     DeviceName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
@@ -261,7 +261,7 @@ namespace Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OriginOrderId = table.Column<int>(type: "int", nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
-                    ReturnDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 2, 11, 14, 38, 927, DateTimeKind.Local).AddTicks(3581)),
+                    ReturnDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 3, 17, 13, 22, 48, DateTimeKind.Local).AddTicks(1793)),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,3)", nullable: false),
                     DeviceName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
@@ -284,10 +284,10 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmpId = table.Column<int>(type: "int", nullable: false),
-                    EmpArrivalTime = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 2, 11, 14, 38, 924, DateTimeKind.Local).AddTicks(7104)),
-                    EmpLeavingTime = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 2, 11, 14, 38, 924, DateTimeKind.Local).AddTicks(7942)),
+                    EmpArrivalTime = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 3, 17, 13, 22, 46, DateTimeKind.Local).AddTicks(2785)),
+                    EmpLeavingTime = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 3, 17, 13, 22, 46, DateTimeKind.Local).AddTicks(3164)),
                     Permission = table.Column<int>(type: "int", nullable: false),
-                    DayDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 2, 11, 14, 38, 924, DateTimeKind.Local).AddTicks(8393)),
+                    DayDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 3, 17, 13, 22, 46, DateTimeKind.Local).AddTicks(3396)),
                     Month = table.Column<int>(type: "int", nullable: false, computedColumnSql: "MONTH(DayDate)"),
                     DeviceName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
@@ -310,7 +310,7 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
-                    BanDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValue: new DateTime(2023, 8, 2, 11, 14, 38, 925, DateTimeKind.Local).AddTicks(4612)),
+                    BanDate = table.Column<DateTime>(type: "datetime", nullable: true, defaultValue: new DateTime(2023, 8, 3, 17, 13, 22, 46, DateTimeKind.Local).AddTicks(7932)),
                     EmpId = table.Column<int>(type: "int", nullable: false),
                     DeviceName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
@@ -339,7 +339,7 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmpId = table.Column<int>(type: "int", nullable: false),
-                    SalaryDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 2, 11, 14, 38, 927, DateTimeKind.Local).AddTicks(1384)),
+                    SalaryDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 3, 17, 13, 22, 48, DateTimeKind.Local).AddTicks(454)),
                     BasicSalary = table.Column<decimal>(type: "decimal(18,3)", nullable: false, defaultValue: 0m),
                     Bonus = table.Column<decimal>(type: "decimal(18,3)", nullable: false, defaultValue: 0m),
                     Deduct = table.Column<decimal>(type: "decimal(18,3)", nullable: false, defaultValue: 0m),
@@ -365,7 +365,7 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmpId = table.Column<int>(type: "int", nullable: false),
-                    DayDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 2, 11, 14, 38, 927, DateTimeKind.Local).AddTicks(8805)),
+                    DayDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 3, 17, 13, 22, 48, DateTimeKind.Local).AddTicks(6195)),
                     NormalVacation = table.Column<bool>(type: "bit", nullable: true),
                     UrgentVacation = table.Column<bool>(type: "bit", nullable: true),
                     Absence = table.Column<bool>(type: "bit", nullable: true),
@@ -453,8 +453,8 @@ namespace Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     BookId = table.Column<int>(type: "int", nullable: false),
-                    BorrowDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 2, 11, 14, 38, 926, DateTimeKind.Local).AddTicks(1424)),
-                    ReturnDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 5, 11, 14, 38, 926, DateTimeKind.Local).AddTicks(1842)),
+                    BorrowDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 3, 17, 13, 22, 47, DateTimeKind.Local).AddTicks(2749)),
+                    ReturnDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValue: new DateTime(2023, 8, 6, 17, 13, 22, 47, DateTimeKind.Local).AddTicks(3113)),
                     DeviceName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     UpdatedDate = table.Column<DateTime>(type: "datetime", nullable: true)
