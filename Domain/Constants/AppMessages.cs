@@ -40,5 +40,11 @@ namespace Domain.Constants
         public const string INVALID_PAYLOAD = "Invalid Payload";
         public const string INVALID_CREDIENTIALS = "This is Invaild Credientials";
         public const string INVALID_LOGIN = "There is no existing email, sign up first";
+        public const string REGISTERED_EMAIL = "Email is already registered!";
+        public const string REGESTERED_USER = "Username is already registered!";
+        public const string INCORRECT_CREDIENTIALS = "Email or Password is incorrect!";
+        public const string INVALID_IDorRole = "Invalid user ID or Role";
+        public const string ASSIGNED_ROLE = "User already assigned to this role";
+        public const string WRONG = "Something went wrong";
     }
 }

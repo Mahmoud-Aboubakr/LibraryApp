@@ -1,4 +1,9 @@
 ﻿using Domain.Entities;
+using Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using NPoco.fastJSON;
 using Persistence.Context;
 using System.Text.Json;
 
@@ -9,6 +14,29 @@ namespace Persistence.Data
         public static async Task SeedAsync(LibraryDbContext context)
         {
             #region Phase 1 to run
+            if (!context.Roles.Any())
+            {
+                var rolesData = File.ReadAllText("../Persistence/DataSeeding/Roles.json");
+                var roles = JsonSerializer.Deserialize<List<AspNetRole>>(rolesData);
+                context.Roles.AddRange(roles);
+            }
+
+            if (context.ChangeTracker.HasChanges())
+                await context.SaveChangesAsync();
+
+            //if (!context.Users.Any())
+            //{
+            //    var usersData = File.ReadAllText("../Persistence/DataSeeding/Users.json");
+            //    var users = JsonSerializer.Deserialize<List<ApplicationUser>>(usersData);
+            //    context.Users.AddRange(users);
+            //}
+
+            //if (context.ChangeTracker.HasChanges())
+            //    await context.SaveChangesAsync();
+
+            #endregion
+
+            #region Phase 2 to run
             if (!context.Authors.Any())
             {
                 var authorsData = File.ReadAllText("../Persistence/DataSeeding/Authors.json");
@@ -41,7 +69,7 @@ namespace Persistence.Data
                 await context.SaveChangesAsync();
             #endregion
 
-            #region Phase 2 to run
+            #region Phase 3 to run
             if (!context.Books.Any())
             {
                 var booksData = File.ReadAllText("../Persistence/DataSeeding/Books.json");
@@ -95,7 +123,7 @@ namespace Persistence.Data
                 await context.SaveChangesAsync();
             #endregion
 
-            #region Phase 3 to run
+            #region Phase 4 to run
             if (!context.BookOrderDetails.Any())
             {
                 var bookOrderData = File.ReadAllText("../Persistence/DataSeeding/BookOrderDetails.json");
@@ -114,7 +142,7 @@ namespace Persistence.Data
                 await context.SaveChangesAsync();
             #endregion
 
-            #region Phase 4 to run
+            #region Phase 5 to run
             if (!context.ReturnOrderDetails.Any())
             {
                 var ReturnOrderDetailsData = File.ReadAllText("../Persistence/DataSeeding/ReturnOrderDetails.json");
@@ -125,6 +153,22 @@ namespace Persistence.Data
             if (context.ChangeTracker.HasChanges())
                 await context.SaveChangesAsync();
             #endregion
+        }
+
+        public static async Task SeedUser(LibraryDbContext context, UserManager<ApplicationUser> _userManager)
+        {
+            if (!context.Users.Any())
+            {
+                var usersData = File.ReadAllText("../Persistence/DataSeeding/users.json");
+                var users = JsonSerializer.Deserialize<List<ApplicationUser>>(usersData);
+                context.Users.AddRange(users);
+            }
+
+            if (context.ChangeTracker.HasChanges())
+                await context.SaveChangesAsync();
+
+            var user = context.Users.FirstOrDefault(u => u.UserName == "Rawan");
+            await _userManager.AddToRoleAsync(user, "Manager");
         }
     }
 }

@@ -20,8 +20,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Authorize(Roles = "Manager")]
+    [Authorize]
     public class AuthorsController : ControllerBase
     {
         private readonly IUnitOfWork _uof;

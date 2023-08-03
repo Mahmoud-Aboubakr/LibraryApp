@@ -1,6 +1,8 @@
 using API.Extensions;
 using API.Middlewares;
 using Application.Handlers;
+using Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using Persistence.Data;
@@ -34,6 +36,7 @@ using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 var context = services.GetRequiredService<LibraryDbContext>();
 var logger = services.GetRequiredService<ILogger<Program>>();
+var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 try
 {
     var path = Path.Combine(Directory.GetCurrentDirectory(), "Utilities\\Logs");
@@ -42,6 +45,7 @@ try
     loggerFactory.AddFile(tracePath);
     await context.Database.MigrateAsync();
     await LibraryDbContextSeed.SeedAsync(context);
+    await LibraryDbContextSeed.SeedUser(context, userManager);
 }
 catch (Exception ex)
 {
