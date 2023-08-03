@@ -1,0 +1,11 @@
+[
+    {
+        "UserName": "Manager",
+        "NormalizedUserName": "MANAGER",
+        "Email": "manager@gmail.com",
+        "EmailConfirmed": true,
+        "PasswordHash": "Manager#111",
+        "PhoneNumber": "01204384772",
+        "PhoneNumberConfirmed": true
+    }
+]

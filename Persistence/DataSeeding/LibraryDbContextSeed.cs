@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Entities.Identity;
 using Persistence.Context;
 using System.Text.Json;
 
@@ -124,6 +125,40 @@ namespace Persistence.Data
 
             if (context.ChangeTracker.HasChanges())
                 await context.SaveChangesAsync();
+            #endregion
+
+            #region Phase 5 to run
+            if (!context.Roles.Any())
+            {
+                var RolesData = File.ReadAllText("../Persistence/DataSeeding/AspNetRoles.json");
+                var Roles = JsonSerializer.Deserialize<List<Roles>>(RolesData);
+                context.Roles.AddRange(Roles);
+            }
+
+            if (context.ChangeTracker.HasChanges())
+                await context.SaveChangesAsync();
+
+            if (!context.Users.Any())
+            {
+                var UsersData = File.ReadAllText("../Persistence/DataSeeding/AspNetUsers.json");
+                var Users = JsonSerializer.Deserialize<List<Users>>(UsersData);
+                context.Users.AddRange(Users);
+            }
+
+            if (context.ChangeTracker.HasChanges())
+                await context.SaveChangesAsync();
+
+
+            //if (!context.UserRoles.Any())
+            //{
+            //    var UserRolesData = File.ReadAllText("../Persistence/DataSeeding/AspNetUserRoles.json");
+            //    var UserRoles = JsonSerializer.Deserialize<List<UserRoles>>(UserRolesData);
+            //    context.UserRoles.AddRange(UserRoles);
+            //}
+
+            //if (context.ChangeTracker.HasChanges())
+            //    await context.SaveChangesAsync();
+
             #endregion
         }
     }

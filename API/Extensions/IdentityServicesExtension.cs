@@ -11,7 +11,7 @@ namespace API.Extensions
     public static class IdentityServicesExtension
     {
         public static IServiceCollection IdentityService(this IServiceCollection services, IConfiguration config)
-        {
+        {     
             services.AddIdentity<IdentityUser, IdentityRole>()
                            .AddEntityFrameworkStores<LibraryDbContext>()
                            .AddDefaultTokenProviders();
@@ -22,16 +22,17 @@ namespace API.Extensions
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                //options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
-                options.SaveToken = true;
+                options.SaveToken = false;
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
+                    ValidateLifetime=true,
                     ValidAudience = config["Token:Audience"],
                     ValidIssuer = config["Token:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"]))

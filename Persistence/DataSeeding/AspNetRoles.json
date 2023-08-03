@@ -1,0 +1,18 @@
+[
+    {
+        "Name": "Manager",
+        "NormalizedName": "MANAGER"
+    },
+    {
+        "Name": "Librarian",
+        "NormalizedName": "LIBRARIAN"
+    },
+    {
+        "Name": "HR",
+        "NormalizedName": "HR"
+    },
+    {
+        "Name": "User",
+        "NormalizedName": "User"
+    }
+]

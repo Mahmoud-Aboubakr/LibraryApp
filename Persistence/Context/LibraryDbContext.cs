@@ -32,5 +32,6 @@ namespace Persistence.Context
         public DbSet<BookOrderDetails> BookOrderDetails { get; set; }
         public DbSet<ReturnedOrder> ReturnedOrders { get; set; }
         public DbSet<ReturnOrderDetails> ReturnOrderDetails { get; set; }
+
     }
 }

@@ -5,6 +5,7 @@ using Application.Interfaces.IIdentityService;
 using Domain.Constants;
 using Domain.Entities.Identity;
 using Infrastructure.IdentityServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -31,64 +32,47 @@ namespace API.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto registerDto , string role)
+        public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
-            if (ModelState.IsValid)
-            {
-                var user_exist = await _userManager.FindByEmailAsync(registerDto.Email);
-                if (user_exist != null)
-                {
-                    throw new BadHttpRequestException(AppMessages.EXISTING_EMAIL);
-                }
-                var new_user = new IdentityUser()
-                {
-                    Email = registerDto.Email,
-                    UserName = registerDto.Username,
-                    PhoneNumber = registerDto.PhoneNumber,
-                    EmailConfirmed = registerDto.EmailConfirmed,
-                    PhoneNumberConfirmed = registerDto.PhoneNumberConfirmed,
-                };
-                var is_created = await _userManager.CreateAsync(new_user, registerDto.Password);
-                if (is_created.Succeeded)
-                {
-                    if (!await _roleManager.RoleExistsAsync(role))
-                        await _roleManager.CreateAsync(new IdentityRole(role));
-                    else
-                        await _userManager.AddToRoleAsync(new_user, role);
-                    var token = _authenticateServices.CreateToken(new_user);
-                    return Ok(new AuthResult()
-                    {
-                        Result = true,
-                        Token = token
-                    });
-                }
-                 throw new BadRequestException(AppMessages.BAD_REQUEST);
-            }
-            throw new BadRequestException(AppMessages.BAD_REQUEST);
+            if (!ModelState.IsValid)
+                throw new BadRequestException(AppMessages.BAD_REQUEST);
+
+            var result = await _authenticateServices.RegisterAsync(registerDto);
+
+            if (!result.IsAuthenticated)
+                throw new BadRequestException(result.Message);
+
+            return Ok(result);
         }
 
 
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            if (ModelState.IsValid)
-            {
-                var existing_user = await _userManager.FindByEmailAsync(loginDto.Email);
-                if (existing_user == null)
-                    throw new NotFoundException(AppMessages.INVALID_LOGIN);
-                var isCorrect = await _userManager.CheckPasswordAsync(existing_user, loginDto.Password);
-                if (!isCorrect)
-                    throw new BadRequestException(AppMessages.INVALID_PAYLOAD);
-                var jwtToken = _authenticateServices.CreateToken(existing_user);
-                return Ok(new AuthResult()
-                {
-                    Token = jwtToken,
-                    Result = true
-                });
-            }
+            if (!ModelState.IsValid)
+                throw new BadRequestException(AppMessages.BAD_REQUEST);
 
-            throw new BadRequestException(AppMessages.INVALID_PAYLOAD);
+            var result = await _authenticateServices.LoginAsync(loginDto);
 
+            if(!result.IsAuthenticated)
+                throw new BadRequestException(result.Message);
+
+            return Ok(result);
+
+        }
+        [Authorize(Roles ="Manager")]
+        [HttpPost("addrole")]
+        public async Task<IActionResult> AddRoleAsync([FromBody] RoleDto roleDto)
+        {
+            if (!ModelState.IsValid)
+                throw new BadRequestException(AppMessages.BAD_REQUEST);
+
+            var result = await _authenticateServices.AddRoleAsync(roleDto);
+
+            if (!string.IsNullOrEmpty(result))
+                throw new BadRequestException(result);
+
+            return Ok(roleDto);
         }
     }
 }

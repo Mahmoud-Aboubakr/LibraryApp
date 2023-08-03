@@ -21,7 +21,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Librarian")]
     public class AuthorsController : ControllerBase
     {
         private readonly IUnitOfWork _uof;
