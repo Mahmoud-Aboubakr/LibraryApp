@@ -1,4 +1,5 @@
-﻿using Application.Exceptions;
+﻿using Application.DTOs.Identity;
+using Application.Exceptions;
 using Application.Interfaces.IIdentityService;
 using AutoMapper;
 using Domain.Constants;
@@ -20,13 +21,19 @@ namespace Infrastructure.IdentityServices
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
         private readonly IMapper _mapper;
         private readonly JWT _jwt;
 
-        public AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IOptions<JWT> jwt)
+        public AuthService(UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IPasswordHasher<ApplicationUser> passwordHasher,
+            IMapper mapper,
+            IOptions<JWT> jwt)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _passwordHasher = passwordHasher;
             _mapper = mapper;
             _jwt = jwt.Value;
         }
@@ -140,5 +147,101 @@ namespace Infrastructure.IdentityServices
             return jwtSecurityToken;
         }
 
+        public async Task<List<RegisterDataDto>> GetAllRegisterDataAsync()
+        {
+            var users = _userManager.Users.ToList();
+
+            var registerDataList = new List<RegisterDataDto>();
+
+            foreach (var user in users)
+            {
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                var registerData = new RegisterDataDto
+                {
+                    Id = user.Id,
+                    Username = user.UserName,
+                    Email = user.Email,
+                    Password = user.PasswordHash,
+                    PhoneNumber = user.PhoneNumber,
+                    Roles = userRoles.ToList()
+                };
+
+                registerDataList.Add(registerData);
+            }
+
+            return registerDataList;
+        }
+
+        public async Task<RegisterDataDto> GetRegisterDataByEmailAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+                throw new BadRequestException(AppMessages.INVALID_EMAIL);
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var registerData = new RegisterDataDto
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Email = user.Email,
+                Password = user.PasswordHash,
+                PhoneNumber = user.PhoneNumber,
+                Roles = userRoles.ToList()
+            };
+
+            return registerData;
+        }
+
+        public async Task<UpdateRegisterDataDto> UpdateUserRegisterDataByEmailAsync(string email, UpdateRegisterDataDto updatedData)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+                throw new BadRequestException(AppMessages.INVALID_EMAIL);
+
+            user.UserName = updatedData.Username;
+            user.Email = updatedData.Email;
+            user.PasswordHash = _passwordHasher.HashPassword(user, updatedData.Password);
+            user.PhoneNumber = updatedData.PhoneNumber;
+
+            var result = await _userManager.UpdateAsync(user);
+            
+
+            if (!result.Succeeded)
+                throw new BadRequestException();
+ 
+            if (updatedData.Roles != null && updatedData.Roles.Count > 0)
+            {
+                var existingRoles = await _userManager.GetRolesAsync(user);
+                var rolesToRemove = existingRoles.Except(updatedData.Roles);
+                var rolesToAdd = updatedData.Roles.Except(existingRoles);
+
+                await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+                await _userManager.AddToRolesAsync(user, rolesToAdd);
+            }
+
+            return updatedData;
+        }
+        
+        public async Task<bool> DeleteUserDataByEmailAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+                throw new BadRequestException(AppMessages.INVALID_EMAIL);
+
+            var result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+                throw new BadRequestException();
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, userRoles);
+
+            return true;
+        }
     }
 }
