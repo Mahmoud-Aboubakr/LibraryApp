@@ -7,7 +7,7 @@ using Application.Interfaces.IValidators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
-using Infrastructure;
+using Application;
 using Infrastructure.Specifications.BookSpec;
 using Infrastructure.Specifications.PublisherSpec;
 using Microsoft.AspNetCore.Mvc;

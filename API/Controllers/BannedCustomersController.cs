@@ -7,7 +7,7 @@ using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
 using Infrastructure.Specifications.AttendanceSpec;
-using Infrastructure;
+using Application;
 using Infrastructure.Specifications.BannedCustomerSpec;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

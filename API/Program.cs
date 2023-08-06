@@ -1,6 +1,5 @@
 using API.Extensions;
 using API.Middlewares;
-using Application.Handlers;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +44,7 @@ try
     loggerFactory.AddFile(tracePath);
     await context.Database.MigrateAsync();
     await LibraryDbContextSeed.SeedAsync(context);
-    await LibraryDbContextSeed.SeedUser(context, userManager);
+    await LibraryDbContextSeed.SeedDemoUserAndRoles(context, userManager);
 }
 catch (Exception ex)
 {

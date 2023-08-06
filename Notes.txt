@@ -40,3 +40,11 @@
     When absence equal true -----> one day absence ==> two days deduct 
 (11)add bonus : 
     extra 1 hour after ending shift -----> 2 hours bonus
+(12)User name : string
+	Password  : String@1
+	Email     : user@example.com
+
+=> in AuthController make GetAllUserRegisterData for admin
+   in AuthController make GetUserRegisterDataByEmail for admin
+   in AuthController make UpdateUserRegisterData for admin
+   in AuthController make DeleteUser for admin

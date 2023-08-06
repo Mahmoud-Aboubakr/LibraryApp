@@ -1,6 +1,6 @@
-﻿namespace Infrastructure
+﻿namespace Application
 {
-    public class Pagination<T> where T : class
+    public class Pagination<T>
     {
         public Pagination(int pageIndex, int pageSize, int totalCount, IReadOnlyList<T> data)
         {

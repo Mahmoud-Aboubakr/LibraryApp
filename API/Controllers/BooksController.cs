@@ -7,7 +7,7 @@ using Application.Interfaces.IValidators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
-using Infrastructure;
+using Application;
 using Infrastructure.Specifications.BannedCustomerSpec;
 using Infrastructure.Specifications.BookOrderDetailsSpec;
 using Infrastructure.Specifications.BookSpec;
@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class BooksController : ControllerBase
     {
@@ -70,14 +70,14 @@ namespace API.Controllers
             return Ok(paginationData);
         }
 
-        [HttpGet("GetBookById")]
-        public async Task<ActionResult<ReadBookDto>> GetBookByIdAsync(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReadBookDto>> GetBookByIdAsync(string id)
         {
-            var exists = await _uof.GetRepository<Book>().Exists(id);
+            var exists = await _uof.GetRepository<Book>().Exists(int.Parse(id));
 
             if (exists)
             {
-                var book = await _uof.GetRepository<Book>().GetByIdAsync(id);
+                var book = await _uof.GetRepository<Book>().GetByIdAsync(int.Parse(id));
 
                 if (book == null)
                     return NotFound(new ApiResponse(404));
@@ -87,14 +87,14 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-        [HttpGet("GetBookByIdWithDetailAsync")]
-        public async Task<ActionResult<ReadBookDto>> GetBookByIdWithDetailAsync(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReadBookDto>> GetBookByIdWithDetailAsync(string id)
         {
-            var exists = await _uof.GetRepository<Book>().Exists(id);
+            var exists = await _uof.GetRepository<Book>().Exists(int.Parse(id));
 
             if (exists)
             {
-                var spec = new BooksWithAuthorAndPublisherSpec(id);
+                var spec = new BooksWithAuthorAndPublisherSpec(int.Parse(id));
                 var book = await _uof.GetRepository<Book>().FindSpec(spec);
                 if (book == null)
                     return NotFound(new ApiResponse(404));

@@ -1,18 +1,26 @@
 [
-    {
-        "Name": "Manager",
-        "NormalizedName": "MANAGER"
-    },
-    {
-        "Name": "Librarian",
-        "NormalizedName": "LIBRARIAN"
-    },
-    {
-        "Name": "User",
-        "NormalizedName": "USER"
-    },
-    {
-        "Name": "HR",
-        "NormalizedName": "HR"
-    }
+  {
+    "Id": "719daed1-3821-4dd6-a288-1993f363a799",
+    "Name": "Manager",
+    "NormalizedName": "MANAGER",
+    "ConcurrencyStamp": "719daad3-3821-4dd6-a288-1993f363a799"
+  },
+  {
+    "Id": "719daed1-3831-4dd1-a288-1993f363a799",
+    "Name": "Librarian",
+    "NormalizedName": "LIBRARIAN",
+    "ConcurrencyStamp": "123daad3-3821-4dd6-a288-1993f363a799"
+  },
+  {
+    "Id": "719daed1-3821-4dd6-a288-1993b363b799",
+    "Name": "User",
+    "NormalizedName": "USER",
+    "ConcurrencyStamp": "719daad3-1111-4dd6-a288-1993f363a799"
+  },
+  {
+    "Id": "719daed1-3821-4ee6-a288-1993f363a799",
+    "Name": "HR",
+    "NormalizedName": "HR",
+    "ConcurrencyStamp": "719daad3-3821-4dd6-a288-1993f363a222"
+  }
 ]

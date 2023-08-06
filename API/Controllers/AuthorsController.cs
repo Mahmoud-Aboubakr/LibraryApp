@@ -1,6 +1,4 @@
 ﻿using Application.DTOs.Author;
-using Application.DTOs.Customer;
-using Application.Exceptions;
 using Application.Handlers;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
@@ -8,37 +6,34 @@ using Application.Interfaces.IValidators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
-using Domain.Entities.Identity;
-using Infrastructure;
+using Application;
 using Infrastructure.Specifications.BookSpec;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Manager")]
     public class AuthorsController : ControllerBase
     {
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
-        private readonly IAuthorServices _searchAuthorDataService;
+        private readonly IAuthorServices _authorServices;
         private readonly ILogger<AuthorsController> _logger;
 
         public AuthorsController(IUnitOfWork uof,
             IMapper mapper,
             IPhoneNumberValidator phoneNumberValidator,
-            IAuthorServices searchAuthorDataService,
+            IAuthorServices authorServices,
             ILogger<AuthorsController> logger)
         {
             _uof = uof;
             _mapper = mapper;
             _phoneNumberValidator = phoneNumberValidator;
-            _searchAuthorDataService = searchAuthorDataService;
+            _authorServices = authorServices;
             _logger = logger;
         }
         
@@ -80,7 +75,7 @@ namespace API.Controllers
         {
             if (!_phoneNumberValidator.IsValidPhoneNumber(phone))
                 return BadRequest(new ApiResponse(400, AppMessages.INVALID_PHONENUMBER));
-            var result = await _searchAuthorDataService.SearchWithCriteria(name, phone);
+            var result = await _authorServices.SearchWithCriteria(name, phone);
             if (result == null || result.Count == 0)
             {
                 return NotFound(new ApiResponse(404));

@@ -63,6 +63,12 @@ namespace API.Middlewares
                 message = exception.Message;
                 stackTrace = exception.StackTrace;
             }
+            else if (exceptionType == typeof(FormatException))
+            {
+                status = HttpStatusCode.BadRequest;
+                message = exception.Message;
+                stackTrace = exception.StackTrace;
+            }
             else
             {
                 status = HttpStatusCode.InternalServerError;
@@ -71,10 +77,9 @@ namespace API.Middlewares
             }
             var exceptionResult = JsonSerializer.Serialize(new
             {
-                //StatusCode = context.Response.StatusCode,
-                status,
-                error = message,
-                stackTrace
+                StatusCode = status,
+                Error = message,
+                StackTrace = stackTrace
             });
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)status;
