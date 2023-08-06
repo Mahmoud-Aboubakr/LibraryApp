@@ -1,10 +1,13 @@
 ﻿using Application.Interfaces;
 using Application.Interfaces.IAppServices;
+using Application.Interfaces.IIdentityService;
 using Application.Interfaces.IValidators;
 using Application.Validators;
 using Infrastructure.AppServices;
+using Infrastructure.IdentityServices;
 using Infrastructure.Specifications;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Persistence.Context;
 using Persistence.Repositories;
 

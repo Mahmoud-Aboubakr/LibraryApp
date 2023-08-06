@@ -1,13 +1,14 @@
 ﻿using Application.DTOs.BookOrderDetails;
 using Application.DTOs.Employee;
 using Application.DTOs.Order;
+using Application.Handlers;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
-using Infrastructure;
+using Application;
 using Infrastructure.AppServices;
 using Infrastructure.Specifications.OrderSpec;
 using Microsoft.AspNetCore.Http;
@@ -43,10 +44,18 @@ namespace API.Controllers
         [HttpGet("GetAllOrders")]
         public async Task<ActionResult<IEnumerable<ReadOrderDto>>> GetAllOrders(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
+            if (pagesize <= 0 || pageindex <= 0)
+            {
+                return BadRequest(new ApiResponse(400, AppMessages.INAVIL_PAGING));
+            }
             var spec = new OrderWithCustomerSpec(pagesize, pageindex, isPagingEnabled);
             var totalOrders = await _uof.GetRepository<Order>().CountAsync(spec);
             var orders = await _uof.GetRepository<Order>().FindAllSpec(spec);
             var mappedOrders = _mapper.Map<IReadOnlyList<ReadOrderDto>>(orders);
+            if (mappedOrders == null || totalOrders == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             var paginationData = new Pagination<ReadOrderDto>(spec.PageIndex, spec.PageSize, totalOrders, mappedOrders);
             return Ok(paginationData);
         }
@@ -62,11 +71,11 @@ namespace API.Controllers
                 var order = await _uof.GetRepository<Order>().FindSpec(spec);
 
                 if (order == null)
-                    return NotFound();
+                    return NotFound(new ApiResponse(404));
 
                 return Ok(_mapper.Map<ReadOrderDto>(order));
             }
-            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
         [HttpGet("GetOrderById")]
@@ -79,11 +88,11 @@ namespace API.Controllers
                 var order = await _uof.GetRepository<Order>().GetByIdAsync(id);
 
                 if (order == null)
-                    return NotFound();
+                    return NotFound(new ApiResponse(404));
 
                 return Ok(_mapper.Map<ReadOrderDto>(order));
             }
-            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
 
@@ -92,6 +101,10 @@ namespace API.Controllers
         public async Task<ActionResult<IReadOnlyList<ReadOrderDto>>> SearchOrderByCriteria(int? orderId = null, int? customerId = null, string customerName = null, decimal? totalPrice = null, DateTime? date = null)
         {
             var result = await _orderServices.SearchOrders(orderId, customerId, customerName, totalPrice, date);
+            if (result == null || result.Count == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             return Ok(result);
         }
         #endregion
@@ -101,28 +114,28 @@ namespace API.Controllers
         public async Task<ActionResult> InsertOrderAsync(CreateOrderDto createOrder)
         {
             if (!_numbersValidator.IsValidInt(createOrder.CustomerId))
-                return NotFound(new { Detail = $"{AppMessages.INVALID_CUSTOMER} {createOrder.CustomerId}" });
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_CUSTOMER));
             if (!_numbersValidator.IsValidDecimal(createOrder.TotalPrice))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_QUANTITY} {createOrder.TotalPrice}" });
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_PRICE));
 
             var orderBook = _mapper.Map<CreateOrderDto, Order>(createOrder);
             _uof.GetRepository<Order>().InsertAsync(orderBook);
             await _uof.Commit();
 
-            return StatusCode(201, AppMessages.INSERTED);
+            return Ok(new ApiResponse(201, AppMessages.INSERTED));
         }
 
         [HttpPost("InsertBookOrder")]
         public async Task<ActionResult> InsertOrderBookAsync(CreateBookOrderDetailsDto createOrderBooks)
         {
             if (!_numbersValidator.IsValidInt(createOrderBooks.OrderId))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_ORDER} {createOrderBooks.OrderId}" });
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_ORDER));
             if (!_numbersValidator.IsValidInt(createOrderBooks.BookId))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_BOOK} {createOrderBooks.BookId}" });
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_BOOK));
             if (!_numbersValidator.IsValidDecimal(createOrderBooks.Price))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_PRICE} {createOrderBooks.Price}" });
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_PRICE));
             if (!_numbersValidator.IsValidInt(createOrderBooks.Quantity))
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_QUANTITY} {createOrderBooks.Quantity}" });
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_QUANTITY));
 
             var validOrderId = await _orderServices.IsValidOrderId(createOrderBooks.OrderId);
 
@@ -136,16 +149,16 @@ namespace API.Controllers
                     await _uof.Commit();
                     _orderServices.DecreaseQuantity(createOrderBooks.BookId, createOrderBooks.Quantity);
                     _orderServices.AddAuthorProfits(createOrderBooks.BookId, createOrderBooks.Quantity, createOrderBooks.Price);
-                    return StatusCode(201, AppMessages.INSERTED);
+                    return Ok(new ApiResponse(201, AppMessages.INSERTED));
                 }
                 else
                 {
-                    return NotFound(new { Detail = AppMessages.UNAVAILABLE_BOOK });
+                    return NotFound(new ApiResponse(404, AppMessages.UNAVAILABLE_BOOK));
                 }
             }
             else
             {
-                return NotFound(new { Detail = AppMessages.INVALID_ORDER });
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_ORDER));
             }
         }
         #endregion

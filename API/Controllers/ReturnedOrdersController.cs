@@ -3,6 +3,7 @@ using Application.DTOs.Order;
 using Application.DTOs.Publisher;
 using Application.DTOs.ReturnedOrder;
 using Application.DTOs.ReturnOrderDetails;
+using Application.Handlers;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
@@ -10,7 +11,7 @@ using Application.Validators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
-using Infrastructure;
+using Application;
 using Infrastructure.AppServices;
 using Infrastructure.Specifications.BookOrderDetailsSpec;
 using Infrastructure.Specifications.BookSpec;
@@ -47,16 +48,28 @@ namespace API.Controllers
         public async Task<ActionResult<IReadOnlyList<ReadReturnedOrderDto>>> GetAllReturnedOrders()
         {
             var returnedOrders = await _uof.GetRepository<ReturnedOrder>().GetAllListAsync();
+            if (returnedOrders == null || returnedOrders.Count == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             return Ok(_mapper.Map<IReadOnlyList<ReturnedOrder>, IReadOnlyList<ReadReturnedOrderDto>>(returnedOrders));
         }
 
         [HttpGet("GetAllReturnedOrdersWithDetails")]
         public async Task<ActionResult<IEnumerable<ReadReturnedOrderDto>>> GetAllReturnedOrdersWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
+            if (pagesize <= 0 || pageindex <= 0)
+            {
+                return BadRequest(new ApiResponse(400, AppMessages.INAVIL_PAGING));
+            }
             var spec = new ReturnedOrderWithCustomerSpec(pagesize, pageindex, isPagingEnabled);
             var totalReturns = await _uof.GetRepository<ReturnedOrder>().CountAsync(spec);
             var Returns = await _uof.GetRepository<ReturnedOrder>().FindAllSpec(spec);
             var mappedReturns = _mapper.Map<IReadOnlyList<ReadReturnedOrderDto>>(Returns);
+            if (mappedReturns == null || totalReturns == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             var paginationData = new Pagination<ReadReturnedOrderDto>(spec.PageIndex, spec.PageSize, totalReturns, mappedReturns);
             return Ok(paginationData);
         }
@@ -65,6 +78,10 @@ namespace API.Controllers
         public async Task<ActionResult<IReadOnlyList<ReadReturnOrderDetailsDto>>> GetAllReturnedOrderDetailsAsync()
         {
             var returnOrdersDetails = await _uof.GetRepository<ReturnOrderDetails>().GetAllAsync();
+            if (returnOrdersDetails == null || returnOrdersDetails.Count == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             return Ok(_mapper.Map<IReadOnlyList<ReturnOrderDetails>, IReadOnlyList<ReadReturnOrderDetailsDto>>(returnOrdersDetails));
         }
 
@@ -72,10 +89,18 @@ namespace API.Controllers
         [HttpGet("GetAllReturnedOrderDetailsWithIncludes")]
         public async Task<ActionResult<IEnumerable<ReadReturnOrderDetailsDto>>> GetAllReturnedOrderDetailsWithIncludesAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
+            if (pagesize <= 0 || pageindex <= 0)
+            {
+                return BadRequest(new ApiResponse(400, AppMessages.INAVIL_PAGING));
+            }
             var spec = new ReturnOrderDetailsWithBookAndCustomerSpec(pagesize, pageindex, isPagingEnabled);
             var totalReturns = await _uof.GetRepository<ReturnOrderDetails>().CountAsync(spec);
             var Returns = await _uof.GetRepository<ReturnOrderDetails>().FindAllSpec(spec);
             var mappedReturns = _mapper.Map<IReadOnlyList<ReadReturnOrderDetailsDto>>(Returns);
+            if (mappedReturns == null || totalReturns == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             var paginationData = new Pagination<ReadReturnOrderDetailsDto>(spec.PageIndex, spec.PageSize, totalReturns, mappedReturns);
             return Ok(paginationData);
         }
@@ -91,11 +116,11 @@ namespace API.Controllers
                 var returnedorder = await _uof.GetRepository<ReturnedOrder>().GetByIdAsync(id);
 
                 if (returnedorder == null)
-                    return NotFound();
+                    return NotFound(new ApiResponse(404));
 
                 return Ok(_mapper.Map<ReadReturnedOrderDto>(returnedorder));
             }
-            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
 
@@ -110,17 +135,21 @@ namespace API.Controllers
                 var returnedorder = await _uof.GetRepository<ReturnedOrder>().FindSpec(spec);
 
                 if (returnedorder == null)
-                    return NotFound();
+                    return NotFound(new ApiResponse(404));
 
                 return Ok(_mapper.Map<ReadReturnedOrderDto>(returnedorder));
             }
-            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
         [HttpGet("SearchOrderWithCriteria")]
         public async Task<ActionResult<IReadOnlyList<ReturnedOrder>>> SearchReturnedOrderByCriteria(int? originorderId = null, int? customerId = null, string? customerName = null, decimal? totalPrice = null, DateTime? returndate = null)
         {
             var result = await _returnedOrderServices.SearchReturnedOrders(originorderId, customerId, customerName, totalPrice, returndate);
+            if (result == null || result.Count == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             return Ok(result);
         }
 
@@ -134,11 +163,11 @@ namespace API.Controllers
                 var returnOrdersDetails = await _uof.GetRepository<ReturnOrderDetails>().GetByIdAsync(id);
 
                 if (returnOrdersDetails == null)
-                    return NotFound();
+                    return NotFound(new ApiResponse(404));
 
                 return Ok(_mapper.Map<ReadReturnOrderDetailsDto>(returnOrdersDetails));
             }
-            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
         [HttpGet("GetReturnedOrderDetailsByIdWithIncludes")]
@@ -152,17 +181,21 @@ namespace API.Controllers
                 var returnOrdersDetails = await _uof.GetRepository<ReturnOrderDetails>().FindSpec(spec);
 
                 if (returnOrdersDetails == null)
-                    return NotFound();
+                    return NotFound(new ApiResponse(404));
 
                 return Ok(_mapper.Map<ReadReturnOrderDetailsDto>(returnOrdersDetails));
             }
-            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
         [HttpGet("SearchReturnOrderDetailsWithCriteria")]
         public async Task<ActionResult<IReadOnlyList<ReturnOrderDetails>>> SearchReturnOrderDetailsByCriteria(int? returnedorderId = null, int? bookId = null, string? customerName = null, string? bookTitle = null)
         {
             var result = await _returnedOrderServices.SearchReturnedOrdersDetails(returnedorderId, bookId, customerName, bookTitle);
+            if (result == null || result.Count == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             return Ok(result);
         }
 
@@ -174,23 +207,23 @@ namespace API.Controllers
         {
             var IsValidOriginOrderId = await _uof.GetRepository<Order>().Exists(createReturnedOrder.OriginOrderId);
             if (!IsValidOriginOrderId)
-                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {createReturnedOrder.OriginOrderId}" });
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_ORDER));
             var IsValidCustomerId = await _uof.GetRepository<Customer>().Exists(createReturnedOrder.CustomerId);
             if (!IsValidCustomerId)
-                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {createReturnedOrder.CustomerId}" });
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_CUSTOMER));
 
             var order = await _uof.GetRepository<Order>().GetByIdAsync(createReturnedOrder.OriginOrderId);
             var orderDate = order.OrderDate;
             var returnDate = DateTime.Now;
             if (!_returnedOrderServices.IsInReturnInterval(returnDate, orderDate))
-                return BadRequest(new { Detail = AppMessages.FAILED_RETURN});
+                return BadRequest(new ApiResponse(400, AppMessages.FAILED_RETURN));
 
             createReturnedOrder.TotalPrice = order.TotalPrice;
             var returnedOrder = _mapper.Map<CreateReturnedOrderDto, ReturnedOrder>(createReturnedOrder);
             _uof.GetRepository<ReturnedOrder>().InsertAsync(returnedOrder);
             await _uof.Commit();
 
-            return StatusCode(201, AppMessages.INSERTED);
+            return Ok(new ApiResponse(201, AppMessages.INSERTED));
         }
 
 
@@ -199,10 +232,10 @@ namespace API.Controllers
         {
             var IsValidOriginReturnedOrderId = await _uof.GetRepository<ReturnedOrder>().Exists(createReturnOrderDetails.ReturnedOrderId);
             if (!IsValidOriginReturnedOrderId)
-                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {createReturnOrderDetails.ReturnedOrderId}" });
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
             var IsValidBookId = await _uof.GetRepository<Book>().Exists(createReturnOrderDetails.BookId);
             if (!IsValidBookId)
-                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {createReturnOrderDetails.BookId}" });
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_BOOK));
 
             var returnedorder = await _uof.GetRepository<ReturnedOrder>().GetByIdAsync(createReturnOrderDetails.ReturnedOrderId);
 
@@ -216,13 +249,13 @@ namespace API.Controllers
                 {
                     found = true;
                     if (!_returnedOrderServices.CheckQuantity(createReturnOrderDetails.Quantity, item.Quantity))
-                        return BadRequest(new { Detail = AppMessages.INVALID_QUANTITY});
+                        return BadRequest(new ApiResponse(400, AppMessages.INVALID_QUANTITY));
                     break;
                 }
             }
             if (!found)
             {
-                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {createReturnOrderDetails.BookId}" });
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_BOOK));
             }
 
             var returnedbook = await _uof.GetRepository<Book>().GetByIdAsync(createReturnOrderDetails.BookId);
@@ -233,7 +266,7 @@ namespace API.Controllers
             await _uof.Commit();
             _returnedOrderServices.IncreaseQuantity(createReturnOrderDetails.BookId, createReturnOrderDetails.Quantity);
             _returnedOrderServices.DecreaseAuthorProfits(createReturnOrderDetails.BookId, createReturnOrderDetails.Price, createReturnOrderDetails.Quantity);
-            return StatusCode(201, AppMessages.RETURNED);
+            return Ok(new ApiResponse(201, AppMessages.RETURNED));
         }
         #endregion
 
@@ -243,9 +276,9 @@ namespace API.Controllers
         {
             var result = await _uof.GetRepository<ReturnedOrder>().Exists(returnedorderId);
             if (!result)
-                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {returnedorderId}" });
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
             _returnedOrderServices.DeleteReturnedOrderAsync(returnedorderId);
-            return Ok(AppMessages.DELETED);
+            return Ok(new ApiResponse(201, AppMessages.DELETED));
         }
 
         [HttpDelete("DeleteReturnedOrderDetailsAsync")]
@@ -254,7 +287,7 @@ namespace API.Controllers
             var returnOrderDetails = _mapper.Map<ReadReturnOrderDetailsDto, ReturnOrderDetails>(readReturnOrderDetailsDto);
             _uof.GetRepository<ReturnOrderDetails>().DeleteAsync(returnOrderDetails);
             await _uof.Commit();
-            return Ok(AppMessages.DELETED);
+            return Ok(new ApiResponse(201, AppMessages.DELETED));
         }
         #endregion
     }

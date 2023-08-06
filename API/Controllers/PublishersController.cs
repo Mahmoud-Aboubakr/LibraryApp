@@ -1,12 +1,13 @@
 ﻿using Application.DTOs.Book;
 using Application.DTOs.Publisher;
+using Application.Handlers;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
-using Infrastructure;
+using Application;
 using Infrastructure.Specifications.BookSpec;
 using Infrastructure.Specifications.PublisherSpec;
 using Microsoft.AspNetCore.Mvc;
@@ -40,10 +41,18 @@ namespace API.Controllers
         [HttpGet("GetAll")]
         public async Task<ActionResult<IReadOnlyList<ReadPublisherDto>>> GetAllPublishersAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
+            if (pagesize <= 0 || pageindex <= 0)
+            {
+                return BadRequest(new ApiResponse(400, AppMessages.INAVIL_PAGING));
+            }
             var spec = new PublisherSpec(pagesize, pageindex, isPagingEnabled);
             var totalPublishers = await _uof.GetRepository<Publisher>().CountAsync(spec);
             var publishers = await _uof.GetRepository<Publisher>().FindAllSpec(spec);
             var mappedPublishers = _mapper.Map<IReadOnlyList<ReadPublisherDto>>(publishers);
+            if (mappedPublishers == null || totalPublishers == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             var paginationData = new Pagination<ReadPublisherDto>(spec.PageIndex, spec.PageSize, totalPublishers, mappedPublishers);
             return Ok(paginationData);
         }
@@ -54,16 +63,25 @@ namespace API.Controllers
             if (await _uof.GetRepository<Publisher>().Exists(id))
             {
                 var publisher = await _uof.GetRepository<Publisher>().GetByIdAsync(id);
+
+                if (publisher == null)
+                    return NotFound(new ApiResponse(404));
+
                 return Ok(_mapper.Map<Publisher, ReadPublisherDto>(publisher));
             }
-
-            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
         [HttpGet("SearchWithCriteria")]
         public async Task<ActionResult<IReadOnlyList<ReadPublisherDto>>> SearchWithCriteria(string name = null, string phone = null)
         {
+            if (!_phoneNumberValidator.IsValidPhoneNumber(phone))
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_PHONENUMBER));
             var result = await _searchPublisherDataService.SearchWithCriteria(name, phone);
+            if (result == null || result.Count == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             return Ok(result);
         }
         #endregion
@@ -78,11 +96,11 @@ namespace API.Controllers
                 _uof.GetRepository<Publisher>().InsertAsync(publisher);
                 await _uof.Commit();
 
-                return StatusCode(201, AppMessages.INSERTED);
+                return Ok(new ApiResponse(201, AppMessages.INSERTED));
             }
             else
             {
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {createPublisherDto.PublisherPhoneNumber}" });
+                return BadRequest(new ApiResponse (400 , AppMessages.INVALID_PHONENUMBER));
             }
         }
         #endregion
@@ -97,11 +115,11 @@ namespace API.Controllers
                 _uof.GetRepository<Publisher>().UpdateAsync(publisher);
                 await _uof.Commit();
 
-                return Ok(AppMessages.UPDATED);
+                return Ok( new ApiResponse(201,AppMessages.UPDATED));
             }
             else
             {
-                return BadRequest(new { Detail = $"{AppMessages.INVALID_PHONENUMBER} {publisherDto.PublisherPhoneNumber}" });
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_PHONENUMBER));
             }
         }
         #endregion
@@ -113,14 +131,14 @@ namespace API.Controllers
             var bookSpec = new BooksWithAuthorAndPublisherSpec(null,null,id);
             var result = _uof.GetRepository<Book>().FindAllSpec(bookSpec).Result;
             if (result.Count() > 0)
-                return BadRequest(AppMessages.FAILED_DELETE);
+                return BadRequest(new ApiResponse(400,AppMessages.FAILED_DELETE));
             else
             {
                 var publisherSpec = new PublisherSpec(id);
                 var publisher = _uof.GetRepository<Publisher>().FindSpec(publisherSpec).Result;
                 _uof.GetRepository<Publisher>().DeleteAsync(publisher);
                 await _uof.Commit();
-                return Ok(AppMessages.DELETED);
+                return Ok(new ApiResponse(201, AppMessages.DELETED));
             }
         }
         #endregion

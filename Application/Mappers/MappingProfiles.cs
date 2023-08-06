@@ -14,6 +14,7 @@ using Application.DTOs.ReturnOrderDetails;
 using Application.DTOs.Vacation;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Entities.Identity;
 
 namespace Application.Mappers
 {
@@ -128,6 +129,11 @@ namespace Application.Mappers
             CreateMap<ReadReturnOrderDetailsDto, ReturnOrderDetails>();
             CreateMap<ReturnOrderDetails, CreateReturnOrderDetailsDto>().ReverseMap();
             #endregion
+
+            #region Role
+            CreateMap<RegisterModel, ApplicationUser>();
+            #endregion
+
         }
     }
 }

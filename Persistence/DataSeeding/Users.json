@@ -1,0 +1,19 @@
+[
+  {
+    "Id": "5a58863e-e3bb-4538-8278-d03ec9a2f59f",
+    "UserName": "string",
+    "NormalizedUserName": "STRING",
+    "Email": "user@example.com",
+    "NormalizedEmail": "USER@EXAMPLE.COM",
+    "EmailConfirmed": true,
+    "PasswordHash": "AQAAAAEAACcQAAAAEHXBn1nBkWfXI4+SOOINLTPPM6b5bios/GnNiTGVYQiIkR1J+R1Q76YEBNkCF+e33g==",
+    "SecurityStamp": "5H3FONEEIRYO46KC23CRKCUAUBDROSZA",
+    "ConcurrencyStamp": "85ca7184-dce7-4709-a41b-88d1f9a62379",
+    "PhoneNumber": "01013451622",
+    "PhoneNumberConfirmed": true,
+    "TwoFactorEnabled": false,
+    "LockoutEnd": null,
+    "LockoutEnabled": true,
+    "AccessFailedCount": 0
+  }
+]

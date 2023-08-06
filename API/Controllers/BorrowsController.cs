@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Attendance;
 using Application.DTOs.Borrow;
+using Application.Handlers;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
 using Application.Interfaces.IValidators;
@@ -7,7 +8,7 @@ using Application.Validators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
-using Infrastructure;
+using Application;
 using Infrastructure.Specifications.AttendanceSpec;
 using Infrastructure.Specifications.BorrowSpec;
 using Microsoft.AspNetCore.Http;
@@ -52,9 +53,14 @@ namespace API.Controllers
         [HttpGet("GetAllBorrowsWithDetails")]
         public async Task<ActionResult<Pagination<ReadBorrowDto>>> GetAllBorrowsWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
+            if (pagesize <= 0 || pageindex <= 0)
+                return BadRequest(new ApiResponse(400));
+
             var spec = new BorrowWithBookAndCustomerSpec(pagesize, pageindex, isPagingEnabled);
 
             var totalBorrows = await _uof.GetRepository<Borrow>().CountAsync(spec);
+            if (totalBorrows == 0)
+                return NotFound(new ApiResponse(404));
 
             var borrows = await _uof.GetRepository<Borrow>().FindAllSpec(spec);
 
@@ -75,11 +81,11 @@ namespace API.Controllers
                 var borrow = await _uof.GetRepository<Borrow>().GetByIdAsync(id);
 
                 if (borrow == null)
-                    return NotFound();
+                    return NotFound(new ApiResponse(404));
 
                 return Ok(_mapper.Map<ReadBorrowDto>(borrow));
             }
-            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
         [HttpGet("GetBorrowByIdWithDetails")]
@@ -93,11 +99,11 @@ namespace API.Controllers
                 var borrow = await _uof.GetRepository<Borrow>().FindSpec(spec);
 
                 if (borrow == null)
-                    return NotFound();
+                    return NotFound(new ApiResponse(404));
 
                 return Ok(_mapper.Map<ReadBorrowDto>(borrow));
             }
-            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
 
@@ -105,6 +111,10 @@ namespace API.Controllers
         public async Task<ActionResult<IReadOnlyList<ReadBorrowDto>>> SearchByCriteria(string customerName = null, string bookTitle = null, DateTime? date = null)
         {
             var result = await _borrowServices.SearchWithCriteria(customerName, bookTitle, date);
+            if (result == null || result.Count == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             return Ok(result);
         }
         #endregion
@@ -116,7 +126,7 @@ namespace API.Controllers
             var banned = await _borrowServices.IsBannedCustomer(borrowDto.CustomerId);
             if (banned)
             {
-                return BadRequest(new { Detail = AppMessages.BANNED_CUSTOMER });
+                return BadRequest(new ApiResponse(400, AppMessages.BANNED_CUSTOMER));
 
             }
             else
@@ -124,9 +134,9 @@ namespace API.Controllers
                 if (_borrowServices.CreateBorrowValidator(borrowDto.CustomerId))
                 {
                     if (!_numbersValidator.IsValidInt(borrowDto.CustomerId))
-                        return BadRequest(new { Detail = $"{AppMessages.INVALID_CUSTOMER} {borrowDto.CustomerId}" });
+                        return BadRequest(new ApiResponse(400, AppMessages.INVALID_CUSTOMER));
                     if (!_numbersValidator.IsValidInt(borrowDto.BookId))
-                        return BadRequest(new { Detail = $"{AppMessages.INVALID_BOOK} {borrowDto.BookId}" });
+                        return BadRequest(new ApiResponse(400, AppMessages.INVALID_BOOK));
 
                     var borrow = _mapper.Map<CreateBorrowDto, Borrow>(borrowDto);
                     _uof.GetRepository<Borrow>().InsertAsync(borrow);
@@ -136,7 +146,7 @@ namespace API.Controllers
                 }
                 else
                 {
-                    return BadRequest(new { Detail = AppMessages.MAX_BORROWING });
+                    return BadRequest(new ApiResponse(400, AppMessages.MAX_BORROWING));
                 }
             }
         }
@@ -148,6 +158,8 @@ namespace API.Controllers
         {
             var borrowSpec = new BorrowWithBookAndCustomerSpec(id);
             var borrow = _uof.GetRepository<Borrow>().FindSpec(borrowSpec).Result;
+            if (borrow == null)
+                return NotFound(new ApiResponse(404));
             _uof.GetRepository<Borrow>().DeleteAsync(borrow);
             await _uof.Commit();
             return Ok(AppMessages.DELETED);

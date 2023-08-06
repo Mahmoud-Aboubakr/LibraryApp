@@ -1,16 +1,20 @@
 ﻿using Application.DTOs.Attendance;
 using Application.DTOs.Payroll;
 using Application.DTOs.Publisher;
+using Application.Handlers;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
+using Application.Interfaces.IValidators;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
-using Infrastructure;
+using Application;
 using Infrastructure.AppServices;
+using Infrastructure.Specifications.AttendanceSpec;
 using Infrastructure.Specifications.PayrollSpec;
 using Infrastructure.Specifications.PublisherSpec;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Linq.Expressions;
 
 namespace API.Controllers
@@ -55,8 +59,13 @@ namespace API.Controllers
         [HttpGet("GetAllPayrollsWithDetails")]
         public async Task<ActionResult<IEnumerable<ReadPayrollDto>>> GetAllPayrollsWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
+            if (pagesize <= 0 || pageindex <= 0)
+                return BadRequest(new ApiResponse(400));
+
             var spec = new PayrollWithEmployeeSpec(pagesize, pageindex, isPagingEnabled);
             var totalPayrolls = await _uof.GetRepository<Payroll>().CountAsync(spec);
+            if (totalPayrolls == 0)
+                return NotFound(new ApiResponse(404));
             var payrolls = await _uof.GetRepository<Payroll>().FindAllSpec(spec);
             var mappedPayrolls = _mapper.Map<IReadOnlyList<ReadPayrollDto>>(payrolls);
             var paginationData = new Pagination<ReadPayrollDto>(spec.PageIndex, spec.PageSize, totalPayrolls, mappedPayrolls);
@@ -72,7 +81,7 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Payroll, ReadPayrollDto>(payrolls));
             }
 
-            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
         [HttpGet("GetPayrollByIdWithDetailAsync")]
@@ -82,16 +91,22 @@ namespace API.Controllers
             {
                 var spec = new PayrollWithEmployeeSpec(id);
                 var payrolls = await _uof.GetRepository<Payroll>().FindSpec(spec);
+                if (payrolls == null)
+                    return NotFound(new ApiResponse(404));
                 return Ok(_mapper.Map<Payroll, ReadPayrollDto>(payrolls));
             }
 
-            return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {id}" });
+            return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
         [HttpGet("SearchPayrollWithCriteria")]
         public async Task<ActionResult<IReadOnlyList<ReadPayrollDto>>> SearchPayrollWithCriteria(string? empName = null)
         {
             var result = await _payrollServices.SearchPayrollDataWithDetail(empName);
+            if (result == null || result.Count == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
             return Ok(result);
         }
         #endregion
@@ -102,7 +117,7 @@ namespace API.Controllers
         {
             var result = await _uof.GetRepository<Employee>().Exists(payrollDto.EmpId);
             if (!result)
-                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {payrollDto.EmpId}" });
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
 
             var employee = await _uof.GetRepository<Employee>().GetByIdAsync(payrollDto.EmpId);
             var payrolls = _mapper.Map<CreatePayrollDto, Payroll>(payrollDto);
@@ -142,7 +157,7 @@ namespace API.Controllers
         {
             var result = await _uof.GetRepository<Payroll>().Exists(payrollDto.Id);
             if (!result)
-                return NotFound(new { Detail = $"{AppMessages.INVALID_ID} {payrollDto.Id}" });
+                return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
 
             var employee = await _uof.GetRepository<Employee>().GetByIdAsync(payrollDto.EmpId);
             var payrolls = _mapper.Map<UpdatePayrollDto, Payroll>(payrollDto);
@@ -179,10 +194,13 @@ namespace API.Controllers
 
         #region Delete
         [HttpDelete("DeletePayroll")]
-        public async Task<ActionResult> DeletePayrollAsync(ReadPayrollDto payrollDto)
+        public async Task<ActionResult> DeletePayrollAsync(int id)
         {
-            var payrolls = _mapper.Map<ReadPayrollDto, Payroll>(payrollDto);
-            _uof.GetRepository<Payroll>().DeleteAsync(payrolls);
+            var payrollSpec = new PayrollWithEmployeeSpec(id);
+            var payroll = _uof.GetRepository<Payroll>().FindSpec(payrollSpec).Result;
+            if (payroll == null)
+                return NotFound(new ApiResponse(404));
+            _uof.GetRepository<Payroll>().DeleteAsync(payroll);
             await _uof.Commit();
             return Ok(AppMessages.DELETED);
         }

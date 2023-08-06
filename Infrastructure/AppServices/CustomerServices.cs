@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Customer;
+using Application.Exceptions;
 using Application.Interfaces.IAppServices;
 using AutoMapper;
 using Domain.Entities;
@@ -26,22 +27,29 @@ namespace Infrastructure.AppServices
         }
         public async Task<IReadOnlyList<ReadCustomerDto>> SearchWithCriteria(string Name = null, string PhoneNumber = null)
         {
-            var query = _context.Set<Customer>().AsQueryable();
+            try
+            {
+                var query = _context.Set<Customer>().AsQueryable();
 
-            if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(PhoneNumber))
-            {
-                query = query.Where(A => A.CustomerName.Contains(Name) && A.CustomerPhoneNumber.Contains(PhoneNumber));
+                if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(PhoneNumber))
+                {
+                    query = query.Where(A => A.CustomerName.Contains(Name) && A.CustomerPhoneNumber.Contains(PhoneNumber));
+                }
+                else if (!string.IsNullOrEmpty(Name))
+                {
+                    query = query.Where(t => t.CustomerName.Contains(Name));
+                }
+                else if (!string.IsNullOrEmpty(PhoneNumber))
+                {
+                    query = query.Where(t => t.CustomerPhoneNumber.Contains(PhoneNumber));
+                }
+                var result = await query.ToListAsync();
+                return _mapper.Map<IReadOnlyList<Customer>, IReadOnlyList<ReadCustomerDto>>(result);
             }
-            else if (!string.IsNullOrEmpty(Name))
+            catch (Exception ex)
             {
-                query = query.Where(t => t.CustomerName.Contains(Name));
+                throw new BadRequestException(ex.ToString());
             }
-            else if (!string.IsNullOrEmpty(PhoneNumber))
-            {
-                query = query.Where(t => t.CustomerPhoneNumber.Contains(PhoneNumber));
-            }
-            var result = await query.ToListAsync();
-            return _mapper.Map<IReadOnlyList<Customer>, IReadOnlyList<ReadCustomerDto>>(result);
         }
     }
 }

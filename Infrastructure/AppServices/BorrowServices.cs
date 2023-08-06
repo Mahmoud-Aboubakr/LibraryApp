@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Borrow;
+using Application.Exceptions;
 using Application.Interfaces.IAppServices;
 using AutoMapper;
 using Domain.Entities;
@@ -25,43 +26,64 @@ namespace Infrastructure.AppServices
 
         public async Task<bool> IsBannedCustomer(string customerId)
         {
-            int id = int.Parse(customerId);
-            return await _context.Set<BannedCustomer>().AnyAsync(x => x.CustomerId == id);
+            try
+            {
+                int id = int.Parse(customerId);
+                return await _context.Set<BannedCustomer>().AnyAsync(x => x.CustomerId == id);
+            }
+            catch (Exception ex)
+            {
+                throw new BadRequestException(ex.ToString());
+            }
         }
 
         public bool CreateBorrowValidator(string customerId )
         {
-            int id = int.Parse(customerId);
-            var BorrowCount = _context.Borrows.Count(B => B.CustomerId == id && B.BorrowDate.Date == DateTime.Now.Date );
-            if (BorrowCount >= 3 )
+            try
             {
-                return false;
-            }
+                int id = int.Parse(customerId);
+                var BorrowCount = _context.Borrows.Count(B => B.CustomerId == id && B.BorrowDate.Date == DateTime.Now.Date);
+                if (BorrowCount >= 3)
+                {
+                    return false;
+                }
 
-            return true;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new BadRequestException(ex.ToString());
+            }
         }
 
         public async Task<IReadOnlyList<ReadBorrowDto>> SearchWithCriteria(string customerName = null, string bookTitle = null, DateTime? date = null)
         {
-            var query = _context.Borrows.Include(b => b.Customer).Include(b => b.Book).AsQueryable();           
-
-            if (!string.IsNullOrEmpty(customerName))
+            try
             {
-                query = query.Where(b => b.Customer.CustomerName.Contains(customerName));
-            }
+                var query = _context.Borrows.Include(b => b.Customer).Include(b => b.Book).AsQueryable();
 
-            if (!string.IsNullOrEmpty(bookTitle))
+                if (!string.IsNullOrEmpty(customerName))
+                {
+                    query = query.Where(b => b.Customer.CustomerName.Contains(customerName));
+                }
+
+                if (!string.IsNullOrEmpty(bookTitle))
+                {
+                    query = query.Where(b => b.Book.BookTitle.Contains(bookTitle));
+                }
+
+                if (date.HasValue)
+                {
+                    query = query.Where(b => b.ReturnDate.Date == date.Value.Date);
+                }
+
+                var result = await query.ToListAsync();
+                return _mapper.Map<IReadOnlyList<Borrow>, IReadOnlyList<ReadBorrowDto>>(result);
+            }
+            catch (Exception ex)
             {
-                query = query.Where(b => b.Book.BookTitle.Contains(bookTitle));
+                throw new BadRequestException(ex.ToString());
             }
-
-            if (date.HasValue)
-            {
-                query = query.Where(b => b.ReturnDate.Date == date.Value.Date);
-            }
-
-            var result = await query.ToListAsync();
-            return _mapper.Map<IReadOnlyList<Borrow>, IReadOnlyList<ReadBorrowDto>>(result);
         }
 
     }

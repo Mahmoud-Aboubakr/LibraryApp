@@ -1,4 +1,6 @@
 ﻿using Domain.Entities;
+using Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 using Persistence.Context;
 using System.Text.Json;
 
@@ -125,6 +127,29 @@ namespace Persistence.Data
             if (context.ChangeTracker.HasChanges())
                 await context.SaveChangesAsync();
             #endregion
+        }
+
+        public static async Task SeedDemoUserAndRoles(LibraryDbContext context, UserManager<ApplicationUser> _userManager)
+        {
+            if (!context.Roles.Any())
+            {
+                var rolesData = File.ReadAllText("../Persistence/DataSeeding/Roles.json");
+                var roles = JsonSerializer.Deserialize<List<IdentityRole>>(rolesData);
+                context.Roles.AddRange(roles);
+            }
+
+            if (!context.Users.Any())
+            {
+                var usersData = File.ReadAllText("../Persistence/DataSeeding/Users.json");
+                var users = JsonSerializer.Deserialize<List<ApplicationUser>>(usersData);
+                context.Users.AddRange(users);
+            }
+
+            if (context.ChangeTracker.HasChanges())
+                await context.SaveChangesAsync();
+
+            var user = context.Users.FirstOrDefault(u => u.UserName == "string");
+            await _userManager.AddToRoleAsync(user, "Manager");
         }
     }
 }
