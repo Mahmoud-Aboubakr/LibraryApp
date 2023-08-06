@@ -20,10 +20,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using static System.Reflection.Metadata.BlobBuilder;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class ReturnedOrdersController : ControllerBase
     {
@@ -44,7 +46,8 @@ namespace API.Controllers
         }
 
         #region GET
-        [HttpGet("GetAllReturnedOrders")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadReturnedOrderDto>>> GetAllReturnedOrders()
         {
             var returnedOrders = await _uof.GetRepository<ReturnedOrder>().GetAllListAsync();
@@ -55,7 +58,8 @@ namespace API.Controllers
             return Ok(_mapper.Map<IReadOnlyList<ReturnedOrder>, IReadOnlyList<ReadReturnedOrderDto>>(returnedOrders));
         }
 
-        [HttpGet("GetAllReturnedOrdersWithDetails")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<ReadReturnedOrderDto>>> GetAllReturnedOrdersWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
@@ -74,7 +78,8 @@ namespace API.Controllers
             return Ok(paginationData);
         }
 
-        [HttpGet("GetAllReturnedOrderDetails")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadReturnOrderDetailsDto>>> GetAllReturnedOrderDetailsAsync()
         {
             var returnOrdersDetails = await _uof.GetRepository<ReturnOrderDetails>().GetAllAsync();
@@ -86,7 +91,8 @@ namespace API.Controllers
         }
 
 
-        [HttpGet("GetAllReturnedOrderDetailsWithIncludes")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<ReadReturnOrderDetailsDto>>> GetAllReturnedOrderDetailsWithIncludesAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
@@ -106,7 +112,8 @@ namespace API.Controllers
         }
 
 
-        [HttpGet("GetReturnedOrderById")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ReadReturnedOrderDto>> GetReturnedOrderById(int id)
         {
             var exists = await _uof.GetRepository<ReturnedOrder>().Exists(id);
@@ -124,7 +131,8 @@ namespace API.Controllers
         }
 
 
-        [HttpGet("GetReturnedOrderByIdWithIncludes")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ReadReturnedOrderDto>> GetReturnedOrderByIdWithIncludesAsync(int id)
         {
             var exists = await _uof.GetRepository<ReturnedOrder>().Exists(id);
@@ -142,7 +150,9 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-        [HttpGet("SearchOrderWithCriteria")]
+
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReturnedOrder>>> SearchReturnedOrderByCriteria(int? originorderId = null, int? customerId = null, string? customerName = null, decimal? totalPrice = null, DateTime? returndate = null)
         {
             var result = await _returnedOrderServices.SearchReturnedOrders(originorderId, customerId, customerName, totalPrice, returndate);
@@ -153,7 +163,9 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetReturnedOrderDetailsById")]
+
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ReadReturnOrderDetailsDto>> GetReturnedOrderDetailsById(int id)
         {
             var exists = await _uof.GetRepository<ReturnOrderDetails>().Exists(id);
@@ -170,7 +182,9 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-        [HttpGet("GetReturnedOrderDetailsByIdWithIncludes")]
+
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ReadReturnOrderDetailsDto>> GetReturnedOrderDetailsByIdWithIncludesAsync(int id)
         {
             var exists = await _uof.GetRepository<ReturnOrderDetails>().Exists(id);
@@ -188,7 +202,9 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-        [HttpGet("SearchReturnOrderDetailsWithCriteria")]
+
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReturnOrderDetails>>> SearchReturnOrderDetailsByCriteria(int? returnedorderId = null, int? bookId = null, string? customerName = null, string? bookTitle = null)
         {
             var result = await _returnedOrderServices.SearchReturnedOrdersDetails(returnedorderId, bookId, customerName, bookTitle);
@@ -202,7 +218,8 @@ namespace API.Controllers
         #endregion
 
         #region POST
-        [HttpPost("InsertReturnedOrder")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpPost]
         public async Task<ActionResult> InsertReturnedOrderAsync(CreateReturnedOrderDto createReturnedOrder)
         {
             var IsValidOriginOrderId = await _uof.GetRepository<Order>().Exists(createReturnedOrder.OriginOrderId);
@@ -227,7 +244,8 @@ namespace API.Controllers
         }
 
 
-        [HttpPost("InsertReturnOrderDetails")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpPost]
         public async Task<ActionResult> InsertReturnOrderDetailsAsync(CreateReturnOrderDetailsDto createReturnOrderDetails)
         {
             var IsValidOriginReturnedOrderId = await _uof.GetRepository<ReturnedOrder>().Exists(createReturnOrderDetails.ReturnedOrderId);
@@ -271,7 +289,8 @@ namespace API.Controllers
         #endregion
 
         #region Delete
-        [HttpDelete("DeleteReturnedOrderAsync")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpDelete]
         public async Task<ActionResult> DeleteReturnedOrderAsync(int returnedorderId)
         {
             var result = await _uof.GetRepository<ReturnedOrder>().Exists(returnedorderId);
@@ -281,7 +300,8 @@ namespace API.Controllers
             return Ok(new ApiResponse(201, AppMessages.DELETED));
         }
 
-        [HttpDelete("DeleteReturnedOrderDetailsAsync")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteReturnedOrderDetailsAsync(ReadReturnOrderDetailsDto readReturnOrderDetailsDto)
         {
             var returnOrderDetails = _mapper.Map<ReadReturnOrderDetailsDto, ReturnOrderDetails>(readReturnOrderDetailsDto);
@@ -290,5 +310,6 @@ namespace API.Controllers
             return Ok(new ApiResponse(201, AppMessages.DELETED));
         }
         #endregion
+
     }
 }

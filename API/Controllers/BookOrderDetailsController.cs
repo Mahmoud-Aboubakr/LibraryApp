@@ -15,10 +15,12 @@ using Infrastructure.Specifications.BookOrderDetailsSpec;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
 
     public class BookOrderDetailsController : ControllerBase
@@ -43,7 +45,8 @@ namespace API.Controllers
         }
 
         #region GET
-        [HttpGet("GetAllBookOrderDetails")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadBookOrderDetailsDto>>> GetAllBookOrderDetailsAsync()
         {
             var orderBooks = await _uof.GetRepository<BookOrderDetails>().GetAllAsync();
@@ -54,8 +57,9 @@ namespace API.Controllers
             return Ok(_mapper.Map<IReadOnlyList<BookOrderDetails>, IReadOnlyList<ReadBookOrderDetailsDto>>(orderBooks));
         }
 
-        [HttpGet("GetAllBookOrderDetailsWithDetails")]
-        public async Task<ActionResult<Pagination<ReadBookOrderDetailsDto>>> GetAllBookOrderDetailsWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
+        public async Task<ActionResult<Pagination<ReadBookOrderDetailsDto>>> GetAllBookOrderDetailsWithIncludes(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
             {
@@ -73,8 +77,9 @@ namespace API.Controllers
             return Ok(paginationData);
         }
 
-        [HttpGet("GetBookOrderDetailsById")]
-        public async Task<ActionResult<ReadBookOrderDetailsDto>> GetById(int id)
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReadBookOrderDetailsDto>> GetBookOrderDetailsById(int id)
         {
             var exists = await _uof.GetRepository<BookOrderDetails>().Exists(id);
 
@@ -90,8 +95,9 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404 , AppMessages.INVALID_ID ));
         }
 
-        [HttpGet("GetBookOrderDetailsByIdWithDetails")]
-        public async Task<ActionResult<ReadBookOrderDetailsDto>> GetByIdWithIncludesAsync(int id)
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReadBookOrderDetailsDto>> GetBookOrderDetailsByIdWithIncludesAsync(int id)
         {
             var exists = await _uof.GetRepository<BookOrderDetails>().Exists(id);
 
@@ -108,7 +114,8 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-        [HttpGet("SearchInBookOrderDetails")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadBookOrderDetailsDto>>> SearchBookOrderDetails(int? orderId = null, string customerName = null, string bookTitle = null)
         {
             var result = await _orderServices.SearchBookOrderDetails(orderId, customerName, bookTitle);
@@ -121,8 +128,9 @@ namespace API.Controllers
         #endregion
 
         #region DELETE
-        [HttpDelete("DeleteBookOrderDetails")]
-        public async Task<ActionResult> DeleteOrderBookAsync(int id)
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpDelete]
+        public async Task<ActionResult> DeleteOrderBookDetailsAsync(int id)
         {
             var bookOrderDetailsSpec = new BookOrderDetailsWithBookAndCustomerSpec(id);
             var bookOrderDetails = _uof.GetRepository<BookOrderDetails>().FindSpec(bookOrderDetailsSpec).Result;
