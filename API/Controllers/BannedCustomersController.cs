@@ -14,10 +14,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 using Application.Handlers;
 using Application.Interfaces.IValidators;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class BannedCustomersController : ControllerBase
     {
@@ -39,14 +41,16 @@ namespace API.Controllers
         }
 
         #region GET
-        [HttpGet("GetAllBannedCustomers")]
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadBannedCustomerDto>>> GetAllBannedCustomerAsync()
         {
             var customers = await _uof.GetRepository<BannedCustomer>().GetAllListAsync();
             return Ok(_mapper.Map<IReadOnlyList<BannedCustomer>, IReadOnlyList<ReadBannedCustomerDto>>(customers));
         }
 
-        [HttpGet("GetBannedCustomersWithDetails")]
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpGet]
         public async Task<ActionResult<Pagination<ReadBannedCustomerDto>>> GetBannedCustomersWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
@@ -67,14 +71,15 @@ namespace API.Controllers
             return Ok(paginationData);
         }
 
-        [HttpGet("GetBannedCustomerById")]
-        public async Task<ActionResult<ReadBannedCustomerDto>> GetById(int id)
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReadBannedCustomerDto>> GetById(string id)
         {
-            var exists = await _uof.GetRepository<BannedCustomer>().Exists(id);
+            var exists = await _uof.GetRepository<BannedCustomer>().Exists(int.Parse(id));
 
             if (exists)
             {
-                var bannedCustomers = await _uof.GetRepository<BannedCustomer>().GetByIdAsync(id);
+                var bannedCustomers = await _uof.GetRepository<BannedCustomer>().GetByIdAsync(int.Parse(id));
 
                 if (bannedCustomers == null)
                     return NotFound(new ApiResponse(404));
@@ -84,14 +89,15 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-        [HttpGet("GetBannedCustomerByIdWithIncludesAsync")]
-        public async Task<ActionResult<ReadBannedCustomerDto>> GetByIdWithIncludesAsync(int id)
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReadBannedCustomerDto>> GetByIdWithIncludesAsync(string id)
         {
-            var exists = await _uof.GetRepository<BannedCustomer>().Exists(id);
+            var exists = await _uof.GetRepository<BannedCustomer>().Exists(int.Parse(id));
 
             if (exists)
             {
-                var spec = new BannedCustomerWithEmployeeAndCustomerSpec(id);
+                var spec = new BannedCustomerWithEmployeeAndCustomerSpec(int.Parse(id));
                 var bannedCustomers = await _uof.GetRepository<BannedCustomer>().FindSpec(spec);
 
                 if (bannedCustomers == null)
@@ -102,8 +108,8 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-
-        [HttpGet("SearchBannedCustomersByCriteria")]
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadBannedCustomerDto>>> SearchByCriteria(string? EmpName = null, string? CustomerName = null)
         {
             var result = await _searchForBannedCustomerService.SearchForBannedCustomer(EmpName, CustomerName);
@@ -116,8 +122,9 @@ namespace API.Controllers
         #endregion
 
         #region POST
-        [HttpPost("InsertBannedCustomer")]
-        public async Task<ActionResult> InsertannedCustomerAsync(CreateBannedCustomerDto createBannedCustomerDto)
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpPost]
+        public async Task<ActionResult> InsertBannedCustomerAsync(CreateBannedCustomerDto createBannedCustomerDto)
         {
             var result = await _uof.GetRepository<Customer>().Exists(createBannedCustomerDto.CustomerId);
             if (!result)
@@ -131,10 +138,11 @@ namespace API.Controllers
         #endregion
 
         #region DELETE
-        [HttpDelete("DeleteBannedCustomer")]
-        public async Task<ActionResult> DeleteBannedCustomerAsync(int id)
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpDelete]
+        public async Task<ActionResult> DeleteBannedCustomerAsync(string id)
         {
-            var bannedCustomerSpec = new BannedCustomerWithEmployeeAndCustomerSpec(id);
+            var bannedCustomerSpec = new BannedCustomerWithEmployeeAndCustomerSpec(int.Parse(id));
             var bannedCustomer = _uof.GetRepository<BannedCustomer>().FindSpec(bannedCustomerSpec).Result;
             if (bannedCustomer == null)
                 return NotFound(new ApiResponse(404));

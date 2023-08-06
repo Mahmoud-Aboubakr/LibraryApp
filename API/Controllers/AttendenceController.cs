@@ -13,10 +13,12 @@ using Infrastructure.Specifications.AttendanceSpec;
 using Infrastructure.Specifications.BookSpec;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class AttendenceController : ControllerBase
     {
@@ -37,15 +39,16 @@ namespace API.Controllers
         }
 
         #region GET
-        [HttpGet("GetAllAttendenceAsync")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadAttendanceDto>>> GetAllAttendenceAsync()
         {
             var attendences = await _uof.GetRepository<Attendence>().GetAllAsync();
             return Ok(_mapper.Map<IReadOnlyList<Attendence>, IReadOnlyList<ReadAttendanceDto>>(attendences));
         }
 
-
-        [HttpGet("GetAllAttendenceWithDetails")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpGet]
         public async Task<ActionResult<Pagination<ReadAttendanceDto>>> GetAllAttendenceWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
@@ -66,24 +69,26 @@ namespace API.Controllers
             return Ok(paginationData);
         }
 
-        [HttpGet("GetAttendenceById")]
-        public async Task<ActionResult<ReadAttendanceDto>> GetAttendenceByIdAsync(int id)
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReadAttendanceDto>> GetAttendenceByIdAsync(string id)
         {
-            if (await _uof.GetRepository<Attendence>().Exists(id))
+            if (await _uof.GetRepository<Attendence>().Exists(int.Parse(id)))
             {
-                var attendences = await _uof.GetRepository<Attendence>().GetByIdAsync(id);
+                var attendences = await _uof.GetRepository<Attendence>().GetByIdAsync(int.Parse(id));
                 return Ok(_mapper.Map<Attendence, ReadAttendanceDto>(attendences));
             }
 
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-        [HttpGet("GetAttendenceByIdWithDetailAsync")]
-        public async Task<ActionResult<ReadAttendanceDto>> GetAttendenceByIdWithDetailAsync(int id)
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReadAttendanceDto>> GetAttendenceByIdWithDetailAsync(string id)
         {
-            if (await _uof.GetRepository<Attendence>().Exists(id))
+            if (await _uof.GetRepository<Attendence>().Exists(int.Parse(id)))
             {
-                var spec = new AttendanceWithEmployeeSpec(id);
+                var spec = new AttendanceWithEmployeeSpec(int.Parse(id));
                 var attendences = await _uof.GetRepository<Attendence>().FindSpec(spec);
                 if (attendences == null)
                     return NotFound(new ApiResponse(404));
@@ -93,9 +98,8 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-
-        [HttpGet("SearchAttendenceWithCriteria")]
-
+        [Authorize(Roles = "Manager,HR")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadAttendanceDto>>> SearchEmpWithCriteria(string? empName = null)
         {
             var result = await _attendenceServices.SearchAttendenceDataWithDetail(empName);
@@ -109,7 +113,8 @@ namespace API.Controllers
         #endregion
 
         #region POST
-        [HttpPost("InsertAttendence")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpPost]
         public async Task<ActionResult> InsertAttendenceAsync(CreateAttendenceDto attendenceDto)
         {
             if (!_attendenceServices.IsValidAttendencePermission(attendenceDto.Permission))
@@ -128,7 +133,8 @@ namespace API.Controllers
         #endregion
 
         #region PUT
-        [HttpPut("UpdateAttendence")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpPut]
         public async Task<ActionResult> UpdateAttendenceAsync(ReadAttendanceDto attendenceDto)
         {
             if (!_attendenceServices.IsValidAttendencePermission(attendenceDto.Permission))
@@ -148,7 +154,8 @@ namespace API.Controllers
         #endregion
 
         #region DELETE
-        [HttpDelete("DeleteAttendence")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpDelete]
         public async Task<ActionResult> DeleteAttendenceAsync(int id)
         {
             var attendenceSpec = new AttendanceWithEmployeeSpec(id);

@@ -18,10 +18,12 @@ using Infrastructure.Specifications.EmployeeSpec;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Numerics;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class CustomersController : ControllerBase
     {
@@ -46,7 +48,8 @@ namespace API.Controllers
         }
 
         #region GET
-        [HttpGet("GetAllCustomers")]
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpGet]
         public async Task<ActionResult<Pagination<ReadCustomerDto>>> GetAllCustomerAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
@@ -67,20 +70,21 @@ namespace API.Controllers
             return Ok(paginationData);
         }
 
-        [HttpGet("GetCustomerById")]
-        public async Task<ActionResult> GetCustomerByIdAsync(int id)
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetCustomerByIdAsync(string id)
         {
-            if (await _uof.GetRepository<Customer>().Exists(id))
+            if (await _uof.GetRepository<Customer>().Exists(int.Parse(id)))
             {
-                var author = await _uof.GetRepository<Customer>().GetByIdAsync(id);
+                var author = await _uof.GetRepository<Customer>().GetByIdAsync(int.Parse(id));
                 return Ok(_mapper.Map<Customer, ReadCustomerDto>(author));
             }
 
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-
-        [HttpGet("SearchCustomers")]
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadCustomerDto>>> SearchWithCriteria(string? Name = null, string? PhoneNumber = null)
         {
             var result = await _searchCustomerService.SearchWithCriteria(Name, PhoneNumber);
@@ -93,7 +97,8 @@ namespace API.Controllers
         #endregion
 
         #region POST
-        [HttpPost("InsertCustomer")]
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpPost]
         public async Task<ActionResult> InsertCustomerAsync(CreateCustomerDto createCustomerDto)
         {
             if (_phoneNumberValidator.IsValidPhoneNumber(createCustomerDto.CustomerPhoneNumber))
@@ -112,7 +117,8 @@ namespace API.Controllers
         #endregion
 
         #region PUT
-        [HttpPut("UpdateCustomer")]
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpPut]
         public async Task<ActionResult> UpdateCustomerAsync(ReadCustomerDto readCustomerDto)
         {
             var result = await _uof.GetRepository<Customer>().Exists(readCustomerDto.Id);
@@ -129,16 +135,17 @@ namespace API.Controllers
         #endregion
 
         #region DELETE
-        [HttpDelete("DeleteCustomer")]
-        public async Task<ActionResult> DeleteCustomerAsync(int id)
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpDelete]
+        public async Task<ActionResult> DeleteCustomerAsync(string id)
         {
-            var bannedCustomerSpec = new BannedCustomerWithEmployeeAndCustomerSpec(null, id);
+            var bannedCustomerSpec = new BannedCustomerWithEmployeeAndCustomerSpec(null, int.Parse(id));
             var result = _uof.GetRepository<BannedCustomer>().FindAllSpec(bannedCustomerSpec).Result;
             if (result.Count() > 0)
                 return BadRequest(new ApiResponse(400, AppMessages.FAILED_DELETE));
             else
             {
-                var customerSpec = new CustomerSpec(id);
+                var customerSpec = new CustomerSpec(int.Parse(id));
                 if (customerSpec == null)
                     return NotFound(new ApiResponse(404));
                 var customer = _uof.GetRepository<Customer>().FindSpec(customerSpec).Result;

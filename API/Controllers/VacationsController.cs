@@ -14,10 +14,12 @@ using Infrastructure.Specifications.AttendanceSpec;
 using Infrastructure.Specifications.VacationSpec;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class VacationsController : ControllerBase
     {
@@ -38,14 +40,16 @@ namespace API.Controllers
         }
 
         #region Get
-        [HttpGet("GetAllVacationsAsync")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadVacationDto>>> GetAllVacationsAsync()
         {
             var vacations = await _uof.GetRepository<Vacation>().GetAllAsync();
             return Ok(_mapper.Map<IReadOnlyList<Vacation>, IReadOnlyList<ReadVacationDto>>(vacations));
         }
 
-        [HttpGet("GetAllVacationsWithDetails")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<ReadVacationDto>>> GetAllVacationsWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
@@ -61,24 +65,26 @@ namespace API.Controllers
             return Ok(paginationData);
         }
 
-        [HttpGet("GetVacationById")]
-        public async Task<ActionResult<ReadVacationDto>> GetVacationByIdAsync(int id)
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReadVacationDto>> GetVacationByIdAsync(string id)
         {
-            if (await _uof.GetRepository<Vacation>().Exists(id))
+            if (await _uof.GetRepository<Vacation>().Exists(int.Parse(id)))
             {
-                var vacations = await _uof.GetRepository<Vacation>().GetByIdAsync(id);
+                var vacations = await _uof.GetRepository<Vacation>().GetByIdAsync(int.Parse(id));
                 return Ok(_mapper.Map<Vacation, ReadVacationDto>(vacations));
             }
 
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-        [HttpGet("GetVacationByIdWithDetailAsync")]
-        public async Task<ActionResult<ReadVacationDto>> GetVacationByIdWithDetailAsync(int id)
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReadVacationDto>> GetVacationByIdWithDetailAsync(string id)
         {
-            if (await _uof.GetRepository<Vacation>().Exists(id))
+            if (await _uof.GetRepository<Vacation>().Exists(int.Parse(id)))
             {
-                var spec = new VacationWithEmployeeSpec(id);
+                var spec = new VacationWithEmployeeSpec(int.Parse(id));
                 var vacations = await _uof.GetRepository<Vacation>().FindSpec(spec);
                 if (vacations == null)
                     return NotFound(new ApiResponse(404));
@@ -88,7 +94,8 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-        [HttpGet("SearchVacationWithCriteria")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadVacationDto>>> SearchVacationWithCriteria(string? empName = null)
         {
             var result = await _vacServ.SearchVactionDataWithDetail(empName);
@@ -99,10 +106,11 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetTotalVacations")]
-        public async Task<ActionResult<IReadOnlyList<GetVacationsCountDto>>> GetTotalVacations(int empId, DateTime FromDate, DateTime ToDate)
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult<IReadOnlyList<GetVacationsCountDto>>> GetTotalVacations(string empId, DateTime FromDate, DateTime ToDate)
         {
-            var result = await _vacServ.GetTotalVacationsByEmpId(empId, FromDate, ToDate);
+            var result = await _vacServ.GetTotalVacationsByEmpId(int.Parse(empId), FromDate, ToDate);
             if (result == null)
             {
                 return NotFound(new ApiResponse(404));
@@ -112,7 +120,8 @@ namespace API.Controllers
         #endregion
 
         #region Post
-        [HttpPost("InsertVacation")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpPost]
         public async Task<ActionResult> InsertVacationAsync(CreateVacationDto vacationDto)
         {
             var result = await _uof.GetRepository<Employee>().Exists(vacationDto.EmpId);
@@ -136,7 +145,8 @@ namespace API.Controllers
         #endregion
 
         #region Put
-        [HttpPut("UpdateVacation")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpPut]
         public async Task<ActionResult> UpdateVacationAsync(ReadVacationDto vacationDto)
         {
             var result = await _uof.GetRepository<Vacation>().Exists(vacationDto.Id);
@@ -160,10 +170,11 @@ namespace API.Controllers
         #endregion
 
         #region Delete
-        [HttpDelete("DeleteVacation")]
-        public async Task<ActionResult> DeleteVacationAsync(int id)
+        [Authorize(Roles = "Manager,HR")]
+        [HttpDelete]
+        public async Task<ActionResult> DeleteVacationAsync(string id)
         {
-            var vacationSpec = new VacationWithEmployeeSpec(id);
+            var vacationSpec = new VacationWithEmployeeSpec(int.Parse(id));
             var vacation = _uof.GetRepository<Vacation>().FindSpec(vacationSpec).Result;
             if (vacation == null)
                 return NotFound(new ApiResponse(404));
