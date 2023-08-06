@@ -67,5 +67,49 @@ namespace API.Controllers
             return Ok(model);
         }
 
+        [Authorize(Roles = "Manager")]
+        [HttpGet("GetAllUserRegisterData")]
+        public async Task<IActionResult> GetAllUserRegisterData()
+        {
+            var registerData = await _authService.GetAllRegisterDataAsync();
+
+            return Ok(registerData);
+        }
+
+        [Authorize(Roles = "Manager")]
+        [HttpGet("GetUserRegisterDataByEmail")]
+        public async Task<IActionResult> GetUserRegisterDataByEmail(string email)
+        {
+            var registerData = await _authService.GetRegisterDataByEmailAsync(email);
+
+            if (registerData == null)
+                return NotFound(new ApiResponse(404));
+
+            return Ok(registerData);
+        }
+
+        [Authorize(Roles = "Manager")]
+        [HttpPut("UpdateUserRegisterDataByEmail")]
+        public async Task<IActionResult> UpdateUserRegisterDataByEmail(string email, UpdateRegisterDataDto updatedData)
+        {
+            var updatedRegisterData = await _authService.UpdateUserRegisterDataByEmailAsync(email, updatedData);
+
+            if (updatedRegisterData == null)
+                return NotFound(new ApiResponse(404));
+
+            return Ok(updatedRegisterData);
+        }
+
+        [Authorize(Roles = "Manager")]
+        [HttpDelete("DeleteUserByEmailAsync")]
+        public async Task<IActionResult> DeleteUserByEmailAsync(string email)
+        {
+            var deletedData = await _authService.DeleteUserDataByEmailAsync(email);
+
+            if (!deletedData)
+                return BadRequest(new ApiResponse(400));
+
+            return Ok(new ApiResponse(201, AppMessages.DELETED));
+        }
     }
 }

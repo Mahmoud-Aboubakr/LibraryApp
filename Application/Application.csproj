@@ -9,6 +9,7 @@
   <ItemGroup>
     <Folder Include="CommandsAndQueries\" />
     <Folder Include="Behaviors\" />
+    <Folder Include="Mappers\" />
   </ItemGroup>
 
   <ItemGroup>
