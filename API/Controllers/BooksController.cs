@@ -13,6 +13,8 @@ using Infrastructure.Specifications.BookOrderDetailsSpec;
 using Infrastructure.Specifications.BookSpec;
 using Infrastructure.Specifications.CustomerSpec;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace API.Controllers
 {
@@ -40,7 +42,8 @@ namespace API.Controllers
         }
 
         #region GET
-        [HttpGet("GetAllBooksAsync")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadBookDto>>> GetAllBooksAsync()
         {
             var books = await _uof.GetRepository<Book>().GetAllAsync();
@@ -51,7 +54,8 @@ namespace API.Controllers
             return Ok(_mapper.Map<IReadOnlyList<Book>, IReadOnlyList<ReadBookDto>>(books));
         }
 
-        [HttpGet("GetAllBooksWithDetails")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
         public async Task<ActionResult<Pagination<ReadBookDto>>> GetAllBooksWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
@@ -70,6 +74,7 @@ namespace API.Controllers
             return Ok(paginationData);
         }
 
+        [Authorize(Roles = "Manager, Librarian")]
         [HttpGet("{id}")]
         public async Task<ActionResult<ReadBookDto>> GetBookByIdAsync(string id)
         {
@@ -87,6 +92,7 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
+        [Authorize(Roles = "Manager, Librarian")]
         [HttpGet("{id}")]
         public async Task<ActionResult<ReadBookDto>> GetBookByIdWithDetailAsync(string id)
         {
@@ -104,9 +110,9 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-
-        [HttpGet("SearchByCriteria")]
-        public async Task<ActionResult<IReadOnlyList<ReadBookDto>>> SearchByCriteria(string? bookTitle = null, string? authorName = null, string? publisherName = null)
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
+        public async Task<ActionResult<IReadOnlyList<ReadBookDto>>> SearchBookByCriteria(string? bookTitle = null, string? authorName = null, string? publisherName = null)
         {
             var result = await _searchBookDataWithDetailService.SearchBookDataWithDetail(bookTitle, authorName, publisherName);
             if (result == null || result.Count == 0)
@@ -119,7 +125,8 @@ namespace API.Controllers
         #endregion
 
         #region POST
-        [HttpPost("Insert")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpPost]
         public async Task<ActionResult> InsertBookAsync(CreateBookDto insertBookDto)
         {
             if (!_numbersValidator.IsValidInt(insertBookDto.Quantity))
@@ -135,7 +142,8 @@ namespace API.Controllers
         #endregion
 
         #region PUT
-        [HttpPut("Update")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpPut]
         public async Task<ActionResult> UpdateBookAsync(UpdateBookDto updateBookDto)
         {
             var result = await _uof.GetRepository<Book>().Exists(updateBookDto.Id);
@@ -155,7 +163,8 @@ namespace API.Controllers
         #endregion
 
         #region DELETE
-        [HttpDelete("DeleteBook")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpDelete]
         public async Task<ActionResult> DeleteBookAsync(int id)
         {
             var bookOrderDetailsSpec = new BookOrderDetailsWithBookAndCustomerSpec(null, id);

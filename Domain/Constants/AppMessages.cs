@@ -46,5 +46,6 @@ namespace Domain.Constants
         public const string INVALID_IDorRole = "Invalid user ID or Role";
         public const string ASSIGNED_ROLE = "User already assigned to this role";
         public const string WRONG = "Something went wrong";
+        public const string INVALID_EMAIL = "This is invalid Email";
     }
 }

@@ -14,10 +14,12 @@ using Infrastructure.Specifications.OrderSpec;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class OrdersController : ControllerBase
     {
@@ -41,7 +43,8 @@ namespace API.Controllers
         }
 
         #region Get
-        [HttpGet("GetAllOrders")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<ReadOrderDto>>> GetAllOrders(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
@@ -60,8 +63,9 @@ namespace API.Controllers
             return Ok(paginationData);
         }
 
-        [HttpGet("GetByIdWithIncludes")]
-        public async Task<ActionResult<ReadOrderDto>> GetByIdWithIncludesAsync(int id)
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReadOrderDto>> GetOrdersByIdWithIncludesAsync(int id)
         {
             var exists = await _uof.GetRepository<Order>().Exists(id);
 
@@ -78,8 +82,9 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-        [HttpGet("GetOrderById")]
-        public async Task<ActionResult<ReadOrderDto>> GetById(int id)
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReadOrderDto>> GetOrderById(int id)
         {
             var exists = await _uof.GetRepository<Order>().Exists(id);
 
@@ -96,8 +101,8 @@ namespace API.Controllers
         }
 
 
-
-        [HttpGet("SearchOrderWithCriteria")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadOrderDto>>> SearchOrderByCriteria(int? orderId = null, int? customerId = null, string customerName = null, decimal? totalPrice = null, DateTime? date = null)
         {
             var result = await _orderServices.SearchOrders(orderId, customerId, customerName, totalPrice, date);
@@ -110,7 +115,8 @@ namespace API.Controllers
         #endregion
 
         #region Post
-        [HttpPost("InsertOrder")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpPost]
         public async Task<ActionResult> InsertOrderAsync(CreateOrderDto createOrder)
         {
             if (!_numbersValidator.IsValidInt(createOrder.CustomerId))
@@ -125,7 +131,7 @@ namespace API.Controllers
             return Ok(new ApiResponse(201, AppMessages.INSERTED));
         }
 
-        [HttpPost("InsertBookOrder")]
+        [HttpPost]
         public async Task<ActionResult> InsertOrderBookAsync(CreateBookOrderDetailsDto createOrderBooks)
         {
             if (!_numbersValidator.IsValidInt(createOrderBooks.OrderId))
