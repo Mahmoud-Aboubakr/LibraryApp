@@ -13,9 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize(Roles = "Manager")]
     public class AuthorsController : ControllerBase
     {
         private readonly IUnitOfWork _uof;
@@ -36,9 +35,10 @@ namespace API.Controllers
             _authorServices = authorServices;
             _logger = logger;
         }
-        
+
         #region GET
-        [HttpGet("GetAllAuthors")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
         public async Task<ActionResult<Pagination<ReadAuthorDto>>> GetAllAuthorsAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
@@ -56,8 +56,9 @@ namespace API.Controllers
             var paginationData = new Pagination<ReadAuthorDto>(spec.PageIndex, spec.PageSize, totalAuthors, mappedauthors);
             return Ok(paginationData);
         }
-                  
 
+
+        [Authorize(Roles = "Manager, Librarian")]
         [HttpGet("{id}")]
        
         public async Task<ActionResult> GetAuthorByIdAsync(int id)
@@ -70,8 +71,9 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404 , AppMessages.INVALID_ID));
         }
 
-        [HttpGet("SearchAuthorWithCriteria")]
-        public async Task<ActionResult<IReadOnlyList<ReadAuthorDto>>> SearchWithCriteria(string name = null, string phone = null)
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
+        public async Task<ActionResult<IReadOnlyList<ReadAuthorDto>>> SearchAuthorWithCriteria(string name = null, string phone = null)
         {
             if (!_phoneNumberValidator.IsValidPhoneNumber(phone))
                 return BadRequest(new ApiResponse(400, AppMessages.INVALID_PHONENUMBER));
@@ -85,7 +87,8 @@ namespace API.Controllers
         #endregion
 
         #region POST
-        [HttpPost("InsertAuthor")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpPost]
         public async Task<ActionResult> InsertAuthorAsync(CreateAuthorDto authorDto)
         {
             if (_phoneNumberValidator.IsValidPhoneNumber(authorDto.AuthorPhoneNumber))
@@ -104,7 +107,8 @@ namespace API.Controllers
         #endregion
 
         #region PUT
-        [HttpPut("UpdateAuthor")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpPut]
         public async Task<ActionResult> UpdateAuthorAsync(UpdateAuthorDto authorDto)
         {
             var result = await _uof.GetRepository<Author>().Exists(authorDto.Id);
@@ -122,7 +126,8 @@ namespace API.Controllers
         #endregion
 
         #region DELETE
-        [HttpDelete("DeleteAuthor")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpDelete]
         public async Task<ActionResult> DeleteAuthorAsync(int id)
         {
             var bookSpec = new BooksWithAuthorAndPublisherSpec(null, id, null);

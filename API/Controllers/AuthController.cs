@@ -13,7 +13,7 @@ using System.Data;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -24,7 +24,7 @@ namespace API.Controllers
             _authService = authService;
         }
 
-        [HttpPost("register")]
+        [HttpPost]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterModel model)
         {
             if (!ModelState.IsValid)
@@ -38,7 +38,8 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("login")]
+
+        [HttpPost]
         public async Task<IActionResult> GetTokenAsync([FromBody] TokenRequestModel model)
         {
             if (!ModelState.IsValid)
@@ -53,7 +54,7 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "Manager")]
-        [HttpPost("addrole")]
+        [HttpPost]
         public async Task<IActionResult> AddRoleAsync([FromBody] AddRoleModel model)
         {
             if (!ModelState.IsValid)
@@ -68,7 +69,7 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "Manager")]
-        [HttpGet("GetAllUserRegisterData")]
+        [HttpGet]
         public async Task<IActionResult> GetAllUserRegisterData()
         {
             var registerData = await _authService.GetAllRegisterDataAsync();
@@ -77,7 +78,7 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "Manager")]
-        [HttpGet("GetUserRegisterDataByEmail")]
+        [HttpGet]
         public async Task<IActionResult> GetUserRegisterDataByEmail(string email)
         {
             var registerData = await _authService.GetRegisterDataByEmailAsync(email);
@@ -89,7 +90,7 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "Manager")]
-        [HttpPut("UpdateUserRegisterDataByEmail")]
+        [HttpPut]
         public async Task<IActionResult> UpdateUserRegisterDataByEmail(string email, UpdateRegisterDataDto updatedData)
         {
             var updatedRegisterData = await _authService.UpdateUserRegisterDataByEmailAsync(email, updatedData);
@@ -101,7 +102,7 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "Manager")]
-        [HttpDelete("DeleteUserByEmailAsync")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteUserByEmailAsync(string email)
         {
             var deletedData = await _authService.DeleteUserDataByEmailAsync(email);

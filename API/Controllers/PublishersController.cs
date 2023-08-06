@@ -11,10 +11,12 @@ using Application;
 using Infrastructure.Specifications.BookSpec;
 using Infrastructure.Specifications.PublisherSpec;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class PublishersController : ControllerBase
     {
@@ -38,7 +40,8 @@ namespace API.Controllers
         }
 
         #region Get
-        [HttpGet("GetAll")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadPublisherDto>>> GetAllPublishersAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
@@ -57,7 +60,8 @@ namespace API.Controllers
             return Ok(paginationData);
         }
 
-        [HttpGet("GetById")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet("{id}")]
         public async Task<ActionResult> GetPublisherByIdAsync(int id)
         {
             if (await _uof.GetRepository<Publisher>().Exists(id))
@@ -72,8 +76,9 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-        [HttpGet("SearchWithCriteria")]
-        public async Task<ActionResult<IReadOnlyList<ReadPublisherDto>>> SearchWithCriteria(string name = null, string phone = null)
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpGet]
+        public async Task<ActionResult<IReadOnlyList<ReadPublisherDto>>> SearchPublisherWithCriteria(string name = null, string phone = null)
         {
             if (!_phoneNumberValidator.IsValidPhoneNumber(phone))
                 return BadRequest(new ApiResponse(400, AppMessages.INVALID_PHONENUMBER));
@@ -87,7 +92,8 @@ namespace API.Controllers
         #endregion
 
         #region Post
-        [HttpPost("Insert")]
+        [Authorize(Roles = "Manager, Librarian")]
+        [HttpPost]
         public async Task<ActionResult> InsertPublisherAsync(CreatePublisherDto createPublisherDto)
         {
             if (_phoneNumberValidator.IsValidPhoneNumber(createPublisherDto.PublisherPhoneNumber))
@@ -106,6 +112,7 @@ namespace API.Controllers
         #endregion
 
         #region Put
+        [Authorize(Roles = "Manager, Librarian")]
         [HttpPut]
         public async Task<ActionResult> UpdatePublisherAsync(ReadPublisherDto publisherDto)
         {
@@ -125,6 +132,7 @@ namespace API.Controllers
         #endregion
 
         #region Delete
+        [Authorize(Roles = "Manager, Librarian")]
         [HttpDelete]
         public async Task<ActionResult> DeletePublisherAsync(int id)
         {
@@ -142,5 +150,6 @@ namespace API.Controllers
             }
         }
         #endregion
+
     }
 }
