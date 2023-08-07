@@ -16,10 +16,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class BorrowsController : ControllerBase
     {
@@ -43,14 +45,15 @@ namespace API.Controllers
         }
 
         #region GET
-        [HttpGet("GetAllBorrows")]
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadBorrowDto>>> GetAllBorrowsAsync()
         {
             var borrows = await _uof.GetRepository<Borrow>().GetAllAsync();
             return Ok(_mapper.Map<IReadOnlyList<Borrow>, IReadOnlyList<ReadBorrowDto>>(borrows));
         }
-
-        [HttpGet("GetAllBorrowsWithDetails")]
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpGet]
         public async Task<ActionResult<Pagination<ReadBorrowDto>>> GetAllBorrowsWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
@@ -70,8 +73,8 @@ namespace API.Controllers
 
             return Ok(paginationData);
         }
-
-        [HttpGet("GetBorrowById")]
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ReadBorrowDto>> GetById(int id)
         {
             var exists = await _uof.GetRepository<Borrow>().Exists(id);
@@ -87,8 +90,8 @@ namespace API.Controllers
             }
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
-
-        [HttpGet("GetBorrowByIdWithDetails")]
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ReadBorrowDto>> GetByIdWithIncludesAsync(int id)
         {
             var exists = await _uof.GetRepository<Borrow>().Exists(id);
@@ -106,8 +109,8 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-
-        [HttpGet("SearchBorrowsByCriteria")]
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadBorrowDto>>> SearchByCriteria(string customerName = null, string bookTitle = null, DateTime? date = null)
         {
             var result = await _borrowServices.SearchWithCriteria(customerName, bookTitle, date);
@@ -120,7 +123,8 @@ namespace API.Controllers
         #endregion
 
         #region POST
-        [HttpPost("InsertBorrow")]
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpPost]
         public async Task<ActionResult> InsertBorrowAsync(CreateBorrowDto borrowDto)
         {
             var banned = await _borrowServices.IsBannedCustomer(borrowDto.CustomerId);
@@ -153,10 +157,11 @@ namespace API.Controllers
         #endregion
 
         #region DELETE
-        [HttpDelete("DeleteBorrow")]
-        public async Task<ActionResult> DeleteBorrowAsync(int id)
+        [Authorize(Roles = "Manager,Librarian")]
+        [HttpDelete]
+        public async Task<ActionResult> DeleteBorrowAsync(string id)
         {
-            var borrowSpec = new BorrowWithBookAndCustomerSpec(id);
+            var borrowSpec = new BorrowWithBookAndCustomerSpec(int.Parse(id));
             var borrow = _uof.GetRepository<Borrow>().FindSpec(borrowSpec).Result;
             if (borrow == null)
                 return NotFound(new ApiResponse(404));
