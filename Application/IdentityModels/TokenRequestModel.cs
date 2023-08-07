@@ -5,17 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs.Identity
+namespace Application.IdentityModels
 {
-    public class LoginDto
+    public class TokenRequestModel
     {
         [EmailAddress]
-        [Required(ErrorMessage = "Email is required")]
-        [MaxLength(200)]
+        [Required]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Password is required")]
-        [MaxLength(50)]
+        [Required]
         public string Password { get; set; }
     }
 }

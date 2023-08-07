@@ -47,5 +47,8 @@ namespace Domain.Constants
         public const string ASSIGNED_ROLE = "User already assigned to this role";
         public const string WRONG = "Something went wrong";
         public const string INVALID_EMAIL = "This is invalid Email";
+        public const string INVALID_TOKEN = "This is invalid Token";
+        public const string INACTIVE_TOKEN = "This is inactive Token";
+        public const string REQUIRED_TOKEN = "Token is required";
     }
 }

@@ -1,5 +1,5 @@
-﻿using Application.Interfaces.IIdentityService;
-using Domain.Entities.Identity;
+﻿using Application.IdentityModels;
+using Application.Interfaces.IIdentityService;
 using Infrastructure.IdentityServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -36,7 +36,8 @@ namespace API.Extensions
                         ValidateLifetime = true,
                         ValidIssuer = config["JWT:Issuer"],
                         ValidAudience = config["JWT:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"]))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"])),
+                        ClockSkew = TimeSpan.Zero
                     };
                 });
 

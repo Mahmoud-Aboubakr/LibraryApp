@@ -13,9 +13,9 @@ using Application.DTOs.Publisher;
 using Application.DTOs.ReturnedOrder;
 using Application.DTOs.ReturnOrderDetails;
 using Application.DTOs.Vacation;
+using Application.IdentityModels;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Entities.Identity;
 
 namespace Application.Mappers
 {

@@ -1,6 +1,6 @@
 using API.Extensions;
 using API.Middlewares;
-using Domain.Entities.Identity;
+using Application.IdentityModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;

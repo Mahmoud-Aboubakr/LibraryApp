@@ -1,5 +1,5 @@
-﻿using Domain.Entities;
-using Domain.Entities.Identity;
+﻿using Application.IdentityModels;
+using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Persistence.Context;
 using System.Text.Json;

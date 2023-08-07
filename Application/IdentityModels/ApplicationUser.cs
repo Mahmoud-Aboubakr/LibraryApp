@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities.Identity
+namespace Application.IdentityModels
 {
     public class ApplicationUser : IdentityUser
     {
+        public List<RefreshToken> RefreshTokens { get; set; }
     }
 }

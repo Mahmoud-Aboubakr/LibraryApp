@@ -62,11 +62,11 @@ namespace API.Controllers
 
         [Authorize(Roles = "Manager, Librarian")]
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetPublisherByIdAsync(int id)
+        public async Task<ActionResult> GetPublisherByIdAsync(string id)
         {
-            if (await _uof.GetRepository<Publisher>().Exists(id))
+            if (await _uof.GetRepository<Publisher>().Exists(int.Parse(id)))
             {
-                var publisher = await _uof.GetRepository<Publisher>().GetByIdAsync(id);
+                var publisher = await _uof.GetRepository<Publisher>().GetByIdAsync(int.Parse(id));
 
                 if (publisher == null)
                     return NotFound(new ApiResponse(404));
