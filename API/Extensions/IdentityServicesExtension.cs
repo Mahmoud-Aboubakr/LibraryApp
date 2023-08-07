@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.IIdentityService;
+﻿using Application.IdentityModels;
+using Application.Interfaces.IIdentityService;
 using Domain.Entities.Identity;
 using Infrastructure.IdentityServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Identity;
+using Application.IdentityModels;
 using Domain.Entities.Identity;
 using System;
 using System.Collections.Generic;
@@ -17,5 +18,8 @@ namespace Application.Interfaces.IIdentityService
         Task<RegisterDataDto> GetRegisterDataByEmailAsync(string email);
         Task<UpdateRegisterDataDto> UpdateUserRegisterDataByEmailAsync(string email, UpdateRegisterDataDto updatedData);
         Task<bool> DeleteUserDataByEmailAsync(string email);
+        Task<AuthModel> RefreshTokenAsync(string token);
+        public void SetRefreshTokenInCookie(string refreshToken, DateTime expires);
+        Task<bool> RevokeTokenAsync(string token);
     }
 }

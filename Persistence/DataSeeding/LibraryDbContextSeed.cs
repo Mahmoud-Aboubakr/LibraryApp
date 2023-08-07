@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.IdentityModels;
+using Domain.Entities;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Persistence.Context;

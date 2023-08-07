@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence.Context;
 
@@ -11,9 +12,10 @@ using Persistence.Context;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    partial class LibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230807064935_AddRefreshTokensTable")]
+    partial class AddRefreshTokensTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,71 +23,6 @@ namespace Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("Application.IdentityModels.ApplicationUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
-                });
 
             modelBuilder.Entity("Domain.Entities.Attendence", b =>
                 {
@@ -101,7 +38,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("DayDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 8, 7, 16, 35, 7, 7, DateTimeKind.Local).AddTicks(2091));
+                        .HasDefaultValue(new DateTime(2023, 8, 7, 9, 49, 35, 627, DateTimeKind.Local).AddTicks(1502));
 
                     b.Property<string>("DeviceName")
                         .IsRequired()
@@ -111,7 +48,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("EmpArrivalTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 8, 7, 16, 35, 7, 7, DateTimeKind.Local).AddTicks(1071));
+                        .HasDefaultValue(new DateTime(2023, 8, 7, 9, 49, 35, 627, DateTimeKind.Local).AddTicks(427));
 
                     b.Property<int>("EmpId")
                         .HasColumnType("int");
@@ -119,7 +56,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("EmpLeavingTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 8, 7, 16, 35, 7, 7, DateTimeKind.Local).AddTicks(1327));
+                        .HasDefaultValue(new DateTime(2023, 8, 7, 9, 49, 35, 627, DateTimeKind.Local).AddTicks(1016));
 
                     b.Property<int>("Month")
                         .ValueGeneratedOnAddOrUpdate()
@@ -188,7 +125,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("BanDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 8, 7, 16, 35, 7, 7, DateTimeKind.Local).AddTicks(8810));
+                        .HasDefaultValue(new DateTime(2023, 8, 7, 9, 49, 35, 627, DateTimeKind.Local).AddTicks(8740));
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime");
@@ -317,7 +254,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("BorrowDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 8, 7, 16, 35, 7, 8, DateTimeKind.Local).AddTicks(5617));
+                        .HasDefaultValue(new DateTime(2023, 8, 7, 9, 49, 35, 628, DateTimeKind.Local).AddTicks(8844));
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime");
@@ -333,7 +270,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("ReturnDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 8, 10, 16, 35, 7, 8, DateTimeKind.Local).AddTicks(5867));
+                        .HasDefaultValue(new DateTime(2023, 8, 10, 9, 49, 35, 628, DateTimeKind.Local).AddTicks(9145));
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime");
@@ -439,6 +376,71 @@ namespace Persistence.Migrations
                     b.ToTable("Employees");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Identity.ApplicationUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -462,7 +464,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 8, 7, 16, 35, 7, 8, DateTimeKind.Local).AddTicks(7980));
+                        .HasDefaultValue(new DateTime(2023, 8, 7, 9, 49, 35, 629, DateTimeKind.Local).AddTicks(2787));
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,3)");
@@ -514,7 +516,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("SalaryDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 8, 7, 16, 35, 7, 9, DateTimeKind.Local).AddTicks(738));
+                        .HasDefaultValue(new DateTime(2023, 8, 7, 9, 49, 35, 629, DateTimeKind.Local).AddTicks(6758));
 
                     b.Property<decimal>("TotalSalary")
                         .ValueGeneratedOnAddOrUpdate()
@@ -592,7 +594,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("ReturnDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 8, 7, 16, 35, 7, 9, DateTimeKind.Local).AddTicks(1586));
+                        .HasDefaultValue(new DateTime(2023, 8, 7, 9, 49, 35, 629, DateTimeKind.Local).AddTicks(7848));
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,3)");
@@ -664,7 +666,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("DayDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2023, 8, 7, 16, 35, 7, 9, DateTimeKind.Local).AddTicks(4597));
+                        .HasDefaultValue(new DateTime(2023, 8, 7, 9, 49, 35, 630, DateTimeKind.Local).AddTicks(3171));
 
                     b.Property<string>("DeviceName")
                         .IsRequired()
@@ -823,42 +825,6 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Application.IdentityModels.ApplicationUser", b =>
-                {
-                    b.OwnsMany("Application.IdentityModels.RefreshToken", "RefreshTokens", b1 =>
-                        {
-                            b1.Property<string>("ApplicationUserId")
-                                .HasColumnType("nvarchar(450)");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"), 1L, 1);
-
-                            b1.Property<DateTime>("CreatedOn")
-                                .HasColumnType("datetime");
-
-                            b1.Property<DateTime>("ExpiresOn")
-                                .HasColumnType("datetime");
-
-                            b1.Property<DateTime?>("RevokedOn")
-                                .HasColumnType("datetime");
-
-                            b1.Property<string>("Token")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("ApplicationUserId", "Id");
-
-                            b1.ToTable("RefreshToken");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ApplicationUserId");
-                        });
-
-                    b.Navigation("RefreshTokens");
-                });
-
             modelBuilder.Entity("Domain.Entities.Attendence", b =>
                 {
                     b.HasOne("Domain.Entities.Employee", "Employee")
@@ -946,6 +912,42 @@ namespace Persistence.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Identity.ApplicationUser", b =>
+                {
+                    b.OwnsMany("Domain.Entities.Identity.RefreshToken", "RefreshTokens", b1 =>
+                        {
+                            b1.Property<string>("ApplicationUserId")
+                                .HasColumnType("nvarchar(450)");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"), 1L, 1);
+
+                            b1.Property<DateTime>("CreatedOn")
+                                .HasColumnType("datetime");
+
+                            b1.Property<DateTime>("ExpiresOn")
+                                .HasColumnType("datetime");
+
+                            b1.Property<DateTime?>("RevokedOn")
+                                .HasColumnType("datetime");
+
+                            b1.Property<string>("Token")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("ApplicationUserId", "Id");
+
+                            b1.ToTable("RefreshToken");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ApplicationUserId");
+                        });
+
+                    b.Navigation("RefreshTokens");
+                });
+
             modelBuilder.Entity("Domain.Entities.Order", b =>
                 {
                     b.HasOne("Domain.Entities.Customer", "Customer")
@@ -1020,7 +1022,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Application.IdentityModels.ApplicationUser", null)
+                    b.HasOne("Domain.Entities.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1029,7 +1031,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Application.IdentityModels.ApplicationUser", null)
+                    b.HasOne("Domain.Entities.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1044,7 +1046,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Application.IdentityModels.ApplicationUser", null)
+                    b.HasOne("Domain.Entities.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1053,7 +1055,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Application.IdentityModels.ApplicationUser", null)
+                    b.HasOne("Domain.Entities.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
