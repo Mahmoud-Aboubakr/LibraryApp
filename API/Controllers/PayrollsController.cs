@@ -16,10 +16,12 @@ using Infrastructure.Specifications.PublisherSpec;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class PayrollsController : ControllerBase
     {
@@ -47,16 +49,17 @@ namespace API.Controllers
             _vacationServices = vacationServices;
             _logger = logger;
         }
-
+        [Authorize(Roles = "Manager,HR")]
         #region Get
-        [HttpGet("GetAllPayrollsAsync")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadPayrollDto>>> GetAllPayrollsAsync()
         {
             var payrolls = await _uof.GetRepository<Payroll>().GetAllAsync();
             return Ok(_mapper.Map<IReadOnlyList<Payroll>, IReadOnlyList<ReadPayrollDto>>(payrolls));
         }
 
-        [HttpGet("GetAllPayrollsWithDetails")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<ReadPayrollDto>>> GetAllPayrollsWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
@@ -72,24 +75,26 @@ namespace API.Controllers
             return Ok(paginationData);
         }
 
-        [HttpGet("GetPayrollById")]
-        public async Task<ActionResult<ReadPayrollDto>> GetPayrollByIdAsync(int id)
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReadPayrollDto>> GetPayrollByIdAsync(string id)
         {
-            if (await _uof.GetRepository<Payroll>().Exists(id))
+            if (await _uof.GetRepository<Payroll>().Exists(int.Parse(id)))
             {
-                var payrolls = await _uof.GetRepository<Payroll>().GetByIdAsync(id);
+                var payrolls = await _uof.GetRepository<Payroll>().GetByIdAsync(int.Parse(id));
                 return Ok(_mapper.Map<Payroll, ReadPayrollDto>(payrolls));
             }
 
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-        [HttpGet("GetPayrollByIdWithDetailAsync")]
-        public async Task<ActionResult<ReadPayrollDto>> GetPayrollByIdWithDetailAsync(int id)
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReadPayrollDto>> GetPayrollByIdWithDetailAsync(string id)
         {
-            if (await _uof.GetRepository<Payroll>().Exists(id))
+            if (await _uof.GetRepository<Payroll>().Exists(int.Parse(id)))
             {
-                var spec = new PayrollWithEmployeeSpec(id);
+                var spec = new PayrollWithEmployeeSpec(int.Parse(id));
                 var payrolls = await _uof.GetRepository<Payroll>().FindSpec(spec);
                 if (payrolls == null)
                     return NotFound(new ApiResponse(404));
@@ -99,7 +104,8 @@ namespace API.Controllers
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-        [HttpGet("SearchPayrollWithCriteria")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadPayrollDto>>> SearchPayrollWithCriteria(string? empName = null)
         {
             var result = await _payrollServices.SearchPayrollDataWithDetail(empName);
@@ -112,7 +118,8 @@ namespace API.Controllers
         #endregion
 
         #region Post
-        [HttpPost("InsertPayroll")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpPost]
         public async Task<ActionResult> InsertPayrollAsync(CreatePayrollDto payrollDto)
         {
             var result = await _uof.GetRepository<Employee>().Exists(payrollDto.EmpId);
@@ -152,7 +159,8 @@ namespace API.Controllers
         #endregion
 
         #region Put
-        [HttpPut("UpdatePayroll")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpPut]
         public async Task<ActionResult> UpdatePayrollAsync(UpdatePayrollDto payrollDto)
         {
             var result = await _uof.GetRepository<Payroll>().Exists(payrollDto.Id);
@@ -193,10 +201,11 @@ namespace API.Controllers
         #endregion
 
         #region Delete
-        [HttpDelete("DeletePayroll")]
-        public async Task<ActionResult> DeletePayrollAsync(int id)
+        [Authorize(Roles = "Manager,HR")]
+        [HttpDelete]
+        public async Task<ActionResult> DeletePayrollAsync(string id)
         {
-            var payrollSpec = new PayrollWithEmployeeSpec(id);
+            var payrollSpec = new PayrollWithEmployeeSpec(int.Parse(id));
             var payroll = _uof.GetRepository<Payroll>().FindSpec(payrollSpec).Result;
             if (payroll == null)
                 return NotFound(new ApiResponse(404));

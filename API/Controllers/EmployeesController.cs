@@ -19,10 +19,12 @@ using Infrastructure.Specifications.VacationSpec;
 using Microsoft.AspNetCore.Mvc;
 using Persistence.Context;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class EmployeesController : ControllerBase
     {
@@ -47,7 +49,8 @@ namespace API.Controllers
 
 
         #region GET
-        [HttpGet("GetAllEmployees")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadEmployeeDto>>> GetAllEmployeesAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
@@ -68,24 +71,24 @@ namespace API.Controllers
             return Ok(paginationData);
         }
 
-
-        [HttpGet("GetEmployeeById")]
-        public async Task<ActionResult> GetEmployeeByIdAsync(int id)
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetEmployeeByIdAsync(string id)
         {
-            if (await _uof.GetRepository<Employee>().Exists(id))
+            if (await _uof.GetRepository<Employee>().Exists(int.Parse(id)))
             {
-                var employee = await _uof.GetRepository<Employee>().GetByIdAsync(id);
+                var employee = await _uof.GetRepository<Employee>().GetByIdAsync(int.Parse(id));
                 return Ok(_mapper.Map<Employee, ReadEmployeeDto>(employee));
             }
 
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
-
-        [HttpGet("SearchEmployeeWithCriteria")]
-        public async Task<ActionResult<IReadOnlyList<ReadEmployeeDto>>> SearchWithCriteria(string name = null, byte? type = null, string phone = null, decimal? salary = null)
+        [Authorize(Roles = "Manager,HR")]
+        [HttpGet]
+        public async Task<ActionResult<IReadOnlyList<ReadEmployeeDto>>> SearchWithCriteria(string name = null, string type = null, string phone = null, string salary = null)
         {
-            var result = await _employeeServices.SearchEmployeeDataWithDetail(name, type, phone, salary);
+            var result = await _employeeServices.SearchEmployeeDataWithDetail(name, byte.Parse(type), phone, decimal.Parse(salary));
             if (result == null || result.Count == 0)
             {
                 return NotFound(new ApiResponse(404));
@@ -95,7 +98,8 @@ namespace API.Controllers
         #endregion
 
         #region POST
-        [HttpPost("InsertEmployee")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpPost]
         public async Task<ActionResult> InsertEmployeeAsync(CreateEmployeeDto employeeDto)
         {
             if (!_employeeServices.IsValidEmployeeType(employeeDto.EmpType))
@@ -113,7 +117,8 @@ namespace API.Controllers
         #endregion
 
         #region PUT
-        [HttpPut("UpdateEmployee")]
+        [Authorize(Roles = "Manager,HR")]
+        [HttpPut]
         public async Task<ActionResult> UpdateEmployeeAsync(ReadEmployeeDto employeeDto)
         {
             var result = await _uof.GetRepository<Employee>().Exists(employeeDto.Id);
@@ -134,16 +139,17 @@ namespace API.Controllers
         #endregion
 
         #region DELETE
-        [HttpDelete("DeleteEmployee")]
-        public async Task<ActionResult> DeleteEmployeeAsync(int id)
+        [Authorize(Roles = "Manager,HR")]
+        [HttpDelete]
+        public async Task<ActionResult> DeleteEmployeeAsync(string id)
         {
-            var attendanceSpec = new AttendanceWithEmployeeSpec(null, id);
+            var attendanceSpec = new AttendanceWithEmployeeSpec(null, int.Parse(id));
             var UsedInAttendance = _uof.GetRepository<Attendence>().FindAllSpec(attendanceSpec).Result;
             
-            var payrollSpec = new PayrollWithEmployeeSpec(null, id);
+            var payrollSpec = new PayrollWithEmployeeSpec(null, int.Parse(id));
             var UsedInPayroll = _uof.GetRepository<Payroll>().FindAllSpec(payrollSpec).Result;
 
-            var vacationSpec = new VacationWithEmployeeSpec(null, id);
+            var vacationSpec = new VacationWithEmployeeSpec(null, int.Parse(id));
             var UsedInVacation = _uof.GetRepository<Vacation>().FindAllSpec(vacationSpec).Result;
 
             if (UsedInAttendance.Count() > 0 || UsedInPayroll.Count() > 0 || UsedInVacation.Count() > 0)
@@ -152,7 +158,7 @@ namespace API.Controllers
             }
             else
             {
-                var employeeSpec = new EmployeeSpec(id);
+                var employeeSpec = new EmployeeSpec(int.Parse(id));
                 var employee = _uof.GetRepository<Employee>().FindSpec(employeeSpec).Result;
                 if (employee == null)
                     return NotFound(new ApiResponse(404));
@@ -161,29 +167,29 @@ namespace API.Controllers
                 return Ok(AppMessages.DELETED);
             }
         }
-
-        [HttpDelete("FireEmployee")]
-        public async Task<ActionResult> FireEmployeeAsync(int id)
+        [Authorize(Roles = "Manager")]
+        [HttpDelete]
+        public async Task<ActionResult> FireEmployeeAsync(string id)
         {
-            var result = await _uof.GetRepository<Employee>().Exists(id);
+            var result = await _uof.GetRepository<Employee>().Exists(int.Parse(id));
             if (!result)
             {
                 return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
             }
-            var employee = await _uof.GetRepository<Employee>().GetByIdAsync(id);
+            var employee = await _uof.GetRepository<Employee>().GetByIdAsync(int.Parse(id));
             _uof.GetRepository<Employee>().DeleteAsync(employee);
 
-            var attendanceSpec = new AttendanceWithEmployeeSpec(null, id);
+            var attendanceSpec = new AttendanceWithEmployeeSpec(null, int.Parse(id));
             var AttendanceRecords = _uof.GetRepository<Attendence>().FindAllSpec(attendanceSpec).Result;
             if (AttendanceRecords != null)
                 _uof.GetRepository<Attendence>().DeleteRangeAsync(AttendanceRecords);
 
-            var payrollSpec = new PayrollWithEmployeeSpec(null, id);
+            var payrollSpec = new PayrollWithEmployeeSpec(null, int.Parse(id));
             var PayrollRecords = _uof.GetRepository<Payroll>().FindAllSpec(payrollSpec).Result;
             if (PayrollRecords != null)
                 _uof.GetRepository<Payroll>().DeleteRangeAsync(PayrollRecords);
 
-            var vacationSpec = new VacationWithEmployeeSpec(null, id);
+            var vacationSpec = new VacationWithEmployeeSpec(null, int.Parse(id));
             var VacationRecords = _uof.GetRepository<Vacation>().FindAllSpec(vacationSpec).Result;
             if (VacationRecords != null)
                 _uof.GetRepository<Vacation>().DeleteRangeAsync(VacationRecords);
