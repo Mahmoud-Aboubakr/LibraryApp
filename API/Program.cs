@@ -1,5 +1,6 @@
 using API.Extensions;
 using API.Middlewares;
+using Application.IdentityModels;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

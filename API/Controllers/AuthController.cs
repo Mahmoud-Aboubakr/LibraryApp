@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Identity;
 using Application.Exceptions;
 using Application.Handlers;
+using Application.IdentityModels;
 using Application.Interfaces.IIdentityService;
 using Domain.Constants;
 using Domain.Entities.Identity;
@@ -24,6 +25,7 @@ namespace API.Controllers
             _authService = authService;
         }
 
+        #region Register
         [HttpPost]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterModel model)
         {
@@ -35,12 +37,15 @@ namespace API.Controllers
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
 
+            _authService.SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+
             return Ok(result);
         }
+        #endregion
 
-
+        #region Login
         [HttpPost]
-        public async Task<IActionResult> GetTokenAsync([FromBody] TokenRequestModel model)
+        public async Task<IActionResult> Login([FromBody] TokenRequestModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -50,9 +55,14 @@ namespace API.Controllers
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
 
+            if (!string.IsNullOrEmpty(result.RefreshToken))
+                _authService.SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+
             return Ok(result);
         }
+        #endregion
 
+        #region AddRole
         [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<IActionResult> AddRoleAsync([FromBody] AddRoleModel model)
@@ -68,6 +78,9 @@ namespace API.Controllers
             return Ok(model);
         }
 
+        #endregion
+
+        #region Get
         [Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<IActionResult> GetAllUserRegisterData()
@@ -88,7 +101,9 @@ namespace API.Controllers
 
             return Ok(registerData);
         }
+        #endregion
 
+        #region Update
         [Authorize(Roles = "Manager")]
         [HttpPut]
         public async Task<IActionResult> UpdateUserRegisterDataByEmail(string email, UpdateRegisterDataDto updatedData)
@@ -100,7 +115,9 @@ namespace API.Controllers
 
             return Ok(updatedRegisterData);
         }
+        #endregion
 
+        #region Delete
         [Authorize(Roles = "Manager")]
         [HttpDelete]
         public async Task<IActionResult> DeleteUserByEmailAsync(string email)
@@ -112,5 +129,42 @@ namespace API.Controllers
 
             return Ok(new ApiResponse(201, AppMessages.DELETED));
         }
+        #endregion
+
+        #region RefreshToken
+        [HttpGet]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+
+            var result = await _authService.RefreshTokenAsync(refreshToken);
+
+            if (!result.IsAuthenticated)
+                return BadRequest(result);
+
+            _authService.SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+
+            return Ok(result);
+        }
+
+        #endregion
+
+        #region RevokeToken
+        [HttpPost]
+        public async Task<IActionResult> RevokeToken([FromBody] RevokeModel model)
+        {
+            var token = model.Token ?? Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(token))
+                throw new BadRequestException(AppMessages.REQUIRED_TOKEN);
+
+            var result = await _authService.RevokeTokenAsync(token);
+
+            if (!result)
+                throw new BadRequestException(AppMessages.INVALID_TOKEN);
+
+            return Ok();
+        }
+        #endregion
     }
 }

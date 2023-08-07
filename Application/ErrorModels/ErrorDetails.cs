@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-namespace Domain.Entities.Error
+namespace Application.ErrorModels
 {
     public class ErrorDetails
     {
