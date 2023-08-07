@@ -79,13 +79,13 @@ namespace API.Controllers
 
         [Authorize(Roles = "Manager, Librarian")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadBookOrderDetailsDto>> GetBookOrderDetailsById(int id)
+        public async Task<ActionResult<ReadBookOrderDetailsDto>> GetBookOrderDetailsById(string id)
         {
-            var exists = await _uof.GetRepository<BookOrderDetails>().Exists(id);
+            var exists = await _uof.GetRepository<BookOrderDetails>().Exists(int.Parse(id));
 
             if (exists)
             {
-                var orderBooks = await _uof.GetRepository<BookOrderDetails>().GetByIdAsync(id);
+                var orderBooks = await _uof.GetRepository<BookOrderDetails>().GetByIdAsync(int.Parse(id));
 
                 if (orderBooks == null)
                     return NotFound(new ApiResponse(404));
@@ -97,13 +97,13 @@ namespace API.Controllers
 
         [Authorize(Roles = "Manager, Librarian")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadBookOrderDetailsDto>> GetBookOrderDetailsByIdWithIncludesAsync(int id)
+        public async Task<ActionResult<ReadBookOrderDetailsDto>> GetBookOrderDetailsByIdWithIncludesAsync(string id)
         {
-            var exists = await _uof.GetRepository<BookOrderDetails>().Exists(id);
+            var exists = await _uof.GetRepository<BookOrderDetails>().Exists(int.Parse(id));
 
             if (exists)
             {
-                var spec = new BookOrderDetailsWithBookAndCustomerSpec(id);
+                var spec = new BookOrderDetailsWithBookAndCustomerSpec(int.Parse(id));
                 var orderBooks = await _uof.GetRepository<BookOrderDetails>().FindSpec(spec);
 
                 if (orderBooks == null)

@@ -61,11 +61,11 @@ namespace API.Controllers
         [Authorize(Roles = "Manager, Librarian")]
         [HttpGet("{id}")]
        
-        public async Task<ActionResult> GetAuthorByIdAsync(int id)
+        public async Task<ActionResult> GetAuthorByIdAsync(string id)
         {
-            if (await _uof.GetRepository<Author>().Exists(id))
+            if (await _uof.GetRepository<Author>().Exists(int.Parse(id)))
             {
-                var author = await _uof.GetRepository<Author>().GetByIdAsync(id);
+                var author = await _uof.GetRepository<Author>().GetByIdAsync(int.Parse(id));
                 return Ok(_mapper.Map<Author, ReadAuthorDto>(author));
             }
             return NotFound(new ApiResponse(404 , AppMessages.INVALID_ID));

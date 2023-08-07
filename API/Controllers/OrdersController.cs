@@ -65,13 +65,13 @@ namespace API.Controllers
 
         [Authorize(Roles = "Manager, Librarian")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadOrderDto>> GetOrdersByIdWithIncludesAsync(int id)
+        public async Task<ActionResult<ReadOrderDto>> GetOrdersByIdWithIncludesAsync(string id)
         {
-            var exists = await _uof.GetRepository<Order>().Exists(id);
+            var exists = await _uof.GetRepository<Order>().Exists(int.Parse(id));
 
             if (exists)
             {
-                var spec = new OrderWithCustomerSpec(id);
+                var spec = new OrderWithCustomerSpec(int.Parse(id));
                 var order = await _uof.GetRepository<Order>().FindSpec(spec);
 
                 if (order == null)
@@ -84,13 +84,13 @@ namespace API.Controllers
 
         [Authorize(Roles = "Manager, Librarian")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadOrderDto>> GetOrderById(int id)
+        public async Task<ActionResult<ReadOrderDto>> GetOrderById(string id)
         {
-            var exists = await _uof.GetRepository<Order>().Exists(id);
+            var exists = await _uof.GetRepository<Order>().Exists(int.Parse(id));
 
             if (exists)
             {
-                var order = await _uof.GetRepository<Order>().GetByIdAsync(id);
+                var order = await _uof.GetRepository<Order>().GetByIdAsync(int.Parse(id));
 
                 if (order == null)
                     return NotFound(new ApiResponse(404));
