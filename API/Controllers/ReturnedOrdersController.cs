@@ -114,13 +114,13 @@ namespace API.Controllers
 
         [Authorize(Roles = "Manager, Librarian")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadReturnedOrderDto>> GetReturnedOrderById(int id)
+        public async Task<ActionResult<ReadReturnedOrderDto>> GetReturnedOrderById(string id)
         {
-            var exists = await _uof.GetRepository<ReturnedOrder>().Exists(id);
+            var exists = await _uof.GetRepository<ReturnedOrder>().Exists(int.Parse(id));
 
             if (exists)
             {
-                var returnedorder = await _uof.GetRepository<ReturnedOrder>().GetByIdAsync(id);
+                var returnedorder = await _uof.GetRepository<ReturnedOrder>().GetByIdAsync(int.Parse(id));
 
                 if (returnedorder == null)
                     return NotFound(new ApiResponse(404));
@@ -133,13 +133,13 @@ namespace API.Controllers
 
         [Authorize(Roles = "Manager, Librarian")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadReturnedOrderDto>> GetReturnedOrderByIdWithIncludesAsync(int id)
+        public async Task<ActionResult<ReadReturnedOrderDto>> GetReturnedOrderByIdWithIncludesAsync(string id)
         {
-            var exists = await _uof.GetRepository<ReturnedOrder>().Exists(id);
+            var exists = await _uof.GetRepository<ReturnedOrder>().Exists(int.Parse(id));
 
             if (exists)
             {
-                var spec = new ReturnedOrderWithCustomerSpec(id);
+                var spec = new ReturnedOrderWithCustomerSpec(int.Parse(id));
                 var returnedorder = await _uof.GetRepository<ReturnedOrder>().FindSpec(spec);
 
                 if (returnedorder == null)
@@ -166,13 +166,13 @@ namespace API.Controllers
 
         [Authorize(Roles = "Manager, Librarian")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadReturnOrderDetailsDto>> GetReturnedOrderDetailsById(int id)
+        public async Task<ActionResult<ReadReturnOrderDetailsDto>> GetReturnedOrderDetailsById(string id)
         {
-            var exists = await _uof.GetRepository<ReturnOrderDetails>().Exists(id);
+            var exists = await _uof.GetRepository<ReturnOrderDetails>().Exists(int.Parse(id));
 
             if (exists)
             {
-                var returnOrdersDetails = await _uof.GetRepository<ReturnOrderDetails>().GetByIdAsync(id);
+                var returnOrdersDetails = await _uof.GetRepository<ReturnOrderDetails>().GetByIdAsync(int.Parse(id));
 
                 if (returnOrdersDetails == null)
                     return NotFound(new ApiResponse(404));
@@ -185,13 +185,13 @@ namespace API.Controllers
 
         [Authorize(Roles = "Manager, Librarian")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadReturnOrderDetailsDto>> GetReturnedOrderDetailsByIdWithIncludesAsync(int id)
+        public async Task<ActionResult<ReadReturnOrderDetailsDto>> GetReturnedOrderDetailsByIdWithIncludesAsync(string id)
         {
-            var exists = await _uof.GetRepository<ReturnOrderDetails>().Exists(id);
+            var exists = await _uof.GetRepository<ReturnOrderDetails>().Exists(int.Parse(id));
 
             if (exists)
             {
-                var spec = new ReturnOrderDetailsWithBookAndCustomerSpec(id);
+                var spec = new ReturnOrderDetailsWithBookAndCustomerSpec(int.Parse(id));
                 var returnOrdersDetails = await _uof.GetRepository<ReturnOrderDetails>().FindSpec(spec);
 
                 if (returnOrdersDetails == null)
