@@ -18,6 +18,6 @@ namespace Application.Interfaces
         Task<T> FindSpec(ISpecification<T> spec);
         Task<IEnumerable<T>> FindAllSpec(ISpecification<T> spec);
         Task<IReadOnlyList<T>> GetAllListWithIncludesAsync(ISpecification<T> spec);
-        Task<int> CountAsync(ISpecification<T> specification);      
+        Task<int> CountAsync(ISpecification<T> specification);
     }
 }

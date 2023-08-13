@@ -86,8 +86,12 @@ namespace API.Controllers
 
         [Authorize(Roles = "Manager,HR")]
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ReadEmployeeDto>>> SearchWithCriteria(string name = null, string type = null, string phone = null, string salary = null)
+        public async Task<ActionResult<IReadOnlyList<ReadEmployeeDto>>> SearchEmployeeWithCriteria(string name = null, string type = null, string phone = null, string salary = null)
         {
+            if (!_phoneNumberValidator.IsValidPhoneNumber(phone))
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_PHONENUMBER));
+            if (!_employeeServices.IsValidEmployeeType(byte.Parse(type)))
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_EMPTYPE));
             var result = await _employeeServices.SearchEmployeeDataWithDetail(name, byte.Parse(type), phone, decimal.Parse(salary));
             if (result == null || result.Count == 0)
             {
@@ -112,7 +116,7 @@ namespace API.Controllers
             _uof.GetRepository<Employee>().InsertAsync(employee);
             await _uof.Commit();
 
-            return StatusCode(201, AppMessages.INSERTED); 
+            return Ok(new ApiResponse(201, AppMessages.INSERTED));
         }
         #endregion
 
