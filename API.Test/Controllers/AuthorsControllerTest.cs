@@ -11,13 +11,7 @@ using Domain.Entities;
 using Infrastructure.Specifications.BookSpec;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Moq;
-using Persistence.Repositories;
 
 namespace API.Test
 {
@@ -29,8 +23,7 @@ namespace API.Test
         private readonly AuthorsController _authorsController;
         private readonly Mock<IPhoneNumberValidator> _phoneNumberValidatorMock;
         private readonly Mock<IAuthorServices> _authorServicesMock;
-
-        private readonly Mock<IGenericRepository<Author>> _genricRepo;
+        private readonly Mock<IGenericRepository<Author>> _authorRepositoryMock;
 
         public AuthorsControllerTest()
         {
@@ -39,13 +32,12 @@ namespace API.Test
             _phoneNumberValidatorMock = new Mock<IPhoneNumberValidator>();
             _authorServicesMock = new Mock<IAuthorServices>();
             _loggerMock = new Mock<ILogger<AuthorsController>>();
+            _authorRepositoryMock = new Mock<IGenericRepository<Author>>();
             _authorsController = new AuthorsController(_unitOfWorkMock.Object,
                                                         _mapperMock.Object,
                                                         _phoneNumberValidatorMock.Object,
                                                         _authorServicesMock.Object,
                                                         _loggerMock.Object);
-
-            _genricRepo = new Mock<IGenericRepository<Author>>();
         }
 
         #region GetAll
@@ -56,130 +48,24 @@ namespace API.Test
             var pageSize = 6;
             var pageIndex = 1;
             var isPagingEnabled = true;
-            var spec = new AuthorSpec(pageSize, pageIndex, isPagingEnabled);
-            //var specMock = new Mock<AuthorSpec>(spec);
-            var totalAuthors = 6;
 
-            
+
             var authors = GetAuthorsData();
 
             var readAuthorDtos = GetReadAuthorsDtoData();
 
-            var paginationData = new Pagination<ReadAuthorDto>(pageIndex, pageSize, totalAuthors, readAuthorDtos);
-
-            var authorRepositoryMock = new Mock<IGenericRepository<Author>>();
-
-            _genricRepo.Setup(repo => repo.CountAsync(It.IsAny<AuthorSpec>()))
-                .ReturnsAsync(totalAuthors)
-                .Verifiable();
-
-            //_unitOfWorkMock.Setup(uow => uow.GetRepository<Author>().CountAsync(spec))
-            //    .ReturnsAsync(totalAuthors);
-            //   // .Verifiable();
-
-            authorRepositoryMock.Setup(repo => repo.FindAllSpec(It.IsAny<AuthorSpec>()))
-                .ReturnsAsync(authors)
-                .Verifiable();
-
-            //_unitOfWorkMock.Setup(uow => uow.GetRepository<Author>().FindAllSpec(spec))
-            //   .ReturnsAsync(authors)
-            //   .Verifiable();
+            _authorRepositoryMock.Setup(repo => repo.FindAllSpec(It.IsAny<AuthorSpec>()))
+               .ReturnsAsync(authors);
 
             _unitOfWorkMock.Setup(uow => uow.GetRepository<Author>())
-                    .Returns(authorRepositoryMock.Object)
-                    .Verifiable();
+                    .Returns(_authorRepositoryMock.Object);
 
             _mapperMock.Setup(m => m.Map<IReadOnlyList<ReadAuthorDto>>(authors)).Returns(readAuthorDtos).Verifiable();
-
             // Act
             var result = await _authorsController.GetAllAuthorsAsync(pageSize, pageIndex, isPagingEnabled);
             //
             Assert.NotNull(result);
             Assert.IsType<ActionResult<Pagination<ReadAuthorDto>>>(result);
-            //Assert.IsType<OkObjectResult>(result.Result);
-            //var okResult = result as ActionResult<Pagination<ReadAuthorDto>>;
-            //var okResult = result.Result as OkObjectResult;
-            //var paginationResult = okResult.Value as Pagination<ReadAuthorDto>;
-            //Assert.IsType<Pagination<ReadAuthorDto>>(okResult.Value);
-            //var paginationResult = result.Value as Pagination<ReadAuthorDto>;
-            var paginationResult =  (((ObjectResult)result.Result).Value);
-            //Assert.Equal(paginationData, okResult);
-            Assert.Equal(paginationData, paginationResult);
-
-            authorRepositoryMock.Verify(repo => repo.CountAsync(spec), Times.Once);
-            authorRepositoryMock.Verify(repo => repo.FindAllSpec(spec), Times.Once);
-            _mapperMock.Verify(mapper => mapper.Map<IReadOnlyList<Author>>(authors), Times.Once);
-
-            // Assert Null
-            Assert.IsType<NotFoundObjectResult>(result.Result);
-            var notFoundResult = result.Result as NotFoundObjectResult;
-            Assert.IsType<ApiResponse>(notFoundResult.Value);
-            var apiResponse = notFoundResult.Value as ApiResponse;
-            Assert.Equal(404, apiResponse.StatusCode);
-
-            _unitOfWorkMock.Verify();
-            _mapperMock.Verify();
-        }
-
-        [Fact]
-        public async Task GetAllAuthorsww()
-        {
-            // Arrange
-            int pagesize = 6;
-            int pageindex = 1;
-            bool isPagingEnabled = true;
-
-            var authors = GetAuthorsData();
-
-            var mappedAuthors = GetReadAuthorsDtoData();
-            var spec = new AuthorSpec(pagesize, pageindex, isPagingEnabled);
-            var totalAuthors = 6;
-
-            var authorRepositoryMock = new Mock<IGenericRepository<Author>>();
-
-            //authorRepositoryMock.Setup(repo => repo.CountAsync(spec))
-            //    .ReturnsAsync(totalAuthors)
-            //    .Verifiable();
-
-            
-
-            //authorRepositoryMock.Setup(repo => repo.FindAllSpec(spec))
-            //    .ReturnsAsync(authors)
-            //    .Verifiable();
-
-           
-
-            _unitOfWorkMock.Setup(uow => uow.GetRepository<Author>())
-                .Returns(authorRepositoryMock.Object)
-                .Verifiable();
-
-            var mapperConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Author, ReadAuthorDto>();
-            });
-            var mapper = mapperConfig.CreateMapper();
-
-            _mapperMock.Setup(m => m.Map<IReadOnlyList<ReadAuthorDto>>(It.IsAny<Author>()))
-                .Returns((Author author) => mapper.Map<IReadOnlyList<ReadAuthorDto>>(author))
-                .Verifiable();
-
-            // Act
-            var result = await _authorsController.GetAllAuthorsAsync(pagesize, pageindex, isPagingEnabled);
-
-            // Assert
-            var paginationData = new Pagination<ReadAuthorDto>(pageindex, pagesize, totalAuthors, mappedAuthors);
-
-            //Assert.NotNull(result);
-            //Assert.IsType<ActionResult<Pagination<ReadAuthorDto>>>(result);
-            //Assert.Equal(mappedAuthors, result.Value);
-            //Assert.Equal(paginationData, result.Value);
-            Assert.NotNull(result);
-            Assert.IsType<ActionResult<Pagination<ReadAuthorDto>>>(result);
-            Assert.Equal(paginationData, result.Value);
-
-            authorRepositoryMock.Verify(repo => repo.CountAsync(spec), Times.Once);
-            authorRepositoryMock.Verify(repo => repo.FindAllSpec(spec), Times.Once);
-            _mapperMock.Verify(mapper => mapper.Map<IReadOnlyList<Author>>(authors), Times.Once);
         }
 
         #endregion

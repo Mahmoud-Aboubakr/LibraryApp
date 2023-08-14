@@ -53,7 +53,8 @@ namespace API.Controllers
             {
                 return NotFound(new ApiResponse(404));
             }
-            var paginationData = new Pagination<ReadAuthorDto>(spec.PageIndex, spec.PageSize, totalAuthors, mappedauthors);
+            //var paginationData = new Pagination<ReadAuthorDto>(spec.PageIndex, spec.PageSize, totalAuthors, mappedauthors);
+            var paginationData = new Pagination<ReadAuthorDto>(spec.Skip, spec.Take, totalAuthors, mappedauthors);
             return Ok(paginationData);
         }
 
