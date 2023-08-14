@@ -49,11 +49,12 @@ namespace API.Controllers
             var totalAuthors = await _uof.GetRepository<Author>().CountAsync(spec);
             var authors = await _uof.GetRepository<Author>().FindAllSpec(spec);
             var mappedauthors = _mapper.Map<IReadOnlyList<ReadAuthorDto>>(authors);
-            if (mappedauthors == null || totalAuthors == 0)
+            if (mappedauthors == null && totalAuthors == 0)
             {
                 return NotFound(new ApiResponse(404));
             }
-            var paginationData = new Pagination<ReadAuthorDto>(spec.PageIndex, spec.PageSize, totalAuthors, mappedauthors);
+            //var paginationData = new Pagination<ReadAuthorDto>(spec.PageIndex, spec.PageSize, totalAuthors, mappedauthors);
+            var paginationData = new Pagination<ReadAuthorDto>(spec.Skip, spec.Take, totalAuthors, mappedauthors);
             return Ok(paginationData);
         }
 

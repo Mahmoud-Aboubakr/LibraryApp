@@ -53,17 +53,20 @@ namespace API.Controllers
         public async Task<ActionResult<Pagination<ReadCustomerDto>>> GetAllCustomerAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
-                return BadRequest(new ApiResponse(400));
+                return BadRequest(new ApiResponse(400, AppMessages.INAVIL_PAGING));
 
             var spec = new CustomerSpec(pagesize, pageindex, isPagingEnabled);
 
             var totalCustomers = await _uof.GetRepository<Customer>().CountAsync(spec);
-            if (totalCustomers == 0)
-                return NotFound(new ApiResponse(404));
-
+            
             var customers = await _uof.GetRepository<Customer>().FindAllSpec(spec);
 
             var mappedcustomers = _mapper.Map<IReadOnlyList<ReadCustomerDto>>(customers);
+
+            if (mappedcustomers == null || totalCustomers == 0)
+            {
+                return NotFound(new ApiResponse(404));
+            }
 
             var paginationData = new Pagination<ReadCustomerDto>(spec.PageIndex, spec.PageSize, totalCustomers, mappedcustomers);
 
@@ -85,8 +88,10 @@ namespace API.Controllers
 
         [Authorize(Roles = "Manager,Librarian")]
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ReadCustomerDto>>> SearchWithCriteria(string? Name = null, string? PhoneNumber = null)
+        public async Task<ActionResult<IReadOnlyList<ReadCustomerDto>>> SearchCustomerWithCriteria(string? Name = null, string? PhoneNumber = null)
         {
+            if (!_phoneNumberValidator.IsValidPhoneNumber(PhoneNumber))
+                return BadRequest(new ApiResponse(400, AppMessages.INVALID_PHONENUMBER));
             var result = await _searchCustomerService.SearchWithCriteria(Name, PhoneNumber);
             if (result == null || result.Count == 0)
             {
@@ -107,7 +112,7 @@ namespace API.Controllers
                 _uof.GetRepository<Customer>().InsertAsync(customer);
                 await _uof.Commit();
 
-                return StatusCode(201, AppMessages.INSERTED);
+                return Ok(new ApiResponse(201, AppMessages.INSERTED));
             }
             else
             {
@@ -130,7 +135,7 @@ namespace API.Controllers
             _uof.GetRepository<Customer>().UpdateAsync(customer);
             await _uof.Commit();
 
-            return Ok(AppMessages.UPDATED);
+            return Ok(new ApiResponse(201, AppMessages.UPDATED));
         }
         #endregion
 
@@ -146,12 +151,10 @@ namespace API.Controllers
             else
             {
                 var customerSpec = new CustomerSpec(int.Parse(id));
-                if (customerSpec == null)
-                    return NotFound(new ApiResponse(404));
                 var customer = _uof.GetRepository<Customer>().FindSpec(customerSpec).Result;
                 _uof.GetRepository<Customer>().DeleteAsync(customer);
                 await _uof.Commit();
-                return Ok(AppMessages.DELETED);
+                return Ok(new ApiResponse(201, AppMessages.DELETED));
             }
         }
         #endregion

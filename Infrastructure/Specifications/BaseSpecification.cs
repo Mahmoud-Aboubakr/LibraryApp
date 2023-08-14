@@ -47,7 +47,7 @@ namespace Infrastructure.Specifications
         protected void AddOrederByDescending(Expression<Func<T, object>> orderByDescExpression)
             => OrderByDescending = orderByDescExpression;
 
-        protected void ApplyPanging(int skip, int take , bool isPagingEnabled = true)
+        protected void ApplyPanging(int skip, int take, bool isPagingEnabled = true)
         {
             Skip = skip;
             Take = take;
