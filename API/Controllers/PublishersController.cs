@@ -13,6 +13,7 @@ using Infrastructure.Specifications.PublisherSpec;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using Application.DTOs.Author;
 
 namespace API.Controllers
 {
@@ -42,7 +43,7 @@ namespace API.Controllers
         #region Get
         [Authorize(Roles = "Manager, Librarian")]
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ReadPublisherDto>>> GetAllPublishersAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
+        public async Task<ActionResult<Pagination<ReadPublisherDto>>> GetAllPublishersAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
             {
@@ -52,11 +53,11 @@ namespace API.Controllers
             var totalPublishers = await _uof.GetRepository<Publisher>().CountAsync(spec);
             var publishers = await _uof.GetRepository<Publisher>().FindAllSpec(spec);
             var mappedPublishers = _mapper.Map<IReadOnlyList<ReadPublisherDto>>(publishers);
-            if (mappedPublishers == null || totalPublishers == 0)
+            if (mappedPublishers == null && totalPublishers == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
             }
-            var paginationData = new Pagination<ReadPublisherDto>(spec.PageIndex, spec.PageSize, totalPublishers, mappedPublishers);
+            var paginationData = new Pagination<ReadPublisherDto>(spec.Skip, spec.Take, totalPublishers, mappedPublishers);
             return Ok(paginationData);
         }
 
@@ -67,9 +68,6 @@ namespace API.Controllers
             if (await _uof.GetRepository<Publisher>().Exists(int.Parse(id)))
             {
                 var publisher = await _uof.GetRepository<Publisher>().GetByIdAsync(int.Parse(id));
-
-                if (publisher == null)
-                    return NotFound(new ApiResponse(404));
 
                 return Ok(_mapper.Map<Publisher, ReadPublisherDto>(publisher));
             }
@@ -85,7 +83,7 @@ namespace API.Controllers
             var result = await _searchPublisherDataService.SearchWithCriteria(name, phone);
             if (result == null || result.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, AppMessages.NOTFOUND_SEARCHDATA));
             }
             return Ok(result);
         }

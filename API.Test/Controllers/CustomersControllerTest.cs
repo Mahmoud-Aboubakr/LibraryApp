@@ -31,6 +31,7 @@ namespace API.Test
         private readonly CustomersController _customersController;
         private readonly Mock<IPhoneNumberValidator> _phoneNumberValidatorMock;
         private readonly Mock<ICustomerServices> _customerServicesMock;
+        private readonly Mock<IGenericRepository<Customer>> _customerRepositoryMock;
 
         public CustomersControllerTest()
         {
@@ -39,6 +40,7 @@ namespace API.Test
             _phoneNumberValidatorMock = new Mock<IPhoneNumberValidator>();
             _customerServicesMock = new Mock<ICustomerServices>();
             _loggerMock = new Mock<ILogger<CustomersController>>();
+            _customerRepositoryMock = new Mock<IGenericRepository<Customer>>();
             _customersController = new CustomersController(_unitOfWorkMock.Object,
                                                         _mapperMock.Object,
                                                         _phoneNumberValidatorMock.Object,
@@ -47,124 +49,32 @@ namespace API.Test
         }
 
         #region GetAll
-        //[Fact]
-        //public async Task GetAllCustomers()
-        //{
-        //    // Arrange
-        //    var pageSize = 6;
-        //    var pageIndex = 1;
-        //    var isPagingEnabled = true;
-        //    var spec = new CustomerSpec(pageSize, pageIndex, isPagingEnabled);
-        //    var totalCustomers = 6;
+        [Fact]
+        public async Task GetAllCustomers()
+        {
+            // Arrange
+            var pageSize = 6;
+            var pageIndex = 1;
+            var isPagingEnabled = true;
 
-        //    var customers = GetCustomersData();
 
-        //    var readCustomerDtos = GetReadCustomersDtoData();
+            var customers = GetCustomersData();
 
-        //    var paginationData = new Pagination<ReadCustomerDto>(pageIndex, pageSize, totalCustomers, readCustomerDtos);
+            var readCustomerDtos = GetReadCustomersDtoData();
 
-        //    var customerRepositoryMock = new Mock<IGenericRepository<Customer>>();
+            _customerRepositoryMock.Setup(repo => repo.FindAllSpec(It.IsAny<CustomerSpec>()))
+               .ReturnsAsync(customers);
 
-        //    customerRepositoryMock.Setup(repo => repo.CountAsync(spec))
-        //        .ReturnsAsync(totalCustomers)
-        //        .Verifiable();
+            _unitOfWorkMock.Setup(uow => uow.GetRepository<Customer>())
+                    .Returns(_customerRepositoryMock.Object);
 
-        //    customerRepositoryMock.Setup(repo => repo.FindAllSpec(spec))
-        //        .ReturnsAsync(customers)
-        //        .Verifiable();
-
-        //    _unitOfWorkMock.Setup(uow => uow.GetRepository<Customer>())
-        //            .Returns(customerRepositoryMock.Object)
-        //            .Verifiable();
-
-        //    _mapperMock.Setup(m => m.Map<IReadOnlyList<ReadCustomerDto>>(customers)).Returns(readCustomerDtos).Verifiable();
-
-        //    // Act
-        //    var result = await _customersController.GetAllCustomerAsync(pageSize, pageIndex, isPagingEnabled);
-
-        //    Assert.NotNull(result);
-        //    Assert.IsType<ActionResult<Pagination<ReadAuthorDto>>>(result);
-        //    //Assert.IsType<OkObjectResult>(result.Result);
-        //    //var okResult = result as ActionResult<Pagination<ReadCustomerDto>>;
-        //    //var okResult = result.Result as OkObjectResult;
-        //    //var paginationResult = okResult.Value as Pagination<ReadCustomerDto>;
-        //    //Assert.IsType<Pagination<ReadCustomerDto>>(okResult.Value);
-        //    var paginationResult = result.Value as Pagination<ReadCustomerDto>;
-        //    //Assert.Equal(paginationData, okResult);
-        //    Assert.Equal(paginationData, paginationResult);
-
-        //    customerRepositoryMock.Verify(repo => repo.CountAsync(spec), Times.Once);
-        //    customerRepositoryMock.Verify(repo => repo.FindAllSpec(spec), Times.Once);
-        //    _mapperMock.Verify(mapper => mapper.Map<IReadOnlyList<Author>>(customers), Times.Once);
-
-        //    // Assert Null
-        //    Assert.IsType<NotFoundObjectResult>(result.Result);
-        //    var notFoundResult = result.Result as NotFoundObjectResult;
-        //    Assert.IsType<ApiResponse>(notFoundResult.Value);
-        //    var apiResponse = notFoundResult.Value as ApiResponse;
-        //    Assert.Equal(404, apiResponse.StatusCode);
-
-        //    _unitOfWorkMock.Verify();
-        //    _mapperMock.Verify();
-        //}
-
-        //[Fact]
-        //public async Task GetAllCustomers()
-        //{
-        //    // Arrange
-        //    int pageSize = 6;
-        //    int pageIndex = 1;
-        //    bool isPagingEnabled = true;
-
-        //    var customers = GetCustomersData();
-
-        //    var readCustomerDtos = GetReadCustomersDtoData();
-
-        //    var spec = new CustomerSpec(pageSize, pageIndex, isPagingEnabled);
-        //    var totalCustomers = 6;
-
-        //    var customerRepositoryMock = new Mock<IGenericRepository<Customer>>();
-
-        //    customerRepositoryMock.Setup(repo => repo.CountAsync(spec))
-        //        .ReturnsAsync(totalCustomers)
-        //        .Verifiable();
-
-        //    customerRepositoryMock.Setup(repo => repo.FindAllSpec(spec))
-        //        .ReturnsAsync(customers)
-        //        .Verifiable();
-
-        //    _unitOfWorkMock.Setup(uow => uow.GetRepository<Customer>())
-        //        .Returns(customerRepositoryMock.Object)
-        //        .Verifiable();
-
-        //    var mapperConfig = new MapperConfiguration(cfg =>
-        //    {
-        //        cfg.CreateMap<Customer, ReadCustomerDto>();
-        //    });
-        //    var mapper = mapperConfig.CreateMapper();
-
-        //    _mapperMock.Setup(m => m.Map<IReadOnlyList<ReadCustomerDto>>(It.IsAny<Author>()))
-        //        .Returns((Customer customer) => mapper.Map<IReadOnlyList<ReadCustomerDto>>(customer))
-        //        .Verifiable();
-
-        //    // Act
-        //    var result = await _customersController.GetAllCustomerAsync(pageSize, pageIndex, isPagingEnabled);
-
-        //    // Assert
-        //    var paginationData = new Pagination<ReadCustomerDto>(pageIndex, pageSize, totalCustomers, readCustomerDtos);
-
-        //    //Assert.NotNull(result);
-        //    //Assert.IsType<ActionResult<Pagination<ReadCustomerDto>>>(result);
-        //    //Assert.Equal(readCustomerDtos, result.Value);
-        //    //Assert.Equal(paginationData, result.Value);
-        //    Assert.NotNull(result);
-        //    Assert.IsType<ActionResult<Pagination<ReadCustomerDto>>>(result);
-        //    Assert.Equal(paginationData, result.Value);
-
-        //    customerRepositoryMock.Verify(repo => repo.CountAsync(spec), Times.Once);
-        //    customerRepositoryMock.Verify(repo => repo.FindAllSpec(spec), Times.Once);
-        //    _mapperMock.Verify(mapper => mapper.Map<IReadOnlyList<Customer>>(customers), Times.Once);
-        //}
+            _mapperMock.Setup(m => m.Map<IReadOnlyList<ReadCustomerDto>>(customers)).Returns(readCustomerDtos).Verifiable();
+            // Act
+            var result = await _customersController.GetAllCustomerAsync(pageSize, pageIndex, isPagingEnabled);
+            // Assert
+            Assert.NotNull(result);
+            Assert.IsType<ActionResult<Pagination<ReadCustomerDto>>>(result);
+        }
 
         #endregion
 
@@ -375,7 +285,7 @@ namespace API.Test
             var ValidCustomerDto = new ReadCustomerDto
             {
                 Id = 1,
-                CustomerName = "Updated Author",
+                CustomerName = "Updated Customer",
                 CustomerPhoneNumber = "01286892250",
                 CustomerAddress = "Cairo"
             };
@@ -422,7 +332,7 @@ namespace API.Test
             var InvalidCustomerDto = new ReadCustomerDto
             {
                 Id = 500,
-                CustomerName = "Updated Author",
+                CustomerName = "Updated Customer",
                 CustomerPhoneNumber = "01286892250",
                 CustomerAddress = "Cairo"
             };
@@ -449,7 +359,7 @@ namespace API.Test
             var invalidPhoneNumberCustomerDto = new ReadCustomerDto
             {
                 Id = 1,
-                CustomerName = "Updated Author",
+                CustomerName = "Updated Customer",
                 CustomerPhoneNumber = "0122250",
                 CustomerAddress = "Cairo"
             };

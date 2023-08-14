@@ -53,7 +53,7 @@ namespace API.Controllers
             var returnedOrders = await _uof.GetRepository<ReturnedOrder>().GetAllListAsync();
             if (returnedOrders == null || returnedOrders.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
             }
             return Ok(_mapper.Map<IReadOnlyList<ReturnedOrder>, IReadOnlyList<ReadReturnedOrderDto>>(returnedOrders));
         }
@@ -70,11 +70,11 @@ namespace API.Controllers
             var totalReturns = await _uof.GetRepository<ReturnedOrder>().CountAsync(spec);
             var Returns = await _uof.GetRepository<ReturnedOrder>().FindAllSpec(spec);
             var mappedReturns = _mapper.Map<IReadOnlyList<ReadReturnedOrderDto>>(Returns);
-            if (mappedReturns == null || totalReturns == 0)
+            if (mappedReturns == null && totalReturns == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
             }
-            var paginationData = new Pagination<ReadReturnedOrderDto>(spec.PageIndex, spec.PageSize, totalReturns, mappedReturns);
+            var paginationData = new Pagination<ReadReturnedOrderDto>(spec.Skip, spec.Take, totalReturns, mappedReturns);
             return Ok(paginationData);
         }
 
@@ -85,7 +85,7 @@ namespace API.Controllers
             var returnOrdersDetails = await _uof.GetRepository<ReturnOrderDetails>().GetAllAsync();
             if (returnOrdersDetails == null || returnOrdersDetails.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
             }
             return Ok(_mapper.Map<IReadOnlyList<ReturnOrderDetails>, IReadOnlyList<ReadReturnOrderDetailsDto>>(returnOrdersDetails));
         }
@@ -103,11 +103,11 @@ namespace API.Controllers
             var totalReturns = await _uof.GetRepository<ReturnOrderDetails>().CountAsync(spec);
             var Returns = await _uof.GetRepository<ReturnOrderDetails>().FindAllSpec(spec);
             var mappedReturns = _mapper.Map<IReadOnlyList<ReadReturnOrderDetailsDto>>(Returns);
-            if (mappedReturns == null || totalReturns == 0)
+            if (mappedReturns == null && totalReturns == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
             }
-            var paginationData = new Pagination<ReadReturnOrderDetailsDto>(spec.PageIndex, spec.PageSize, totalReturns, mappedReturns);
+            var paginationData = new Pagination<ReadReturnOrderDetailsDto>(spec.Skip, spec.Take, totalReturns, mappedReturns);
             return Ok(paginationData);
         }
 
@@ -121,9 +121,6 @@ namespace API.Controllers
             if (exists)
             {
                 var returnedorder = await _uof.GetRepository<ReturnedOrder>().GetByIdAsync(int.Parse(id));
-
-                if (returnedorder == null)
-                    return NotFound(new ApiResponse(404));
 
                 return Ok(_mapper.Map<ReadReturnedOrderDto>(returnedorder));
             }
@@ -143,7 +140,7 @@ namespace API.Controllers
                 var returnedorder = await _uof.GetRepository<ReturnedOrder>().FindSpec(spec);
 
                 if (returnedorder == null)
-                    return NotFound(new ApiResponse(404));
+                    return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
 
                 return Ok(_mapper.Map<ReadReturnedOrderDto>(returnedorder));
             }
@@ -158,7 +155,7 @@ namespace API.Controllers
             var result = await _returnedOrderServices.SearchReturnedOrders(originorderId, customerId, customerName, totalPrice, returndate);
             if (result == null || result.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, AppMessages.NOTFOUND_SEARCHDATA));
             }
             return Ok(result);
         }
@@ -173,9 +170,6 @@ namespace API.Controllers
             if (exists)
             {
                 var returnOrdersDetails = await _uof.GetRepository<ReturnOrderDetails>().GetByIdAsync(int.Parse(id));
-
-                if (returnOrdersDetails == null)
-                    return NotFound(new ApiResponse(404));
 
                 return Ok(_mapper.Map<ReadReturnOrderDetailsDto>(returnOrdersDetails));
             }
@@ -195,7 +189,7 @@ namespace API.Controllers
                 var returnOrdersDetails = await _uof.GetRepository<ReturnOrderDetails>().FindSpec(spec);
 
                 if (returnOrdersDetails == null)
-                    return NotFound(new ApiResponse(404));
+                    return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
 
                 return Ok(_mapper.Map<ReadReturnOrderDetailsDto>(returnOrdersDetails));
             }
@@ -210,7 +204,7 @@ namespace API.Controllers
             var result = await _returnedOrderServices.SearchReturnedOrdersDetails(returnedorderId, bookId, customerName, bookTitle);
             if (result == null || result.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, AppMessages.NOTFOUND_SEARCHDATA));
             }
             return Ok(result);
         }

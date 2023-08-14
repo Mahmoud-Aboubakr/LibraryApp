@@ -26,6 +26,7 @@ namespace API.Test
         private readonly PublishersController _publishersController;
         private readonly Mock<IPhoneNumberValidator> _phoneNumberValidatorMock;
         private readonly Mock<IPublisherServices> _publisherServicesMock;
+        private readonly Mock<IGenericRepository<Publisher>> _publisherRepositoryMock;
 
         public PublishersControllerTest()
         {
@@ -34,6 +35,7 @@ namespace API.Test
             _phoneNumberValidatorMock = new Mock<IPhoneNumberValidator>();
             _publisherServicesMock = new Mock<IPublisherServices>();
             _loggerMock = new Mock<ILogger<PublishersController>>();
+            _publisherRepositoryMock = new Mock<IGenericRepository<Publisher>>();
             _publishersController = new PublishersController(_unitOfWorkMock.Object,
                                                         _mapperMock.Object,
                                                         _phoneNumberValidatorMock.Object,
@@ -42,6 +44,32 @@ namespace API.Test
         }
 
         #region GetAll
+        [Fact]
+        public async Task GetAllPublishers()
+        {
+            // Arrange
+            var pageSize = 6;
+            var pageIndex = 1;
+            var isPagingEnabled = true;
+
+
+            var publishers = GetPublishersData();
+
+            var readPublisherDtos = GetReadPublishersDtoData();
+
+            _publisherRepositoryMock.Setup(repo => repo.FindAllSpec(It.IsAny<PublisherSpec>()))
+               .ReturnsAsync(publishers);
+
+            _unitOfWorkMock.Setup(uow => uow.GetRepository<Publisher>())
+                    .Returns(_publisherRepositoryMock.Object);
+
+            _mapperMock.Setup(m => m.Map<IReadOnlyList<ReadPublisherDto>>(publishers)).Returns(readPublisherDtos).Verifiable();
+            // Act
+            var result = await _publishersController.GetAllPublishersAsync(pageSize, pageIndex, isPagingEnabled);
+            // Assert
+            Assert.NotNull(result);
+            Assert.IsType<ActionResult<Pagination<ReadPublisherDto>>>(result);
+        }
 
         #endregion
 
@@ -111,7 +139,7 @@ namespace API.Test
 
         #region Insert
         [Fact]
-        public async Task InsertAuthorAsync()
+        public async Task InsertPublisherAsync()
         {
             // Arrange
             var publisherDto = new CreatePublisherDto
@@ -171,9 +199,9 @@ namespace API.Test
 
         #region Update
         [Fact]
-        public async Task UpdateAuthorAsync()
+        public async Task UpdatePublisherAsync()
         {
-            // Arrange - Valid Author
+            // Arrange - Valid publisher
             var publisherDto = new ReadPublisherDto
             {
                 Id = 1 ,
@@ -200,10 +228,10 @@ namespace API.Test
             _unitOfWorkMock.Setup(uof => uof.Commit())
                         .Returns(Task.FromResult(1));
 
-            // Act - valid Author
+            // Act - valid publisher
             var validResult = await _publishersController.UpdatePublisherAsync(publisherDto);
 
-            // Assert - Valid Author
+            // Assert - Valid publisher
             var okResult = validResult as OkObjectResult;
             var apiResponseOkResult = okResult.Value as ApiResponse;
 
@@ -245,7 +273,7 @@ namespace API.Test
 
         #region Delete
         [Fact]
-        public async Task DeleteAuthorAsync()
+        public async Task DeletePublisherAsync()
         {
             // Arrange
             int publisherId = 1;
@@ -323,7 +351,7 @@ namespace API.Test
 
         #region Search
         [Fact]
-        public async Task SearchAuthorWithCriteria()
+        public async Task SearchPublisherWithCriteria()
         {
             // Arrange - Valid phone number
             string validName = "Rawan";
@@ -391,6 +419,7 @@ namespace API.Test
         }
         #endregion
 
+
         #region Data
         private List<Publisher> GetPublishersData()
         {
@@ -420,6 +449,36 @@ namespace API.Test
 
             return publishersData;
         }
+
+        private IReadOnlyList<ReadPublisherDto> GetReadPublishersDtoData()
+        {
+            List<ReadPublisherDto> publishersDtoData = new List<ReadPublisherDto>
+            {
+                new ReadPublisherDto
+                {
+                    Id = 1,
+                    PublisherName = "Rawan",
+                    PublisherPhoneNumber = "01013451622"
+                },
+
+                new ReadPublisherDto
+                {
+                    Id = 2,
+                    PublisherName = "Rita",
+                    PublisherPhoneNumber = "01013451644"
+                },
+
+                new ReadPublisherDto
+                {
+                    Id = 3,
+                    PublisherName = "Ali",
+                    PublisherPhoneNumber = "01055451699"
+                }
+            };
+
+            return publishersDtoData;
+        }
+
         #endregion
 
     }
