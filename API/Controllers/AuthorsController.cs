@@ -51,7 +51,7 @@ namespace API.Controllers
             var mappedauthors = _mapper.Map<IReadOnlyList<ReadAuthorDto>>(authors);
             if (mappedauthors == null && totalAuthors == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
             }
             //var paginationData = new Pagination<ReadAuthorDto>(spec.PageIndex, spec.PageSize, totalAuthors, mappedauthors);
             var paginationData = new Pagination<ReadAuthorDto>(spec.Skip, spec.Take, totalAuthors, mappedauthors);
@@ -81,7 +81,7 @@ namespace API.Controllers
             var result = await _authorServices.SearchWithCriteria(name, phone);
             if (result == null || result.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, AppMessages.NOTFOUND_SEARCHDATA));
             }
             return Ok(result);
         }

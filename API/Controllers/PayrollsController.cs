@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using Application.DTOs.Vacation;
 
 namespace API.Controllers
 {
@@ -49,12 +50,18 @@ namespace API.Controllers
             _vacationServices = vacationServices;
             _logger = logger;
         }
-        [Authorize(Roles = "Manager,HR")]
+
+
         #region Get
+        [Authorize(Roles = "Manager,HR")]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReadPayrollDto>>> GetAllPayrollsAsync()
         {
             var payrolls = await _uof.GetRepository<Payroll>().GetAllAsync();
+            if (payrolls == null || payrolls.Count == 0)
+            {
+                return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
+            }
             return Ok(_mapper.Map<IReadOnlyList<Payroll>, IReadOnlyList<ReadPayrollDto>>(payrolls));
         }
 
@@ -63,15 +70,17 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<ReadPayrollDto>>> GetAllPayrollsWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
-                return BadRequest(new ApiResponse(400));
+                return BadRequest(new ApiResponse(400, AppMessages.INAVIL_PAGING));
 
             var spec = new PayrollWithEmployeeSpec(pagesize, pageindex, isPagingEnabled);
             var totalPayrolls = await _uof.GetRepository<Payroll>().CountAsync(spec);
-            if (totalPayrolls == 0)
-                return NotFound(new ApiResponse(404));
             var payrolls = await _uof.GetRepository<Payroll>().FindAllSpec(spec);
             var mappedPayrolls = _mapper.Map<IReadOnlyList<ReadPayrollDto>>(payrolls);
-            var paginationData = new Pagination<ReadPayrollDto>(spec.PageIndex, spec.PageSize, totalPayrolls, mappedPayrolls);
+            if (mappedPayrolls == null && totalPayrolls == 0)
+            {
+                return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
+            }
+            var paginationData = new Pagination<ReadPayrollDto>(spec.Skip, spec.Take, totalPayrolls, mappedPayrolls);
             return Ok(paginationData);
         }
 
@@ -97,7 +106,7 @@ namespace API.Controllers
                 var spec = new PayrollWithEmployeeSpec(int.Parse(id));
                 var payrolls = await _uof.GetRepository<Payroll>().FindSpec(spec);
                 if (payrolls == null)
-                    return NotFound(new ApiResponse(404));
+                    return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
                 return Ok(_mapper.Map<Payroll, ReadPayrollDto>(payrolls));
             }
 
@@ -111,7 +120,7 @@ namespace API.Controllers
             var result = await _payrollServices.SearchPayrollDataWithDetail(empName);
             if (result == null || result.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, AppMessages.NOTFOUND_SEARCHDATA));
             }
             return Ok(result);
         }
@@ -154,7 +163,7 @@ namespace API.Controllers
             _uof.GetRepository<Payroll>().InsertAsync(payrolls);
             await _uof.Commit();
 
-            return StatusCode(201, AppMessages.INSERTED);
+            return Ok(new ApiResponse(201, AppMessages.INSERTED));
         }
         #endregion
 
@@ -195,7 +204,7 @@ namespace API.Controllers
             _uof.GetRepository<Payroll>().UpdateAsync(payrolls);
             await _uof.Commit();
 
-            return Ok(AppMessages.UPDATED);
+            return Ok(new ApiResponse(201, AppMessages.UPDATED));
         }
 
         #endregion
@@ -207,11 +216,9 @@ namespace API.Controllers
         {
             var payrollSpec = new PayrollWithEmployeeSpec(int.Parse(id));
             var payroll = _uof.GetRepository<Payroll>().FindSpec(payrollSpec).Result;
-            if (payroll == null)
-                return NotFound(new ApiResponse(404));
             _uof.GetRepository<Payroll>().DeleteAsync(payroll);
             await _uof.Commit();
-            return Ok(AppMessages.DELETED);
+            return Ok(new ApiResponse(201, AppMessages.DELETED));
         }
         #endregion
 

@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using Application.DTOs.Author;
 
 namespace API.Controllers
 {
@@ -45,6 +46,10 @@ namespace API.Controllers
         public async Task<ActionResult<IReadOnlyList<ReadVacationDto>>> GetAllVacationsAsync()
         {
             var vacations = await _uof.GetRepository<Vacation>().GetAllAsync();
+            if (vacations == null || vacations.Count == 0)
+            {
+                return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
+            }
             return Ok(_mapper.Map<IReadOnlyList<Vacation>, IReadOnlyList<ReadVacationDto>>(vacations));
         }
 
@@ -53,15 +58,17 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<ReadVacationDto>>> GetAllVacationsWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
-                return BadRequest(new ApiResponse(400));
+                return BadRequest(new ApiResponse(400, AppMessages.INAVIL_PAGING));
 
             var spec = new VacationWithEmployeeSpec(pagesize, pageindex, isPagingEnabled);
             var totalVacation = await _uof.GetRepository<Vacation>().CountAsync(spec);
-            if (totalVacation == 0)
-                return NotFound(new ApiResponse(404));
             var vacations = await _uof.GetRepository<Vacation>().FindAllSpec(spec);
             var mappedVacations = _mapper.Map<IReadOnlyList<ReadVacationDto>>(vacations);
-            var paginationData = new Pagination<ReadVacationDto>(spec.PageIndex, spec.PageSize, totalVacation, mappedVacations);
+            if (mappedVacations == null && totalVacation == 0)
+            {
+                return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
+            }
+            var paginationData = new Pagination<ReadVacationDto>(spec.Skip, spec.Take, totalVacation, mappedVacations);
             return Ok(paginationData);
         }
 
@@ -87,7 +94,7 @@ namespace API.Controllers
                 var spec = new VacationWithEmployeeSpec(int.Parse(id));
                 var vacations = await _uof.GetRepository<Vacation>().FindSpec(spec);
                 if (vacations == null)
-                    return NotFound(new ApiResponse(404));
+                    return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
                 return Ok(_mapper.Map<Vacation, ReadVacationDto>(vacations));
             }
 
@@ -101,7 +108,7 @@ namespace API.Controllers
             var result = await _vacServ.SearchVactionDataWithDetail(empName);
             if (result == null || result.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, AppMessages.NOTFOUND_SEARCHDATA));
             }
             return Ok(result);
         }
@@ -113,7 +120,7 @@ namespace API.Controllers
             var result = await _vacServ.GetTotalVacationsByEmpId(int.Parse(empId), FromDate, ToDate);
             if (result == null)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, AppMessages.NOTFOUND_SEARCHDATA));
             }
             return Ok(result);
         }
@@ -140,7 +147,7 @@ namespace API.Controllers
             _uof.GetRepository<Vacation>().InsertAsync(vacations);
             await _uof.Commit();
 
-            return StatusCode(201, AppMessages.INSERTED);
+            return Ok(new ApiResponse(201, AppMessages.INSERTED));
         }
         #endregion
 
@@ -165,7 +172,7 @@ namespace API.Controllers
             _uof.GetRepository<Vacation>().UpdateAsync(vacations);
             await _uof.Commit();
 
-            return Ok(AppMessages.UPDATED);
+            return Ok(new ApiResponse(201, AppMessages.UPDATED));
         }
         #endregion
 
@@ -176,11 +183,9 @@ namespace API.Controllers
         {
             var vacationSpec = new VacationWithEmployeeSpec(int.Parse(id));
             var vacation = _uof.GetRepository<Vacation>().FindSpec(vacationSpec).Result;
-            if (vacation == null)
-                return NotFound(new ApiResponse(404));
             _uof.GetRepository<Vacation>().DeleteAsync(vacation);
             await _uof.Commit();
-            return Ok(AppMessages.DELETED);
+            return Ok(new ApiResponse(201, AppMessages.DELETED));
         }
         #endregion
     }
