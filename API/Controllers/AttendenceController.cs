@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using Application.DTOs.Employee;
 
 namespace API.Controllers
 {
@@ -44,6 +45,10 @@ namespace API.Controllers
         public async Task<ActionResult<IReadOnlyList<ReadAttendanceDto>>> GetAllAttendenceAsync()
         {
             var attendences = await _uof.GetRepository<Attendence>().GetAllAsync();
+            if (attendences == null || attendences.Count == 0)
+            {
+                return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
+            }
             return Ok(_mapper.Map<IReadOnlyList<Attendence>, IReadOnlyList<ReadAttendanceDto>>(attendences));
         }
 
@@ -52,19 +57,22 @@ namespace API.Controllers
         public async Task<ActionResult<Pagination<ReadAttendanceDto>>> GetAllAttendenceWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
-                return BadRequest(new ApiResponse(400));
+                return BadRequest(new ApiResponse(400, AppMessages.INAVIL_PAGING));
 
             var spec = new AttendanceWithEmployeeSpec(pagesize, pageindex, isPagingEnabled);
 
             var totalAttendences = await _uof.GetRepository<Attendence>().CountAsync(spec);
-            if(totalAttendences == 0)
-                return NotFound(new ApiResponse(404));
 
             var attendences = await _uof.GetRepository<Attendence>().FindAllSpec(spec);
 
             var mappedattendences = _mapper.Map<IReadOnlyList<ReadAttendanceDto>>(attendences);
 
-            var paginationData = new Pagination<ReadAttendanceDto>(spec.PageIndex, spec.PageSize, totalAttendences, mappedattendences);
+            if (mappedattendences == null && totalAttendences == 0)
+            {
+                return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
+            }
+
+            var paginationData = new Pagination<ReadAttendanceDto>(spec.Skip, spec.Take, totalAttendences, mappedattendences);
 
             return Ok(paginationData);
         }
@@ -91,7 +99,7 @@ namespace API.Controllers
                 var spec = new AttendanceWithEmployeeSpec(int.Parse(id));
                 var attendences = await _uof.GetRepository<Attendence>().FindSpec(spec);
                 if (attendences == null)
-                    return NotFound(new ApiResponse(404));
+                    return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
                 return Ok(_mapper.Map<Attendence, ReadAttendanceDto>(attendences));
             }
 
@@ -105,7 +113,7 @@ namespace API.Controllers
             var result = await _attendenceServices.SearchAttendenceDataWithDetail(empName);
             if (result == null || result.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, AppMessages.NOTFOUND_SEARCHDATA));
             }
             return Ok(result);
         }
@@ -128,7 +136,7 @@ namespace API.Controllers
             _uof.GetRepository<Attendence>().InsertAsync(attendences);
             await _uof.Commit();
 
-            return StatusCode(201, AppMessages.INSERTED);
+            return Ok(new ApiResponse(201, AppMessages.INSERTED));
         }
         #endregion
 
@@ -148,7 +156,7 @@ namespace API.Controllers
             _uof.GetRepository<Attendence>().UpdateAsync(attendences);
             await _uof.Commit();
 
-            return Ok(AppMessages.UPDATED);
+            return Ok(new ApiResponse(201, AppMessages.UPDATED));
         }
 
         #endregion
@@ -160,11 +168,9 @@ namespace API.Controllers
         {
             var attendenceSpec = new AttendanceWithEmployeeSpec(id);
             var attendence = _uof.GetRepository<Attendence>().FindSpec(attendenceSpec).Result;
-            if (attendence == null)
-                return NotFound(new ApiResponse(404));
             _uof.GetRepository<Attendence>().DeleteAsync(attendence);
             await _uof.Commit();
-            return Ok(AppMessages.DELETED);
+            return Ok(new ApiResponse(201, AppMessages.DELETED));
         }
         #endregion
 

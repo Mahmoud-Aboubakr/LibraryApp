@@ -50,5 +50,7 @@ namespace Domain.Constants
         public const string INVALID_TOKEN = "Invalid token";
         public const string INACTIVE_TOKEN = "Inactive token";
         public const string REQUIRED_TOKEN = "Token is required!";
+        public const string NULL_DATA = "Can't find this data in the table!";
+        public const string NOTFOUND_SEARCHDATA = "Can't find data that you search for!";
     }
 }

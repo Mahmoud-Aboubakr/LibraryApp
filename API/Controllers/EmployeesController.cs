@@ -21,6 +21,7 @@ using Persistence.Context;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using Application.DTOs.Author;
 
 namespace API.Controllers
 {
@@ -51,22 +52,24 @@ namespace API.Controllers
         #region GET
         [Authorize(Roles = "Manager,HR")]
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ReadEmployeeDto>>> GetAllEmployeesAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
+        public async Task<ActionResult<Pagination<ReadEmployeeDto>>> GetAllEmployeesAsync(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
-                return BadRequest(new ApiResponse(400));
+                return BadRequest(new ApiResponse(400, AppMessages.INAVIL_PAGING));
 
             var spec = new EmployeeSpec(pagesize, pageindex, isPagingEnabled);
 
             var totalEmployees = await _uof.GetRepository<Employee>().CountAsync(spec);
-            if(totalEmployees == 0)
-                return NotFound(new ApiResponse(404));
-
+            
             var employees = await _uof.GetRepository<Employee>().FindAllSpec(spec);
 
             var mappedEmployees = _mapper.Map<IReadOnlyList<ReadEmployeeDto>>(employees);
 
-            var paginationData = new Pagination<ReadEmployeeDto>(spec.PageIndex, spec.PageSize, totalEmployees, mappedEmployees);
+            if (mappedEmployees == null && totalEmployees == 0)
+            {
+                return NotFound(new ApiResponse(404, AppMessages.NULL_DATA));
+            }
+            var paginationData = new Pagination<ReadEmployeeDto>(spec.Skip, spec.Take, totalEmployees, mappedEmployees);
 
             return Ok(paginationData);
         }
@@ -95,7 +98,7 @@ namespace API.Controllers
             var result = await _employeeServices.SearchEmployeeDataWithDetail(name, byte.Parse(type), phone, decimal.Parse(salary));
             if (result == null || result.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, AppMessages.NOTFOUND_SEARCHDATA));
             }
             return Ok(result);
         }
@@ -138,7 +141,7 @@ namespace API.Controllers
             _uof.GetRepository<Employee>().UpdateAsync(employee);
             await _uof.Commit();
 
-            return Ok(AppMessages.UPDATED);
+            return Ok(new ApiResponse(201, AppMessages.UPDATED));
         }
         #endregion
 
@@ -164,13 +167,12 @@ namespace API.Controllers
             {
                 var employeeSpec = new EmployeeSpec(int.Parse(id));
                 var employee = _uof.GetRepository<Employee>().FindSpec(employeeSpec).Result;
-                if (employee == null)
-                    return NotFound(new ApiResponse(404));
                 _uof.GetRepository<Employee>().DeleteAsync(employee);
                 await _uof.Commit();
-                return Ok(AppMessages.DELETED);
+                return Ok(new ApiResponse(201, AppMessages.DELETED));
             }
         }
+
         [Authorize(Roles = "Manager")]
         [HttpDelete]
         public async Task<ActionResult> FireEmployeeAsync(string id)
@@ -199,7 +201,7 @@ namespace API.Controllers
                 _uof.GetRepository<Vacation>().DeleteRangeAsync(VacationRecords);
 
             await _uof.Commit();
-            return Ok(AppMessages.FIRED);
+            return Ok(new ApiResponse(201, AppMessages.FIRED));
         }
         #endregion
     }
