@@ -34,6 +34,7 @@ namespace Domain.Constants
         public const string NOT_FOUND = "Not Found";
         public const string BAD_REQUEST = "Bad Request";
         public const string UNAUTHORIZED = "Unauthorized";
+        public const string UNAUTHENTICATED = "Token i not authenticated";
         public const string NOTACCEPTABLE = "Not Accepted Input";
         public const string INAVIL_PAGING = "Inavild Page Size and Page Index";
         public const string EXISTING_EMAIL = "This Email is already exists";
@@ -52,5 +53,7 @@ namespace Domain.Constants
         public const string REQUIRED_TOKEN = "Token is required!";
         public const string NULL_DATA = "Can't find this data in the table!";
         public const string NOTFOUND_SEARCHDATA = "Can't find data that you search for!";
+        public const string NOTFOUND_USER = "Can't find User!";
+        public const string FAILDE_USER_DELETE = "Can't delete this User!";
     }
 }
