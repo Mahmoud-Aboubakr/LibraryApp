@@ -57,9 +57,9 @@ namespace API.Controllers
             var mappedOrders = _mapper.Map<IReadOnlyList<ReadOrderDto>>(orders);
             if (mappedOrders == null || totalOrders == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NULL_DATA));
             }
-            var paginationData = new Pagination<ReadOrderDto>(spec.PageIndex, spec.PageSize, totalOrders, mappedOrders);
+            var paginationData = new Pagination<ReadOrderDto>(spec.Skip, spec.Take, totalOrders, mappedOrders);
             return Ok(paginationData);
         }
 
@@ -73,10 +73,6 @@ namespace API.Controllers
             {
                 var spec = new OrderWithCustomerSpec(int.Parse(id));
                 var order = await _uof.GetRepository<Order>().FindSpec(spec);
-
-                if (order == null)
-                    return NotFound(new ApiResponse(404));
-
                 return Ok(_mapper.Map<ReadOrderDto>(order));
             }
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
@@ -91,10 +87,6 @@ namespace API.Controllers
             if (exists)
             {
                 var order = await _uof.GetRepository<Order>().GetByIdAsync(int.Parse(id));
-
-                if (order == null)
-                    return NotFound(new ApiResponse(404));
-
                 return Ok(_mapper.Map<ReadOrderDto>(order));
             }
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
@@ -108,7 +100,7 @@ namespace API.Controllers
             var result = await _orderServices.SearchOrders(orderId, customerId, customerName, totalPrice, date);
             if (result == null || result.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NOTFOUND_SEARCHDATA));
             }
             return Ok(result);
         }

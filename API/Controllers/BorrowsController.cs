@@ -57,54 +57,46 @@ namespace API.Controllers
         public async Task<ActionResult<Pagination<ReadBorrowDto>>> GetAllBorrowsWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
-                return BadRequest(new ApiResponse(400));
+                return BadRequest(new ApiResponse(400 , AppMessages.INAVIL_PAGING));
 
             var spec = new BorrowWithBookAndCustomerSpec(pagesize, pageindex, isPagingEnabled);
 
             var totalBorrows = await _uof.GetRepository<Borrow>().CountAsync(spec);
             if (totalBorrows == 0)
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NULL_DATA));
 
             var borrows = await _uof.GetRepository<Borrow>().FindAllSpec(spec);
 
             var mappedborrows = _mapper.Map<IReadOnlyList<ReadBorrowDto>>(borrows);
 
-            var paginationData = new Pagination<ReadBorrowDto>(spec.PageIndex, spec.PageSize, totalBorrows, mappedborrows);
+            var paginationData = new Pagination<ReadBorrowDto>(spec.Skip, spec.Take, totalBorrows, mappedborrows);
 
             return Ok(paginationData);
         }
         [Authorize(Roles = "Manager,Librarian")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadBorrowDto>> GetById(int id)
+        public async Task<ActionResult> GetById(string id)
         {
-            var exists = await _uof.GetRepository<Borrow>().Exists(id);
+            var exists = await _uof.GetRepository<Borrow>().Exists(int.Parse(id));
 
             if (exists)
             {
-                var borrow = await _uof.GetRepository<Borrow>().GetByIdAsync(id);
-
-                if (borrow == null)
-                    return NotFound(new ApiResponse(404));
-
-                return Ok(_mapper.Map<ReadBorrowDto>(borrow));
+                var borrow = await _uof.GetRepository<Borrow>().GetByIdAsync(int.Parse(id));
+                return Ok(_mapper.Map<Borrow,ReadBorrowDto>(borrow));
             }
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
         [Authorize(Roles = "Manager,Librarian")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadBorrowDto>> GetByIdWithIncludesAsync(int id)
+        public async Task<ActionResult> GetByIdWithIncludesAsync(string id)
         {
-            var exists = await _uof.GetRepository<Borrow>().Exists(id);
+            var exists = await _uof.GetRepository<Borrow>().Exists(int.Parse(id));
 
             if (exists)
             {
-                var spec = new BorrowWithBookAndCustomerSpec(id);
+                var spec = new BorrowWithBookAndCustomerSpec(int.Parse(id));
                 var borrow = await _uof.GetRepository<Borrow>().FindSpec(spec);
-
-                if (borrow == null)
-                    return NotFound(new ApiResponse(404));
-
-                return Ok(_mapper.Map<ReadBorrowDto>(borrow));
+                return Ok(_mapper.Map<Borrow, ReadBorrowDto>(borrow));
             }
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
@@ -116,7 +108,7 @@ namespace API.Controllers
             var result = await _borrowServices.SearchWithCriteria(customerName, bookTitle, date);
             if (result == null || result.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NOTFOUND_SEARCHDATA));
             }
             return Ok(result);
         }
@@ -131,11 +123,14 @@ namespace API.Controllers
             if (banned)
             {
                 return BadRequest(new ApiResponse(400, AppMessages.BANNED_CUSTOMER));
-
             }
             else
             {
-                if (_borrowServices.CreateBorrowValidator(borrowDto.CustomerId))
+                if (!_borrowServices.CreateBorrowValidator(borrowDto.CustomerId))
+                {
+                    return BadRequest(new ApiResponse(400, AppMessages.MAX_BORROWING));                
+                }
+                else
                 {
                     if (!_numbersValidator.IsValidInt(borrowDto.CustomerId))
                         return BadRequest(new ApiResponse(400, AppMessages.INVALID_CUSTOMER));
@@ -146,11 +141,7 @@ namespace API.Controllers
                     _uof.GetRepository<Borrow>().InsertAsync(borrow);
                     await _uof.Commit();
 
-                    return StatusCode(201, AppMessages.INSERTED);
-                }
-                else
-                {
-                    return BadRequest(new ApiResponse(400, AppMessages.MAX_BORROWING));
+                    return StatusCode(201);
                 }
             }
         }
@@ -159,12 +150,10 @@ namespace API.Controllers
         #region DELETE
         [Authorize(Roles = "Manager,Librarian")]
         [HttpDelete]
-        public async Task<ActionResult> DeleteBorrowAsync(string id)
+        public async Task<ActionResult> DeleteBorrowAsync(int id)
         {
-            var borrowSpec = new BorrowWithBookAndCustomerSpec(int.Parse(id));
+            var borrowSpec = new BorrowWithBookAndCustomerSpec(id);
             var borrow = _uof.GetRepository<Borrow>().FindSpec(borrowSpec).Result;
-            if (borrow == null)
-                return NotFound(new ApiResponse(404));
             _uof.GetRepository<Borrow>().DeleteAsync(borrow);
             await _uof.Commit();
             return Ok(AppMessages.DELETED);
@@ -173,3 +162,4 @@ namespace API.Controllers
         
     }
 }
+     

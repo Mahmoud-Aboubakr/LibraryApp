@@ -52,7 +52,7 @@ namespace API.Controllers
             var orderBooks = await _uof.GetRepository<BookOrderDetails>().GetAllAsync();
             if (orderBooks == null || orderBooks.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NULL_DATA));
             }
             return Ok(_mapper.Map<IReadOnlyList<BookOrderDetails>, IReadOnlyList<ReadBookOrderDetailsDto>>(orderBooks));
         }
@@ -71,9 +71,9 @@ namespace API.Controllers
             var mappedbookOrderDetails = _mapper.Map<IReadOnlyList<ReadBookOrderDetailsDto>>(bookOrderDetails);
             if (mappedbookOrderDetails == null || totalBookOrderDetails == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NULL_DATA));
             }
-            var paginationData = new Pagination<ReadBookOrderDetailsDto>(spec.PageIndex, spec.PageSize, totalBookOrderDetails, mappedbookOrderDetails);
+            var paginationData = new Pagination<ReadBookOrderDetailsDto>(spec.Skip, spec.Take, totalBookOrderDetails, mappedbookOrderDetails);
             return Ok(paginationData);
         }
 
@@ -86,10 +86,6 @@ namespace API.Controllers
             if (exists)
             {
                 var orderBooks = await _uof.GetRepository<BookOrderDetails>().GetByIdAsync(int.Parse(id));
-
-                if (orderBooks == null)
-                    return NotFound(new ApiResponse(404));
-
                 return Ok(_mapper.Map<ReadBookOrderDetailsDto>(orderBooks));
             }
             return NotFound(new ApiResponse(404 , AppMessages.INVALID_ID ));
@@ -104,11 +100,7 @@ namespace API.Controllers
             if (exists)
             {
                 var spec = new BookOrderDetailsWithBookAndCustomerSpec(int.Parse(id));
-                var orderBooks = await _uof.GetRepository<BookOrderDetails>().FindSpec(spec);
-
-                if (orderBooks == null)
-                    return NotFound(new ApiResponse(404));
-
+                var orderBooks = await _uof.GetRepository<BookOrderDetails>().FindSpec(spec);;
                 return Ok(_mapper.Map<ReadBookOrderDetailsDto>(orderBooks));
             }
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
@@ -121,7 +113,7 @@ namespace API.Controllers
             var result = await _orderServices.SearchBookOrderDetails(orderId, customerName, bookTitle);
             if (result == null || result.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NOTFOUND_SEARCHDATA));
             }
             return Ok(result);
         }
