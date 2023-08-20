@@ -1,5 +1,4 @@
 ﻿using Application.DTOs.Book;
-using Application.DTOs.Publisher;
 using Application.Handlers;
 using Application.Interfaces;
 using Application.Interfaces.IAppServices;
@@ -49,7 +48,7 @@ namespace API.Controllers
             var books = await _uof.GetRepository<Book>().GetAllAsync();
             if (books == null || books.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NULL_DATA));
             }
             return Ok(_mapper.Map<IReadOnlyList<Book>, IReadOnlyList<ReadBookDto>>(books));
         }
@@ -68,33 +67,29 @@ namespace API.Controllers
             var mappedbooks = _mapper.Map<IReadOnlyList<ReadBookDto>>(books);
             if (mappedbooks == null || totalBooks == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NULL_DATA));
             }
-            var paginationData = new Pagination<ReadBookDto>(spec.PageIndex, spec.PageSize, totalBooks, mappedbooks);
+            var paginationData = new Pagination<ReadBookDto>(spec.Skip, spec.Take, totalBooks, mappedbooks);
             return Ok(paginationData);
         }
 
         [Authorize(Roles = "Manager, Librarian")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadBookDto>> GetBookByIdAsync(string id)
+        public async Task<ActionResult> GetBookByIdAsync(string id)
         {
             var exists = await _uof.GetRepository<Book>().Exists(int.Parse(id));
 
             if (exists)
             {
                 var book = await _uof.GetRepository<Book>().GetByIdAsync(int.Parse(id));
-
-                if (book == null)
-                    return NotFound(new ApiResponse(404));
-
-                return Ok(_mapper.Map<ReadBookDto>(book));
+                return Ok(_mapper.Map<Book,ReadBookDto>(book));
             }
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
 
         [Authorize(Roles = "Manager, Librarian")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadBookDto>> GetBookByIdWithDetailAsync(string id)
+        public async Task<ActionResult> GetBookByIdWithDetailAsync(string id)
         {
             var exists = await _uof.GetRepository<Book>().Exists(int.Parse(id));
 
@@ -102,10 +97,7 @@ namespace API.Controllers
             {
                 var spec = new BooksWithAuthorAndPublisherSpec(int.Parse(id));
                 var book = await _uof.GetRepository<Book>().FindSpec(spec);
-                if (book == null)
-                    return NotFound(new ApiResponse(404));
-
-                return Ok(_mapper.Map<ReadBookDto>(book));
+                return Ok(_mapper.Map<Book,ReadBookDto>(book));
             }
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
         }
@@ -117,7 +109,7 @@ namespace API.Controllers
             var result = await _searchBookDataWithDetailService.SearchBookDataWithDetail(bookTitle, authorName, publisherName);
             if (result == null || result.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NOTFOUND_SEARCHDATA));
             }
             return Ok(result);
         }

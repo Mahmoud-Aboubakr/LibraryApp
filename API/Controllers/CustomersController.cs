@@ -65,10 +65,10 @@ namespace API.Controllers
 
             if (mappedcustomers == null || totalCustomers == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NULL_DATA));
             }
 
-            var paginationData = new Pagination<ReadCustomerDto>(spec.PageIndex, spec.PageSize, totalCustomers, mappedcustomers);
+            var paginationData = new Pagination<ReadCustomerDto>(spec.Skip, spec.Take, totalCustomers, mappedcustomers);
 
             return Ok(paginationData);
         }
@@ -95,7 +95,7 @@ namespace API.Controllers
             var result = await _searchCustomerService.SearchWithCriteria(Name, PhoneNumber);
             if (result == null || result.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NOTFOUND_SEARCHDATA));
             }
             return Ok(result);
         }

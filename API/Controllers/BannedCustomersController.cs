@@ -54,19 +54,19 @@ namespace API.Controllers
         public async Task<ActionResult<Pagination<ReadBannedCustomerDto>>> GetBannedCustomersWithDetails(int pagesize = 6, int pageindex = 1, bool isPagingEnabled = true)
         {
             if (pagesize <= 0 || pageindex <= 0)
-                return BadRequest(new ApiResponse(400));
+                return BadRequest(new ApiResponse(400 , AppMessages.INAVIL_PAGING));
 
             var spec = new BannedCustomerWithEmployeeAndCustomerSpec(pagesize, pageindex, isPagingEnabled);
 
             var totalBannedCustomers = await _uof.GetRepository<BannedCustomer>().CountAsync(spec);
             if (totalBannedCustomers == 0)
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NULL_DATA));
 
             var bannedCustomers = await _uof.GetRepository<BannedCustomer>().FindAllSpec(spec);
 
             var mappedbannedCustomers = _mapper.Map<IReadOnlyList<ReadBannedCustomerDto>>(bannedCustomers);
 
-            var paginationData = new Pagination<ReadBannedCustomerDto>(spec.PageIndex, spec.PageSize, totalBannedCustomers, mappedbannedCustomers);
+            var paginationData = new Pagination<ReadBannedCustomerDto>(spec.Skip, spec.Take, totalBannedCustomers, mappedbannedCustomers);
 
             return Ok(paginationData);
         }
@@ -80,10 +80,6 @@ namespace API.Controllers
             if (exists)
             {
                 var bannedCustomers = await _uof.GetRepository<BannedCustomer>().GetByIdAsync(int.Parse(id));
-
-                if (bannedCustomers == null)
-                    return NotFound(new ApiResponse(404));
-
                 return Ok(_mapper.Map<ReadBannedCustomerDto>(bannedCustomers));
             }
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
@@ -99,10 +95,6 @@ namespace API.Controllers
             {
                 var spec = new BannedCustomerWithEmployeeAndCustomerSpec(int.Parse(id));
                 var bannedCustomers = await _uof.GetRepository<BannedCustomer>().FindSpec(spec);
-
-                if (bannedCustomers == null)
-                    return NotFound(new ApiResponse(404));
-
                 return Ok(_mapper.Map<ReadBannedCustomerDto>(bannedCustomers));
             }
             return NotFound(new ApiResponse(404, AppMessages.INVALID_ID));
@@ -115,7 +107,7 @@ namespace API.Controllers
             var result = await _searchForBannedCustomerService.SearchForBannedCustomer(EmpName, CustomerName);
             if (result == null || result.Count == 0)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NOTFOUND_SEARCHDATA));
             }
             return Ok(result);
         }
@@ -144,8 +136,6 @@ namespace API.Controllers
         {
             var bannedCustomerSpec = new BannedCustomerWithEmployeeAndCustomerSpec(int.Parse(id));
             var bannedCustomer = _uof.GetRepository<BannedCustomer>().FindSpec(bannedCustomerSpec).Result;
-            if (bannedCustomer == null)
-                return NotFound(new ApiResponse(404));
             _uof.GetRepository<BannedCustomer>().DeleteAsync(bannedCustomer);
             await _uof.Commit();
             return Ok(AppMessages.DELETED);

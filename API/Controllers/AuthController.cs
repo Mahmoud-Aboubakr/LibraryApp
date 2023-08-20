@@ -97,7 +97,7 @@ namespace API.Controllers
             var registerData = await _authService.GetRegisterDataByEmailAsync(email);
 
             if (registerData == null)
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NOTFOUND_USER));
 
             return Ok(registerData);
         }
@@ -111,7 +111,7 @@ namespace API.Controllers
             var updatedRegisterData = await _authService.UpdateUserRegisterDataByEmailAsync(email, updatedData);
 
             if (updatedRegisterData == null)
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404 , AppMessages.NOTFOUND_USER));
 
             return Ok(updatedRegisterData);
         }
@@ -125,7 +125,7 @@ namespace API.Controllers
             var deletedData = await _authService.DeleteUserDataByEmailAsync(email);
 
             if (!deletedData)
-                return BadRequest(new ApiResponse(400));
+                return BadRequest(new ApiResponse(400 , AppMessages.FAILDE_USER_DELETE));
 
             return Ok(new ApiResponse(201, AppMessages.DELETED));
         }
@@ -140,7 +140,7 @@ namespace API.Controllers
             var result = await _authService.RefreshTokenAsync(refreshToken);
 
             if (!result.IsAuthenticated)
-                return BadRequest(result);
+                return BadRequest(new ApiResponse(400 , AppMessages.UNAUTHENTICATED));
 
             _authService.SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
 
